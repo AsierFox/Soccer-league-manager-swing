@@ -2,7 +2,11 @@ package com.devdream.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.devdream.ui.custom.Alert;
 
 /**
  * Class to manage connection to the database.
@@ -33,47 +37,79 @@ public abstract class DBConnectionManager {
 		DB_PASSWORD = "";
 		
 		setProperties();
-		
-		connection = getDBConnection();
 	}
 
 	//
 	// Methods
+	/** Sets the properties needed to connect to the database. */
 	private void setProperties() {
 		DBProperties properties = new DBProperties();
 		
 		DB_DRIVER = properties.getProperty(DBProperties.DRIVER);
+		// TODO Getting the absolute path!
 		DB_CONNECTION = properties.getProperty(DBProperties.SERVER) + System.getProperty("user.dir") + "\\db\\" + properties.getProperty(DBProperties.DATABASE);
-		System.out.println(DB_CONNECTION);
 		
 		properties.close();
 	}
 	
-	private Connection getDBConnection() {
+	/** Connects to the loaded database */
+	public Connection getConnection() {
 		try {
 			Class.forName(DB_DRIVER);
 			connection = DriverManager.getConnection(DB_CONNECTION);
 			return connection;
 		} catch (ClassNotFoundException | SQLException e) {
-			System.out.println(e.getMessage());
+			Alert.showError(null, e.getMessage());
 		}
 		return connection;
 	}
 	
-	public void close() {
-		try {
-			if (connection != null) {
+	/**
+	 * Close the connection to the database.
+	 */
+	public void closeConnection() {
+		if (connection != null) {
+			try {
 				connection.close();
+			} catch(SQLException e) {
+				Alert.showError(null, "Error closing the database connection.");
+			}
+		}
+	}
+	
+	/**
+	 * Close the connection including the PreparedStatement.
+	 * @param preparedStatement
+	 */
+	public void closeConnection(PreparedStatement preparedStatement) {
+		try {
+			if (preparedStatement != null) {
+				preparedStatement.close();
 			}
 		} catch(SQLException e) {
-			System.out.println(e.getMessage());
+			Alert.showError(null, "Error closing the database Statement.");
+		}
+		finally {
+			closeConnection();
 		}
 	}
 	
-	//
-	// Getters and Setters
-	public Connection getConnection() {
-		return connection;
+	/**
+	 * Close the connection including the PreparedStatement and ResultSet
+	 * @param preparedStatement
+	 * @param resultSet
+	 */
+	public void closeConnection(PreparedStatement preparedStatement, ResultSet resultSet) {
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		} catch (SQLException e) {
+			Alert.showError(null, "Error closing the database ResultSet.");
+		}
+		finally {
+			closeConnection(preparedStatement);
+		}
 	}
 	
 }

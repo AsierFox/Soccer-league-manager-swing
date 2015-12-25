@@ -2,29 +2,35 @@ package com.devdream.ui;
 
 import javax.swing.JButton;
 
+import com.devdream.controller.LoadController;
+
 /**
  * Login view of the application. It is going to login
  * the customer who is going to attend the clients.
  * 
  * @author Asier Gonzalez
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
-public class LoginView extends View {
+public class MainView extends View {
 
 	private static final long serialVersionUID = 872752750081624433L;
 	
 	//
 	// Attributes
+	private LoadController loadController;
+	
 	private JButton loginButton;
 	private JButton exitButton;
 	
 	//
 	// Constructors
-	public LoginView() {
+	public MainView(LoadController loadController) {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(null);
+		
+		this.loadController = loadController;
 		
 		loadUI();
 

@@ -1,4 +1,4 @@
-package com.devdream.db.vo;
+package com.devdream.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

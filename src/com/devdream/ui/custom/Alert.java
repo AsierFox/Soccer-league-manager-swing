@@ -17,7 +17,12 @@ public class Alert extends JOptionPane {
 
 	/** Displays an error alert. */
 	public static void showError(Component c, String msg) {
-		showMessageDialog(c, msg, "Error", ERROR_MESSAGE);
+		showError(c, "Error", msg);
+	}
+	
+	/** Displays an error alert with personalized title. */
+	public static void showError(Component c, String title, String msg) {
+		showMessageDialog(c, msg, title, ERROR_MESSAGE);
 	}
 
 	/** Displays an information alert. */

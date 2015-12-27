@@ -5,8 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.devdream.annotation.DBKey.Key;
 import com.devdream.db.DBConnectionManager;
-import com.devdream.db.vo.DBKey.Key;
+import com.devdream.db.dao.DAO;
 
 /**
  * Class containing static methods for creating dynamic queries.
@@ -29,7 +30,7 @@ public class QueryBuilder extends DBConnectionManager {
 	public static String createTable(Class<?> vo) {
 		Field[] fields = vo.getDeclaredFields();
 		String extraSQL = "";
-		String sql = "CREATE TABLE '" + getTableNameFromVO(vo.getSimpleName()) + "' (";
+		String sql = "CREATE TABLE '" + getTableNameFromVO(vo) + "' (";
 		for (int i = 0, nfields = fields.length; i < nfields; ++i) {
 			Field field = fields[i];
 			String fieldName = StringHelper.capitalizeFirst(field.getName());
@@ -87,12 +88,12 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param cols The columns to select
 	 * @return String SQL Select query
 	 */
-	public static String createSelect(Class<?> dao, String... cols) {
+	public static String createSelect(Class<? extends DAO> dao, String... cols) {
 		String sql = "SELECT " + cols[0];
 		for (int i = 1, nfields = cols.length; i < nfields; ++i) {
 			sql += ", " + cols[i];
 		}
-		sql += " FROM " + getTableNameFromDAO(dao.getSimpleName());
+		sql += " FROM " + getTableNameFromDAO(dao);
 		return sql;
 	}
 	
@@ -105,8 +106,8 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param valueCond The value to compare with on the conditional
 	 * @return String SQL update syntax
 	 */
-	public static String createUpdate(Class<?> dao, String[] fields, String[] values, String colCond, String valueCond) {
-		String query = "UPDATE " + getTableNameFromDAO(dao.getSimpleName()) + " SET " + fields[0] + "=" + values[0];
+	public static String createUpdate(Class<? extends DAO> dao, String[] fields, String[] values, String colCond, String valueCond) {
+		String query = "UPDATE " + getTableNameFromDAO(dao) + " SET " + fields[0] + "=" + values[0];
 		int nfields = fields.length;
 		for (int i = 1; i < nfields; ++i) {
 			query += ", " + fields[i] + "=" + values[i];
@@ -122,8 +123,8 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param values The values for the insertion
 	 * @return String The SQL query for an insert
 	 */
-	public static String createInsert(Class<?> dao, String[] fieldNames, String[] values) {
-		String query = "INSERT INTO '" + getTableNameFromDAO(dao.getSimpleName()) + "' ('" + fieldNames[0] + "'";
+	public static String createInsert(Class<? extends DAO> dao, String[] fieldNames, String[] values) {
+		String query = "INSERT INTO '" + getTableNameFromDAO(dao) + "' ('" + fieldNames[0] + "'";
 		int nfields = fieldNames.length;
 		for (int i = 1; i < nfields; ++i) {
 			query += ", '" + fieldNames[i] + "'";
@@ -143,7 +144,7 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @return String The SQL query for an insert
 	 */
 	public static String createDelete(Class<?> vo, String colCond, String valueCond) {
-		String query = "DELETE FROM " + getTableNameFromVO(vo.getSimpleName()) + " WHERE " + colCond + "=" + valueCond;
+		String query = "DELETE FROM " + getTableNameFromVO(vo) + " WHERE " + colCond + "=" + valueCond;
 		return query + ";";
 	}
 	
@@ -152,8 +153,8 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param vo The Value Object class
 	 * @return The table name formatted
 	 */
-	public static String getTableNameFromVO(String vo) {
-		return vo.replace("VO", "s");
+	public static String getTableNameFromVO(Class<?> vo) {
+		return vo.getSimpleName().replace("VO", "s");
 	}
 
 	/**
@@ -161,8 +162,8 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param vo The Data Access Object class name
 	 * @return The table name formatted
 	 */
-	public static String getTableNameFromDAO(String dao) {
-		return dao.replace("DAO", "s");
+	public static String getTableNameFromDAO(Class<? extends DAO> dao) {
+		return dao.getSimpleName().replace("DAO", "s");
 	}
 	
 }

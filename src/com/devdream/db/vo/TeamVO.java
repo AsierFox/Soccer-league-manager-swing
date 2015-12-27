@@ -1,6 +1,7 @@
 package com.devdream.db.vo;
 
-import com.devdream.db.vo.DBKey.Key;
+import com.devdream.annotation.DBKey;
+import com.devdream.annotation.DBKey.Key;
 
 /**
  * Team Value Object to represent the database table.

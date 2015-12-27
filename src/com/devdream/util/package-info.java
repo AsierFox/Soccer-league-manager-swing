@@ -1,5 +1,5 @@
 /**
- * This package contains classes for helping to manage some operations.
+ * This package contains classes for helping to manage other operations.
  * 
  * @author Asier Gonzalez
  */

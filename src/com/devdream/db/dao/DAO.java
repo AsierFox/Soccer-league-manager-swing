@@ -11,7 +11,7 @@ public abstract class DAO extends DBConnectionManager {
 	public boolean tableExists() {
 		boolean exists = true;
 		try {
-			String sql = "SELECT 1 FROM " +QueryBuilder.getTableNameFromDAO(getClass().getSimpleName()) + " LIMIT 1;";
+			String sql = "SELECT 1 FROM " + QueryBuilder.getTableNameFromDAO(getClass()) + " LIMIT 1;";
 			super.getConnection().prepareStatement(sql);
 		} catch(SQLException err) {
 			exists = false;

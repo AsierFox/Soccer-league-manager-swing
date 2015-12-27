@@ -8,7 +8,11 @@ package com.devdream.exception;
 public class TeamAlreadyExistsException extends Exception {
 	private static final long serialVersionUID = 1763574381295386330L;
 	
-	private static final String TEAM_EXISTS_MSG = "The team already exists with that name.";
+	private static String TEAM_EXISTS_MSG;
+	
+	public TeamAlreadyExistsException(String teamName) {
+		TEAM_EXISTS_MSG = "The team with the name '" + teamName + "' already exists.";
+	}
 	
 	@Override
 	public String getMessage() {

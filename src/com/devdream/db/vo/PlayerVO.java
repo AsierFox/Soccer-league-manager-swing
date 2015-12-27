@@ -1,6 +1,7 @@
 package com.devdream.db.vo;
 
-import com.devdream.db.vo.DBKey.Key;
+import com.devdream.annotation.DBKey;
+import com.devdream.annotation.DBKey.Key;
 
 /**
  * Player Value Object to represent the database table.
@@ -17,21 +18,27 @@ public class PlayerVO {
 	private int idTeam;
 	private String firstName;
 	private String surname;
+	private int dorsal;
 	private String position;
 	private int age;
 	
 	//
 	// Constructors
-	public PlayerVO(int idTeam, String firstName, String surname, String position, int age) {
-		this.idTeam = idTeam;
+	public PlayerVO(String firstName, String surname, int dorsal, String position, int age) {
 		this.firstName = firstName;
 		this.surname = surname;
+		this.dorsal = dorsal;
 		this.position = position;
 		this.age = age;
 	}
 	
-	public PlayerVO(int id, int idTeam, String firstName, String surname, String position, int age) {
-		this(idTeam, firstName, surname, position, age);
+	public PlayerVO(int idTeam, String firstName, String surname, int dorsal, String position, int age) {
+		this(firstName, surname, dorsal, position, age);
+		this.idTeam = idTeam;
+	}
+	
+	public PlayerVO(int id, int idTeam, String firstName, String surname, int dorsal, String position, int age) {
+		this(idTeam, firstName, surname, dorsal, position, age);
 		this.id = id;
 	}
 
@@ -40,7 +47,7 @@ public class PlayerVO {
 	@Override
 	public String toString() {
 		return "PlayerVO [id=" + id + ", idTeam=" + idTeam + ", firstName=" + firstName + ", surname=" + surname
-				+ ", position=" + position + ", age=" + age + "]";
+				+ ", dorsal=" + dorsal + ", position=" + position + ", age=" + age + "]";
 	}
 	
 	//
@@ -68,6 +75,12 @@ public class PlayerVO {
 	}
 	public void setSurname(String surname) {
 		this.surname = surname;
+	}
+	public int getDorsal() {
+		return dorsal;
+	}
+	public void setDorsal(int dorsal) {
+		this.dorsal = dorsal;
 	}
 	public String getPosition() {
 		return position;

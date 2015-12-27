@@ -2,14 +2,15 @@ package com.devdream.main;
 
 import javax.swing.SwingUtilities;
 
-import com.devdream.controller.LoadController;
-import com.devdream.ui.MainView;
+import com.devdream.ui.LoginView;
 
 public class App {
 
+	public static final boolean DEBUG = true;
+	
 	/** Main method. Runs the application */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new MainView(new LoadController()));
+		SwingUtilities.invokeLater(() -> new LoginView());
 	}
 
 }

@@ -3,7 +3,7 @@ package com.devdream.db.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.devdream.db.vo.PlayerVO;
 import com.devdream.model.Player;
@@ -11,16 +11,9 @@ import com.devdream.util.QueryBuilder;
 
 public class PlayerDAO extends DAO {
 
+	@Override
 	public void createTable() throws SQLException {
-		PreparedStatement preparedStmt = null;
-		try {
-			String sql = QueryBuilder.createTable(PlayerVO.class);
-			preparedStmt = super.getConnection().prepareStatement(sql);
-			preparedStmt.executeUpdate();
-		}
-		finally {
-			super.closeConnection(preparedStmt);
-		}
+		super.initTableCreation(PlayerVO.class);
 	}
 	
 	/**
@@ -32,13 +25,14 @@ public class PlayerDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
-					new String[]{"IdTeam", "FirstName", "Surname", "Position", "Age"},
+					new String[]{"IdTeam", "FirstName", "Surname", "Age", "Dorsal", "Position"},
 					new String[]{
 							Integer.toString(newPlayer.getIdTeam()),
 							newPlayer.getFirstName(),
 							newPlayer.getSurname(),
-							newPlayer.getPosition(),
-							Integer.toString(newPlayer.getAge())
+							Integer.toString(newPlayer.getAge()),
+							Integer.toString(newPlayer.getDorsal()),
+							newPlayer.getPosition()
 						});
 			preparedStmt = getConnection().prepareStatement(sql);
 			preparedStmt.executeUpdate();
@@ -54,8 +48,8 @@ public class PlayerDAO extends DAO {
 	 * @return All the Player Value Objects in an ArrayList
 	 * @throws SQLException
 	 */
-	public ArrayList<Player> getTeamPlayers(int idTeam) throws SQLException {
-		ArrayList<Player> players = new ArrayList<>();
+	public HashMap<Integer, Player> getTeamPlayers(int idTeam) throws SQLException {
+		HashMap<Integer, Player> players = new HashMap<>();
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
@@ -64,7 +58,9 @@ public class PlayerDAO extends DAO {
 			preparedStmt.setInt(1, idTeam);
 			rs = preparedStmt.executeQuery();
 			while (rs.next()) {
-				players.add(new Player(rs.getString("FirstName"), rs.getString("Surname"), rs.getString("Position"), rs.getInt("Age")));
+				int dorsal = rs.getInt("Dorsal");
+				players.put(dorsal, new Player(rs.getString("FirstName"), rs.getString("Surname"), rs.getInt("Age"),
+						dorsal, rs.getString("Position")));
 			}
 		}
 		finally {

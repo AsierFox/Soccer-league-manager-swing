@@ -1,5 +1,6 @@
 package com.devdream.db.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.devdream.db.DBConnectionManager;
@@ -20,6 +21,22 @@ public abstract class DAO extends DBConnectionManager {
 			super.closeConnection();
 		}
 		return exists;
+	}
+	
+	/**
+	 * Runs the process to create the database. 
+	 * @throws SQLException
+	 */
+	protected void initTableCreation(final Class <?> VAO) throws SQLException {
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = QueryBuilder.createTable(VAO);
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.executeUpdate();
+		}
+		finally {
+			super.closeConnection(preparedStmt);
+		}
 	}
 	
 	/**

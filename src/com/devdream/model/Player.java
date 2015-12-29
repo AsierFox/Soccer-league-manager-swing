@@ -6,16 +6,18 @@ public class Player {
 	// Attributes
 	private String firstName;
 	private String surname;
-	private String position;
 	private int age;
+	private String position;
+	private int dorsal;
 	
 	//
 	// Constructors
-	public Player(String firstName, String surname, String position, int age) {
+	public Player(String firstName, String surname, int age, int dorsal, String position) {
 		this.firstName = firstName;
 		this.surname = surname;
-		this.position = position;
 		this.age = age;
+		this.dorsal = dorsal;
+		this.position = position;
 	}
 	
 	//
@@ -32,17 +34,23 @@ public class Player {
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
-	public String getPosition() {
-		return position;
-	}
-	public void setPosition(String position) {
-		this.position = position;
-	}
 	public int getAge() {
 		return age;
 	}
 	public void setAge(int age) {
 		this.age = age;
+	}
+	public int getDorsal() {
+		return dorsal;
+	}
+	public void setDorsal(int dorsal) {
+		this.dorsal = dorsal;
+	}
+	public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
 	}
 	
 }

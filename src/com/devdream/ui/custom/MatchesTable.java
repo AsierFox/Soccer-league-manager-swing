@@ -1,45 +1,37 @@
 package com.devdream.ui.custom;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import com.devdream.model.Player;
 
 /**
- * This class manages the JTable with players.
+ * This class creates a table with matches.
  * 
  * @author Asier Gonzalez
  */
-public class PlayersTable extends JTable {
+public class MatchesTable extends JTable {
 	private static final long serialVersionUID = 938427961541059122L;
 	
 	//
-	// Globals
-	private static final String DELETE_ICON = "/img/icon/delete-player.png";
-	
-	private static final int DORSAL_COL = 3;
-	
-	//
 	// Attributes
-	public enum Column { FIRST_NAME, SURNAME, AGE, DORSAL, POSITION, QUIT }
+	public enum Column { FIRST_NAME, SURNAME, AGE, POSITION, QUIT }
 
 	private DefaultTableModel model;
-	private HashMap<Integer, Player> elements;
-	private ImageIcon deleteIcon;
+	private ArrayList<Player> elements;
 	
 	//
 	// Constructors
-	private PlayersTable() {
+	private MatchesTable() {
 		model = new DefaultTableModel();
 		setModel(model);
 		setOffersTableHeader();
 	}
 	
-	public PlayersTable(HashMap<Integer, Player> elements) {
+	public MatchesTable(ArrayList<Player> elements) {
 		this();
 		this.elements = elements;
 	}
@@ -53,21 +45,19 @@ public class PlayersTable extends JTable {
 		model.addColumn("First name");
 		model.addColumn("Surname");
 		model.addColumn("Age");
-		model.addColumn("Dorsal");
 		model.addColumn("Position");
 		model.addColumn("Fire");
 	}
 
 	/** Updates the JTable with the updates collection */
 	public void update() {
-		for (Player p : elements.values()) {
+		for (Player p : elements) {
 			Vector<String> row = new Vector<String>();
 			row.addElement(p.getFirstName());
 			row.addElement(p.getSurname());
 			row.addElement(Integer.toString(p.getAge()));
-			row.addElement(Integer.toString(p.getDorsal()));
 			row.addElement(p.getPosition());
-			row.addElement("X");
+			row.addElement(p.getPosition());
 			model.addRow(row);
 		}
 	}
@@ -75,8 +65,7 @@ public class PlayersTable extends JTable {
 	public Player getSelectedPlayer() {
 		int selectedRowIndex = getSelectedRow();
 		if (selectedRowIndex > -1) {
-			int selectedPlayerDorsal = Integer.valueOf((String) model.getValueAt(getSelectedRow(), DORSAL_COL));
-			return elements.get(selectedPlayerDorsal);
+			return elements.get(getSelectedRow());
 		}
 		return null;
 	}
@@ -97,5 +86,5 @@ public class PlayersTable extends JTable {
 	public boolean isCellEditable(int row, int column) {
 		return true;
 	}
-
+	
 }

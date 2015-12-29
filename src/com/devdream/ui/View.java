@@ -36,28 +36,29 @@ public abstract class View extends JFrame {
 		
 		private static final String FAVICON = IMG_DIR + "favicon/favicon.png";
 		
-		protected static final String LOGO = LOGOS + "testlogo.png";
+		protected static final String LOGO = LOGOS + "app-logo.png";
 		
 		protected static final String LOGIN_ICON = ICONS + "login.png";
 		protected static final String EXIT_ICON = ICONS + "exit.png";
 		
 		protected static final String FEATURES_ICON = ICONS + "features.png";
 		
-		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
-		
 		protected static final String USER_TAB_ICON = ICONS + "user-tab.png";
+		protected static final String TEAM_TAB_ICON = ICONS + "team-tab.png";
+		protected static final String SEASONS_TAB_ICON = ICONS + "seasons-tab.png";
+		
 		protected static final String CREATE_TEAM_ICON = ICONS + "create-team.png";
 		
-		protected static final String TEAM_TAB_ICON = ICONS + "team-tab.png";
-
 		protected static final String LEAGUE_ICON = ICONS + "league-icon.png";
-		protected static final String STATISTICS_ICON = ICONS + "statistics.png";
+		
+		protected static final String STATISTICS_ICON = ICONS + "statistics.png";	
+		
+		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
 		
 	}
 
 	//
 	// Global
-	
 	/** Application title */
 	public static final String APP_TITLE = "APP Title"; // TODO Set title for the application
 	

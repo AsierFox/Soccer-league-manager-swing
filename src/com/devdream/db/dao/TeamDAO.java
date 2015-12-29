@@ -12,15 +12,7 @@ import com.devdream.util.QueryBuilder;
 public class TeamDAO extends DAO {
 
 	public void createTable() throws SQLException {
-		PreparedStatement preparedStmt = null;
-		try {
-			String sql = QueryBuilder.createTable(TeamVO.class);
-			preparedStmt = super.getConnection().prepareStatement(sql);
-			preparedStmt.executeUpdate();
-		}
-		finally {
-			super.closeConnection(preparedStmt);
-		}
+		super.initTableCreation(TeamVO.class);
 	}
 	
 	/**

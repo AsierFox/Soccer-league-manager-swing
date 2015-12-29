@@ -18,27 +18,27 @@ public class PlayerVO {
 	private int idTeam;
 	private String firstName;
 	private String surname;
+	private int age;
 	private int dorsal;
 	private String position;
-	private int age;
 	
 	//
 	// Constructors
-	public PlayerVO(String firstName, String surname, int dorsal, String position, int age) {
+	public PlayerVO(String firstName, String surname, int age, int dorsal, String position) {
 		this.firstName = firstName;
 		this.surname = surname;
+		this.age = age;
 		this.dorsal = dorsal;
 		this.position = position;
-		this.age = age;
 	}
 	
-	public PlayerVO(int idTeam, String firstName, String surname, int dorsal, String position, int age) {
-		this(firstName, surname, dorsal, position, age);
+	public PlayerVO(int idTeam, String firstName, String surname, int age, int dorsal, String position) {
+		this(firstName, surname, age, dorsal, position);
 		this.idTeam = idTeam;
 	}
 	
-	public PlayerVO(int id, int idTeam, String firstName, String surname, int dorsal, String position, int age) {
-		this(idTeam, firstName, surname, dorsal, position, age);
+	public PlayerVO(int id, int idTeam, String firstName, String surname, int age, int dorsal, String position) {
+		this(idTeam, firstName, surname, age, dorsal, position);
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class PlayerVO {
 	@Override
 	public String toString() {
 		return "PlayerVO [id=" + id + ", idTeam=" + idTeam + ", firstName=" + firstName + ", surname=" + surname
-				+ ", dorsal=" + dorsal + ", position=" + position + ", age=" + age + "]";
+				+ ", age=" + age + ", dorsal=" + dorsal + ", position=" + position + "]";
 	}
 	
 	//

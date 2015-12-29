@@ -1,30 +1,35 @@
-package com.devdream.model;
+package com.devdream.db.vo;
 
-import java.util.ArrayList;
-
+import com.devdream.annotation.DBKey;
+import com.devdream.annotation.DBKey.Key;
 import com.devdream.util.DateHelper;
 import com.devdream.util.DateHelper.PeriodType;
 
-// TODO Display number of teams taking from the size() of the ArrayList
-public class League {
+public class LeagueVO {
 
-	//
-	// Attributes
+	@DBKey(key=Key.PRIMARY)
+	private int id;
 	private String startDate;
 	private String endDate;
 	private String name;
 	private String description;
-	private ArrayList<Season> seasons;
+	private int numSeasons;
 	
-	public League(String startDate, String endDate, String name, String description) {
+	public LeagueVO(int id, String startDate, String endDate, String name, String description, int numSeasons) {
+		this.id = id;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.name = name;
 		this.description = description;
-		seasons = new ArrayList<>();
+		this.numSeasons = numSeasons;
 	}
-	//
-	// Getters and setters
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getStartDate() {
 		return startDate;
 	}
@@ -52,11 +57,11 @@ public class League {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public ArrayList<Season> getSeasons() {
-		return seasons;
+	public int getNumSeasons() {
+		return numSeasons;
 	}
-	public void setSeasons(ArrayList<Season> seasons) {
-		this.seasons = seasons;
+	public void setNumSeasons(int numSeasons) {
+		this.numSeasons = numSeasons;
 	}
-
+	
 }

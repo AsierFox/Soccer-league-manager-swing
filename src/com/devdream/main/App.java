@@ -4,6 +4,11 @@ import javax.swing.SwingUtilities;
 
 import com.devdream.ui.LoginView;
 
+/**
+ * Main class to run the application.
+ * 
+ * @author Asier Gonzalez
+ */
 public class App {
 
 	public static final boolean DEBUG = true;

@@ -3,7 +3,14 @@ package com.devdream.test;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.devdream.db.dao.GameDAO;
+import com.devdream.db.dao.GoalDAO;
+import com.devdream.db.dao.LeagueDAO;
+import com.devdream.db.dao.PerformanceDAO;
 import com.devdream.db.dao.PlayerDAO;
+import com.devdream.db.dao.SanctionDAO;
+import com.devdream.db.dao.SanctionTypeDAO;
+import com.devdream.db.dao.SeasonDAO;
 import com.devdream.db.dao.TeamDAO;
 import com.devdream.db.dao.UserDAO;
 import com.devdream.db.vo.PlayerVO;
@@ -41,16 +48,51 @@ public class SQLiteTest {
 		if (!userDAO.tableExists()) {
 			userDAO.createTable();
 		}
+		
+		LeagueDAO leagueDAO = new LeagueDAO();
+		if (!leagueDAO.tableExists()) {
+			leagueDAO.createTable();
+		}
+		
+		SeasonDAO seasonDAO = new SeasonDAO();
+		if (!seasonDAO.tableExists()) {
+			seasonDAO.createTable();
+		}
+		
+		GameDAO gameDAO = new GameDAO();
+		if (!gameDAO.tableExists()) {
+			gameDAO.createTable();
+		}
+		
+		PerformanceDAO performanceDAO = new PerformanceDAO();
+		if (!performanceDAO.tableExists()) {
+			performanceDAO.createTable();
+		}
+		
+		GoalDAO goalDAO = new GoalDAO();
+		if (!goalDAO.tableExists()) {
+			goalDAO.createTable();
+		}
+		
+		SanctionTypeDAO sanctionTypeDAO = new SanctionTypeDAO();
+		if (!sanctionTypeDAO.tableExists()) {
+			sanctionTypeDAO.createTable();
+		}
+		
+		SanctionDAO sanctionDAO = new SanctionDAO();
+		if (!sanctionDAO.tableExists()) {
+			sanctionDAO.createTable();
+		}
 	}
 	
 	private static void insertValues() throws SQLException, TeamAlreadyExistsException, UserAlreadyExistsException {
 		TeamDAO teamDAO = new TeamDAO();
-		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "testlogo.png"));
-		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "testlogo.png"));
+		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
+		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));
 		
 		PlayerDAO playerDAO = new PlayerDAO();
-		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 6, "Forward", 20));
-		playerDAO.insertPlayer(new PlayerVO(1, "Andoni", "ASds", 10, "Defence", 19));
+		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 32, 10, "Forward"));
+		playerDAO.insertPlayer(new PlayerVO(1, "Andoni", "ASds", 28, 6, "Defence"));
 
 		UserDAO userDAO = new UserDAO();
 		userDAO.insertUser(new UserVO(1, "mikel", "123", "Mikel", "Linares"));

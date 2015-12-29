@@ -13,15 +13,7 @@ public class UserDAO extends DAO {
 
 	@Override
 	public void createTable() throws SQLException {
-		PreparedStatement preparedStmt = null;
-		try {
-			String sql = QueryBuilder.createTable(UserVO.class);
-			preparedStmt = super.getConnection().prepareStatement(sql);
-			preparedStmt.executeUpdate();
-		}
-		finally {
-			super.closeConnection(preparedStmt);
-		}
+		super.initTableCreation(UserVO.class);
 	}
 	
 	/**
@@ -85,7 +77,7 @@ public class UserDAO extends DAO {
 	public boolean checkLogin(String username, String password) throws SQLException {
 		boolean success = false;
 		PreparedStatement preparedStmt = null;
-		try {
+		try { // TODO CHANGE TO CREATESELECT -> QueryBuilder.createSelect(getClass(), "1")
 			String sql = "SELECT 1 FROM " + QueryBuilder.getTableNameFromDAO(getClass())
 					+ " WHERE Username = ? AND Password = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
@@ -109,7 +101,8 @@ public class UserDAO extends DAO {
 			preparedStmt.setString(1, username);
 			rs = preparedStmt.executeQuery();
 			if (rs.next()) {
-				user = new UserVO(rs.getInt("IdTeam"), rs.getString("Username"), rs.getString("Name"), rs.getString("Surname"));
+				user = new UserVO(rs.getInt("IdTeam"), rs.getString("Username"),
+						rs.getString("Name"), rs.getString("Surname"));
 			}
 		}
 		finally {

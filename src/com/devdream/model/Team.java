@@ -1,6 +1,6 @@
 package com.devdream.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Team {
 
@@ -12,7 +12,8 @@ public class Team {
 	private int achievements;
 	private String location;
 	private String logo;
-	private ArrayList<Player> players;
+	/** Store the team players indexing them with its dorsal. */
+	private HashMap<Integer, Player> players;
 	
 	//
 	// Constructors
@@ -23,12 +24,12 @@ public class Team {
 		this.achievements = achievements;
 		this.location = location;
 		this.logo = logo;
-		players = new ArrayList<>();
+		players = new HashMap<>();
 	}
 	
-	public Team(String name, String shortName, int foundedYear, int achievements, String location, String logo, ArrayList<Player> players) {
+	public Team(String name, String shortName, int foundedYear, int achievements, String location, String logo, HashMap<Integer, Player> players) {
 		this(name, shortName, foundedYear, achievements, location, logo);
-		this.players = new ArrayList<>();
+		this.players = new HashMap<>();
 	}
 	
 	//
@@ -75,11 +76,11 @@ public class Team {
 	public void setLogo(String logo) {
 		this.logo = logo;
 	}
-	public ArrayList<Player> getPlayers() {
+	public HashMap<Integer, Player> getPlayers() {
 		return players;
 	}
-	public void setPlayers(ArrayList<Player> players) {
+	public void setPlayers(HashMap<Integer, Player> players) {
 		this.players = players;
 	}
-	
+
 }

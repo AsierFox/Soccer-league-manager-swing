@@ -15,6 +15,36 @@ public class LeagueDAO extends DAO {
 		super.initTableCreation(LeagueVO.class);
 	}
 	
+	/** Insert a new league.
+	 * WARN: Check if is NOT a league underway before!
+	 * @return The underway league value object
+	 * @throws SQLException
+	 */
+	public void insertLeague(LeagueVO newLeagueVO) throws SQLException {
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = QueryBuilder.createInsert(getClass(),
+					new String[]{"StartDate", "EndDate", "Name", "Description", "NumSeasons"},
+					new String[]{
+							newLeagueVO.getStartDate(),
+							newLeagueVO.getEndDate(),
+							newLeagueVO.getName(),
+							newLeagueVO.getDescription(),
+							Integer.toString(newLeagueVO.getNumSeasons())
+						});
+			preparedStmt = getConnection().prepareStatement(sql);
+			preparedStmt.executeUpdate();
+		}
+		finally {
+			super.closeConnection(preparedStmt);
+		}
+	}
+	
+	/**
+	 * Checks if it is a league currently underway.
+	 * @return True if there is one
+	 * @throws SQLException
+	 */
 	public boolean isLeagueUnderway() throws SQLException {
 		boolean leagueUnderway = false;
 		PreparedStatement preparedStmt = null;

@@ -21,8 +21,8 @@ import com.devdream.model.Player;
 import com.devdream.model.Team;
 import com.devdream.model.User;
 import com.devdream.ui.custom.Alert;
-import com.devdream.ui.custom.MatchesTable;
 import com.devdream.ui.custom.PlayersTable;
+import com.devdream.ui.custom.SeasonsTable;
 import com.devdream.util.DateHelper.PeriodType;
 
 public class MainView extends View {
@@ -38,7 +38,7 @@ public class MainView extends View {
 	private JPanel teamPanel;
 	
 	private PlayersTable playersTable;
-	private MatchesTable matchesTable;
+	private SeasonsTable seasonsTable;
 	
 	private JButton teamLogoEditButton;
 	private JButton createNewTeamButton;
@@ -53,17 +53,17 @@ public class MainView extends View {
 			teamController = new TeamController();
 			leagueController = new LeagueController();
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			Alert.showError(this, "Error connecting to the databases");
 		}
 		
 		loadUI();
 		loadListeners();
 		
-//		// TODO For design
+		// TODO For design
 //		loadTeamPane(new Team("qwe", "wqwe", 2, 2, "qwe", "team-default.png"));
 //		loadTeamPlayers(new HashMap<Integer, Player>());
-//		loadLeagueInformation(new League("25/23/2333", "23/66/243", "LeagueLOL", "Description blah blah"));
+//		loadLeagueInformation(new League("25/23/2333", "23/66/243", "LeagueLOL", "Description blah blah", 3));
 		
 		render();
 	}
@@ -94,11 +94,16 @@ public class MainView extends View {
 			// Only if the user has a team will be able to create a league
 			if (leagueController.isLeagueUnderway()) {
 				loadLeagueInformation(leagueController.getCurrentLeague());
+				
+				// TODO CHECK IF THE LEAGUE seasons HAS MATCHES GENERATED
+				
+			} else {
+				showFeatures();
 			}
 		}
 		
 	}
-
+	
 	/**
 	 * Loads the User personal information, the user and the team (with players).
 	 */
@@ -242,7 +247,7 @@ public class MainView extends View {
 	}
 	
 	/**
-	 * Loads the legue information
+	 * Loads the league information
 	 */
 	private void loadLeagueInformation(League currentLeague) {
 		JTabbedPane leagueInformationTabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -261,6 +266,14 @@ public class MainView extends View {
 		JLabel leagueNameLabel = new JLabel(currentLeague.getName());
 		leagueNameLabel.setBounds(175, 46, 91, 14);
 		leaguePanel.add(leagueNameLabel);
+
+		JLabel forLeagueDescriptionLabel = new JLabel("Description");
+		forLeagueDescriptionLabel.setBounds(24, 71, 99, 14);
+		leaguePanel.add(forLeagueDescriptionLabel);
+		
+		JLabel leagueDescriptionLabel = new JLabel(currentLeague.getDescription());
+		leagueDescriptionLabel.setBounds(175, 69, 91, 14);
+		leaguePanel.add(leagueDescriptionLabel);
 		
 		JLabel forLeagueStartDateLabel = new JLabel("Start date");
 		forLeagueStartDateLabel.setBounds(24, 94, 99, 14);
@@ -290,11 +303,11 @@ public class MainView extends View {
 		forLeagueNumberSeasonsLabel.setBounds(24, 195, 111, 14);
 		leaguePanel.add(forLeagueNumberSeasonsLabel);
 		
-		JLabel leagueNumberSeasonsLabel = new JLabel("999");
+		JLabel leagueNumberSeasonsLabel = new JLabel(Integer.toString(currentLeague.getNumberSeasons()));
 		leagueNumberSeasonsLabel.setBounds(175, 195, 91, 14);
 		leaguePanel.add(leagueNumberSeasonsLabel);
 		
-		// TODO CHECK LEAGUE SEASONS
+		// TODO CHECK LEAGUE SEASONS MATCHES, if not button to create them
 		JPanel seasonsPanel = new JPanel();
 		seasonsPanel.setBorder(new TitledBorder(null, "Seasons", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		leagueInformationTabbedPane.addTab("Seasons", renderImage(ImagePath.SEASONS_TAB_ICON), seasonsPanel, "Season tab");
@@ -310,9 +323,9 @@ public class MainView extends View {
 		matchesTableScrollPane.setBounds(10, 24, 344, 318);
 		matchesPanel.add(matchesTableScrollPane);
 		
-		// TODO insert matches
-//		matchesTable = new MatchesTable();
-//		matchesTableScrollPane.setViewportView(matchesTable);
+		seasonsTable = new SeasonsTable(leagueController.getLeagueSeasons()); // TODO Take this from League object (CHANGE IN CONTROLLER TO ADD TO ITS ARRAYLIST ATTR)
+		seasonsTable.update();
+		matchesTableScrollPane.setViewportView(seasonsTable);
 	}
 
 	private void loadUserTeamLog() {
@@ -349,4 +362,5 @@ public class MainView extends View {
 			});
 		}
 	}
+	
 }

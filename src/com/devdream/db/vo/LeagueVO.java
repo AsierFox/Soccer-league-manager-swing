@@ -14,14 +14,18 @@ public class LeagueVO {
 	private String name;
 	private String description;
 	private int numSeasons;
-	
-	public LeagueVO(int id, String startDate, String endDate, String name, String description, int numSeasons) {
-		this.id = id;
+
+	public LeagueVO(String startDate, String endDate, String name, String description, int numSeasons) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.name = name;
 		this.description = description;
 		this.numSeasons = numSeasons;
+	}
+	
+	public LeagueVO(int id, String startDate, String endDate, String name, String description, int numSeasons) {
+		this(startDate, endDate, name, description, numSeasons);
+		this.id = id;
 	}
 	
 	public int getId() {

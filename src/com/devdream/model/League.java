@@ -14,14 +14,16 @@ public class League {
 	private String endDate;
 	private String name;
 	private String description;
+	private int numSeasons;
 	private ArrayList<Season> seasons;
 	
-	public League(String startDate, String endDate, String name, String description) {
+	public League(String startDate, String endDate, String name, String description, int numSeasons) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.name = name;
 		this.description = description;
-		seasons = new ArrayList<>();
+		this.numSeasons = numSeasons;
+		seasons = new ArrayList<>(numSeasons);
 	}
 	//
 	// Getters and setters
@@ -51,6 +53,9 @@ public class League {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public int getNumberSeasons() {
+		return numSeasons;
 	}
 	public ArrayList<Season> getSeasons() {
 		return seasons;

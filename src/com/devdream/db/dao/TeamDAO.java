@@ -16,7 +16,7 @@ public class TeamDAO extends DAO {
 	}
 	
 	/**
-	 * 	Get the team with players.
+	 * Get the team with players.
 	 * @return Returns -1 if there is not any team have not any players
 	 * @throws SQLException
 	 */
@@ -159,13 +159,60 @@ public class TeamDAO extends DAO {
 	}
 	
 	/**
+	 * Get home team from a game.
+	 * @param idGame
+	 * @return
+	 * @throws SQLException
+	 */
+	public TeamVO getGameHomeTeamById(int idGame) throws SQLException {
+		return getGameTeamById(idGame, "Home");
+	}
+	
+	/**
+	 * Get away team from a game.
+	 * @param idGame
+	 * @return
+	 * @throws SQLException
+	 */
+	public TeamVO getGameAwayTeamById(int idGame) throws SQLException {
+		return getGameTeamById(idGame, "Away");
+	}
+	
+	/**
+	 * Get home or away team from a game depending on the teamType parameter.
+	 * @param idGame
+	 * @param teamType 'Home' or 'Away' team
+	 * @return
+	 * @throws SQLException
+	 */
+	private TeamVO getGameTeamById(int idGame, String teamType) throws SQLException {
+		TeamVO teamVO = null;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT t.* FROM Games g INNER JOIN Teams t ON g.Id" + teamType + "Team = t.Id WHERE g.Id = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, idGame);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) {
+				teamVO = getFullTeamVO(rs);
+			}
+		}
+		finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return teamVO;
+	}
+	
+	/**
 	 * Gets the instance of a TeamVO from the ResultSet.
 	 * @param rs The ResultSet of the query
 	 * @return The Team Value Object
 	 * @throws SQLException
 	 */
 	protected static TeamVO getFullTeamVO(ResultSet rs) throws SQLException {
-		return new TeamVO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getString(7));
+		return new TeamVO(rs.getInt("Id"), rs.getString("Name"), rs.getString("ShortName"), rs.getInt("FoundedYear"),
+				rs.getInt("Achievements"), rs.getString("Location"), rs.getString("Logo"));
 	}
 	
 }

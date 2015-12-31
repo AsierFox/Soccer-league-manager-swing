@@ -9,10 +9,23 @@ public class SeasonVO {
 	private int id;
 	@DBKey(key=Key.FOREIGN, REFERENCES="Leagues", ON="Id")
 	private int idLeague;
+	@DBKey(key=Key.FOREIGN, REFERENCES="Games", ON="Id")
+	private int idGame;
+	private String date;
 	
-	public SeasonVO(int id, int idLeague) {
-		this.id = id;
+	public SeasonVO(int idGame, String date) {
+		this.idGame = idGame;
+		this.date = date;
+	}
+	
+	public SeasonVO(int idLeague, int idGame, String date) {
+		this(idGame, date);
 		this.idLeague = idLeague;
+	}
+	
+	public SeasonVO(int id, int idLeague, int idGame, String date) {
+		this(idLeague, idGame, date);
+		this.id = id;
 	}
 	
 	public int getId() {
@@ -26,6 +39,18 @@ public class SeasonVO {
 	}
 	public void setIdLeague(int idLeague) {
 		this.idLeague = idLeague;
+	}
+	public int getIdGame() {
+		return idGame;
+	}
+	public void setIdGame(int idGame) {
+		this.idGame = idGame;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 }

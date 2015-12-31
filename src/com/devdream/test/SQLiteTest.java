@@ -13,7 +13,10 @@ import com.devdream.db.dao.SanctionTypeDAO;
 import com.devdream.db.dao.SeasonDAO;
 import com.devdream.db.dao.TeamDAO;
 import com.devdream.db.dao.UserDAO;
+import com.devdream.db.vo.GameVO;
+import com.devdream.db.vo.LeagueVO;
 import com.devdream.db.vo.PlayerVO;
+import com.devdream.db.vo.SeasonVO;
 import com.devdream.db.vo.TeamVO;
 import com.devdream.db.vo.UserVO;
 import com.devdream.exception.TeamAlreadyExistsException;
@@ -28,9 +31,15 @@ import com.devdream.exception.UserAlreadyExistsException;
 public class SQLiteTest {
 
 	public static void main(String[] args) throws SQLException, TeamAlreadyExistsException, UserAlreadyExistsException {
+		/*
+		 PRAGMA writable_schema = 1;
+		 delete from sqlite_master where type = 'table';
+		 PRAGMA writable_schema = 0;
+		 */
 //		createTables();
 //		insertValues();
 //		selectValues();
+		System.out.println("Ended");
 	}
 	
 	private static void createTables() throws SQLException {
@@ -89,6 +98,8 @@ public class SQLiteTest {
 		TeamDAO teamDAO = new TeamDAO();
 		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
 		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));
+		teamDAO.insertTeam(new TeamVO("HomeTeam", "HT", 2011, 0, "Hawaii", "team-default.png"));
+		teamDAO.insertTeam(new TeamVO("AwayTeam", "AT", 2012, 0, "Los Angeles", "team-default.png"));
 		
 		PlayerDAO playerDAO = new PlayerDAO();
 		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 32, 10, "Forward"));
@@ -96,6 +107,15 @@ public class SQLiteTest {
 
 		UserDAO userDAO = new UserDAO();
 		userDAO.insertUser(new UserVO(1, "mikel", "123", "Mikel", "Linares"));
+		
+		LeagueDAO leagueDAO = new LeagueDAO();
+		leagueDAO.insertLeague(new LeagueVO("25/10/2015", "31/12/2015", "MyLeague", "League description", 1));
+		
+		GameDAO gameDAO = new GameDAO();
+		gameDAO.insertGame(new GameVO(3, 4));
+		
+		SeasonDAO seasonDAO = new SeasonDAO();
+		seasonDAO.insertSeason(new SeasonVO(1, 3, "28/12/2015"));
 	}
 	
 	private static void tableExists() {

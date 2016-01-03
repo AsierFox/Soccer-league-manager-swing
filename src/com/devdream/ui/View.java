@@ -93,6 +93,14 @@ public abstract class View extends JFrame {
 	}
 	
 	/**
+	 * Switches the View to the MainView.
+	 * @param actualView The actual View
+	 */
+	protected final void changeView(View actualView) {
+		changeView(actualView, MainView.class);
+	}
+	
+	/**
 	 * Switches between two Views.
 	 * @param actualView The actual View
 	 * @param newViewClass The view to switch to

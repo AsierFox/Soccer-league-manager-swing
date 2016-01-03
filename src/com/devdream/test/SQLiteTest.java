@@ -135,6 +135,8 @@ public class SQLiteTest {
 		
 		System.out.println("Get all team by Id= " + teamDAO.getTeamById(2));
 		
+		System.out.println("NUMBER OF OPPONENT TEAMS: " + teamDAO.getOpponentsCount("Test"));
+		
 		String name = "Test";
 		System.out.println("TEAM EXISTS WITH NAME [" + name + "]? " + teamDAO.existsTeamName(name));
 		

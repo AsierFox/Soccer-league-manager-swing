@@ -3,7 +3,6 @@ package com.devdream.model;
 import java.util.ArrayList;
 
 import com.devdream.util.DateHelper;
-import com.devdream.util.DateHelper.PeriodType;
 
 // TODO Display number of teams taking from the size() of the ArrayList
 public class League {
@@ -17,6 +16,8 @@ public class League {
 	private int numSeasons;
 	private ArrayList<Season> seasons;
 	
+	//
+	// Constructors
 	public League(String startDate, String endDate, String name, String description, int numSeasons) {
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -25,6 +26,7 @@ public class League {
 		this.numSeasons = numSeasons;
 		seasons = new ArrayList<>(numSeasons);
 	}
+	
 	//
 	// Getters and setters
 	public String getStartDate() {
@@ -39,8 +41,8 @@ public class League {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public int getPeriod(PeriodType periodType) {
-		return DateHelper.getDatePeriod(getStartDate(), getEndDate(), periodType);
+	public int getPeriod() {
+		return DateHelper.getDatePeriod(getStartDate(), getEndDate());
 	}
 	public String getName() {
 		return name;

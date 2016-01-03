@@ -1,18 +1,19 @@
 package com.devdream.test;
 
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import javax.swing.JTree;
 
 import com.devdream.ui.View;
+import com.devdream.ui.custom.DateObserverTextField;
+import com.qt.datapicker.DatePicker;
 
 public class TestView extends View {
 	private static final long serialVersionUID = -4093989271963766524L;
@@ -26,7 +27,35 @@ public class TestView extends View {
 	public TestView() {
 		super();
 		getContentPane().setLayout(null);
+		setSize(400, 400);
 		
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(34, 11, 237, 41);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		DateObserverTextField textField = new DateObserverTextField();
+		textField.setBounds(22, 11, 86, 20);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setBounds(138, 10, 89, 23);
+		panel.add(btnNewButton);
+		
+		btnNewButton.addActionListener((e) -> {
+	        DatePicker dp = new DatePicker(textField, getLocale());
+	        dp.parseDate(textField.getText());
+	        dp.start(textField);
+		});
+		
+		test1();
+		
+		render();
+	}
+
+	private void test1() {
 		JLayeredPane layeredPane_1 = new JLayeredPane();
 		layeredPane_1.setBounds(586, 177, 228, 123);
 		getContentPane().add(layeredPane_1);
@@ -77,15 +106,12 @@ public class TestView extends View {
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("New menu item");
 		mnNewMenu_1.add(mntmNewMenuItem_3);
 		internalFrame.setVisible(true);
-		
-		render();
 	}
-
-	@Override
+	
 	protected void loadUI() {
 	}
-
-	@Override
+	
 	protected void loadListeners() {
 	}
+	
 }

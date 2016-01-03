@@ -3,7 +3,6 @@ package com.devdream.db.vo;
 import com.devdream.annotation.DBKey;
 import com.devdream.annotation.DBKey.Key;
 import com.devdream.util.DateHelper;
-import com.devdream.util.DateHelper.PeriodType;
 
 public class LeagueVO {
 
@@ -46,8 +45,8 @@ public class LeagueVO {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public int getPeriod(PeriodType periodType) {
-		return DateHelper.getDatePeriod(getStartDate(), getEndDate(), periodType);
+	public int getPeriod() {
+		return DateHelper.getDatePeriod(getStartDate(), getEndDate());
 	}
 	public String getName() {
 		return name;

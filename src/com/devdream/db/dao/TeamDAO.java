@@ -109,6 +109,30 @@ public class TeamDAO extends DAO {
 	}
 	
 	/**
+	 * Gets the number of opponent teams.
+	 * @throws SQLException
+	 */
+	public int getOpponentsCount(String userTeamName) throws SQLException {
+		int opponents = 0;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = QueryBuilder.createSelect(getClass(), "*");
+			preparedStmt = getConnection().prepareStatement(sql);
+			rs = preparedStmt.executeQuery();
+			while (rs.next()) {
+				if (!userTeamName.equals(rs.getString("Name"))) {
+					opponents++;
+				}
+			}
+		}
+		finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return opponents;
+	}
+	
+	/**
 	 * Inserts a new team to the database.
 	 * @param newTeam The new Team Value Object
 	 * @throws SQLException

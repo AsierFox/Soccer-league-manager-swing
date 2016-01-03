@@ -15,7 +15,7 @@ public class StringHelper {
 	/**
 	 * Checks if a String is empty or null.
 	 * @param string The string to check the emptiness
-	 * @return Empty or not
+	 * @return True if it is an empty String
 	 */
 	public static boolean isStringNull(String s) {
 		s = s.trim();

@@ -1,6 +1,7 @@
 package com.devdream.ui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import com.devdream.model.User;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.PlayersTable;
 import com.devdream.ui.custom.SeasonsTable;
-import com.devdream.util.DateHelper.PeriodType;
+import com.devdream.ui.custom.TeamsTable;
 
 public class MainView extends View {
 	private static final long serialVersionUID = -6488927513006875327L;
@@ -33,15 +34,21 @@ public class MainView extends View {
 	private TeamController teamController;
 	private LeagueController leagueController;
 	
+	private boolean hasUserTeam;
+	private boolean hasTeamPlayers;
+	private boolean isLeagueUnderway;
+	
 	private JTabbedPane personalInformationTabbedPane;
 	private JPanel userPanel;
 	private JPanel teamPanel;
 	
 	private PlayersTable playersTable;
+	private TeamsTable opponentTeamsTable;
 	private SeasonsTable seasonsTable;
 	
 	private JButton teamLogoEditButton;
 	private JButton createNewTeamButton;
+	private JButton createNewLeagueButton;
 	
 	//
 	// Constructors
@@ -54,16 +61,24 @@ public class MainView extends View {
 			leagueController = new LeagueController();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Alert.showError(this, "Error connecting to the databases");
+			Alert.showError(this, "Error connecting to the database!");
 		}
+		
+		hasUserTeam = teamController.hasUserTeam();
+		hasTeamPlayers = teamController.hasTeamPlayers();
+		isLeagueUnderway = leagueController.isLeagueUnderway();
 		
 		loadUI();
 		loadListeners();
 		
 		// TODO For design
+		/*** BEGIN ***/
 //		loadTeamPane(new Team("qwe", "wqwe", 2, 2, "qwe", "team-default.png"));
-//		loadTeamPlayers(new HashMap<Integer, Player>());
-//		loadLeagueInformation(new League("25/23/2333", "23/66/243", "LeagueLOL", "Description blah blah", 3));
+//		loadTeamPlayersTab(new HashMap<Integer, Player>());
+//		loadLeagueTab(new League("25/23/2333", "23/66/243", "LeagueLOL", "Description blah blah", 3));
+//		
+//		showFeatures();
+		/*** END ***/
 		
 		render();
 	}
@@ -78,28 +93,27 @@ public class MainView extends View {
 		
 		loadUserInfortation(Controller.getLoggedUser());
 		
-		if (teamController.hasUserTeam()) {
-			loadUserTeamLog();
-		} else {
-			loadUserHasNoTeam();
-		}
-		
-		if (teamController.hasUserTeam()) {
+		if (hasUserTeam) {
+			loadUserTab();
 			loadTeamPane(teamController.getUserTeam());
 			
-			if (teamController.hasTeamPlayers()) {
-				loadTeamPlayers(teamController.getTeamPlayers());
+			if (hasTeamPlayers) {
+				loadTeamPlayersTab(teamController.getTeamPlayers());
 			}
 			
 			// Only if the user has a team will be able to create a league
-			if (leagueController.isLeagueUnderway()) {
-				loadLeagueInformation(leagueController.getCurrentLeague());
+			if (isLeagueUnderway) {
+				loadLeagueTab(leagueController.getCurrentLeague());
 				
 				// TODO CHECK IF THE LEAGUE seasons HAS MATCHES GENERATED
 				
-			} else {
+			}
+			else {
 				showFeatures();
 			}
+		}
+		else {
+			loadUserHasNoTeam();
 		}
 		
 	}
@@ -144,10 +158,9 @@ public class MainView extends View {
 	 */
 	private void loadTeamPane(Team userTeam) {
 		teamPanel = new JPanel();
-		personalInformationTabbedPane.addTab("Team", renderImage(ImagePath.TEAM_TAB_ICON), teamPanel, "User team tab");
+		personalInformationTabbedPane.addTab("Teams", renderImage(ImagePath.TEAM_TAB_ICON), teamPanel, "User team tab");
 		teamPanel.setLayout(null);
 		teamPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		teamPanel.setVisible(Controller.getLoggedUser().hasTeam());
 		
 		JLabel forTeamNameLabel = new JLabel("Team name");
 		forTeamNameLabel.setBounds(23, 33, 73, 14);
@@ -201,21 +214,28 @@ public class MainView extends View {
 		teamLogoEditButton.setBorderPainted(false);
 		teamLogoEditButton.setOpaque(false);
 		teamPanel.add(teamLogoEditButton);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(23, 201, 340, 196);
+		teamPanel.add(scrollPane);
+		
+		opponentTeamsTable = new TeamsTable(teamController.getOpponentTeams());
+		opponentTeamsTable.update();
+		scrollPane.setViewportView(opponentTeamsTable);
 	}
 	
 	/**
 	 * Loads the team players.
 	 * @param userTeamPlayers
 	 */
-	private void loadTeamPlayers(HashMap<Integer, Player> userTeamPlayers) {
+	private void loadTeamPlayersTab(HashMap<Integer, Player> userTeamPlayers) {
 		JPanel playersPanel = new JPanel();
-		playersPanel.setBorder(new TitledBorder(null, "Players", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		playersPanel.setBounds(10, 178, 364, 278);
-		teamPanel.add(playersPanel);
+		personalInformationTabbedPane.addTab("Players", renderImage(ImagePath.TEAM_TAB_ICON), playersPanel, "Team players tab");
 		playersPanel.setLayout(null);
+		playersPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team players", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		
 		JScrollPane playersTableScrollPane = new JScrollPane();
-		playersTableScrollPane.setBounds(10, 26, 344, 251);
+		playersTableScrollPane.setBounds(10, 51, 364, 267);
 		playersPanel.add(playersTableScrollPane);
 		
 		playersTable = new PlayersTable(userTeamPlayers);
@@ -242,14 +262,21 @@ public class MainView extends View {
 	 */
 	private void showFeatures() {
 		JLabel featuresLabel = new JLabel(renderImage(ImagePath.FEATURES_ICON));
-		featuresLabel.setBounds(409, 111, 405, 316);
+		featuresLabel.setBounds(423, 181, 379, 185);
 		getContentPane().add(featuresLabel);
+		
+		createNewLeagueButton = new JButton("Create a new League");
+		createNewLeagueButton.setFont(new Font("Tekton Pro Cond", Font.BOLD | Font.ITALIC, 26));
+		createNewLeagueButton.setBackground(new Color(153, 255, 255));
+		createNewLeagueButton.setForeground(new Color(255, 255, 255));
+		createNewLeagueButton.setBounds(491, 381, 242, 49);
+		getContentPane().add(createNewLeagueButton);
 	}
 	
 	/**
-	 * Loads the league information
+	 * Loads the league information.
 	 */
-	private void loadLeagueInformation(League currentLeague) {
+	private void loadLeagueTab(League currentLeague) {
 		JTabbedPane leagueInformationTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		leagueInformationTabbedPane.setBounds(425, 65, 389, 495);
 		getContentPane().add(leagueInformationTabbedPane);
@@ -295,7 +322,7 @@ public class MainView extends View {
 		forLeaguePeriodLabel.setBounds(24, 154, 99, 14);
 		leaguePanel.add(forLeaguePeriodLabel);
 		
-		JLabel leaguePeriodLabel = new JLabel(Integer.toString(currentLeague.getPeriod(PeriodType.DAYS)));
+		JLabel leaguePeriodLabel = new JLabel(Integer.toString(currentLeague.getPeriod()));
 		leaguePeriodLabel.setBounds(175, 154, 91, 14);
 		leaguePanel.add(leaguePeriodLabel);
 		
@@ -328,12 +355,12 @@ public class MainView extends View {
 		matchesTableScrollPane.setViewportView(seasonsTable);
 	}
 
-	private void loadUserTeamLog() {
-		JLabel forUserTeamNameLabel = new JLabel("Team");
+	private void loadUserTab() {
+		JLabel forUserTeamNameLabel = new JLabel("Teams");
 		forUserTeamNameLabel.setBounds(23, 100, 73, 14);
 		userPanel.add(forUserTeamNameLabel);
 		
-		JLabel userTeamNameLabel = new JLabel(Controller.getLoggedUser().getTeam().getName());
+		JLabel userTeamNameLabel = new JLabel(Controller.getLoggedUser().getTeam().getName()); // TODO Why this
 		userTeamNameLabel.setBounds(106, 100, 73, 14);
 		userPanel.add(userTeamNameLabel);
 		
@@ -345,15 +372,21 @@ public class MainView extends View {
 	
 	@Override
 	protected void loadListeners() {
-		if (teamController.hasUserTeam()) {
+		if (hasUserTeam) {
 			teamLogoEditButton.addActionListener((e) -> {
 				System.out.println("EDIT TEAM IMAGE\n");
 			});
-			if (teamController.hasTeamPlayers()) {
+			if (hasTeamPlayers) {
 				playersTable.getModel().addTableModelListener((e) -> {
 					System.out.println("EDITED PLAYER: " + playersTable.getSelectedPlayer().getFirstName());
 					System.out.println("EDITED COLUMN: " + playersTable.getEditedColumn() + "\n");
 				});
+			}
+			if (isLeagueUnderway) {
+				
+			}
+			else {
+				createNewLeagueButton.addActionListener((e) -> changeView(this, CreateLeagueView.class));
 			}
 		}
 		else {
@@ -362,5 +395,4 @@ public class MainView extends View {
 			});
 		}
 	}
-	
 }

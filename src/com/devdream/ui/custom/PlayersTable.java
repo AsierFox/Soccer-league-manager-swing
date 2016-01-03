@@ -92,7 +92,7 @@ public class PlayersTable extends JTable {
 		return null;
 	}
 	
-	/** Sets the cells editable */
+	/** Sets the cells editable. */
 	@Override
 	public boolean isCellEditable(int row, int column) {
 		return true;

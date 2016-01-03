@@ -8,8 +8,6 @@ import javax.swing.JOptionPane;
  * This class shows alerts using JOptions Pane class.
  * 
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public class Alert extends JOptionPane {
 
@@ -30,4 +28,9 @@ public class Alert extends JOptionPane {
 		showMessageDialog(c, msg, "Information", INFORMATION_MESSAGE);
 	}
 	
+	/** Shows a confirm dialog. */
+	public static int showConfirm(Component c, String title, String msg) {
+		return showConfirmDialog(c, msg, title, JOptionPane.YES_NO_OPTION);
+	}
+
 }

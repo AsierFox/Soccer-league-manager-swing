@@ -13,14 +13,20 @@ public class SeasonVO {
 	private int idGame;
 	private String date;
 	
+	public SeasonVO(int idLeague, int idGame) {
+		this.idLeague = idLeague;
+		this.idGame = idGame;
+	}
+
 	public SeasonVO(int idGame, String date) {
 		this.idGame = idGame;
 		this.date = date;
 	}
 	
 	public SeasonVO(int idLeague, int idGame, String date) {
-		this(idGame, date);
 		this.idLeague = idLeague;
+		this.idGame = idGame;
+		this.date = date;
 	}
 	
 	public SeasonVO(int id, int idLeague, int idGame, String date) {

@@ -38,7 +38,7 @@ public class SQLiteTest {
 		 */
 //		createTables();
 //		insertValues();
-//		selectValues();
+		selectValues();
 		System.out.println("Ended");
 	}
 	
@@ -139,6 +139,8 @@ public class SQLiteTest {
 		
 		String name = "Test";
 		System.out.println("TEAM EXISTS WITH NAME [" + name + "]? " + teamDAO.existsTeamName(name));
+		System.out.println("GET TEAM BY NAME: " + teamDAO.getTeamByName(name));
+		System.out.println("GET TEAM Id BY NAME: " + teamDAO.getTeamIdByName(name));
 		
 		UserDAO userDAO = new UserDAO();
 		String username = "mikel", pass = "123";

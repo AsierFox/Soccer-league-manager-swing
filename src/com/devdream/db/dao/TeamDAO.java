@@ -84,6 +84,56 @@ public class TeamDAO extends DAO {
 		}
 		return team;
 	}
+	
+	/**
+	 * Gets the team Id by the Name.
+	 * @param name The Name of the team to search for
+	 * @return The Id of the team
+	 * @throws SQLException
+	 */
+	public int getTeamIdByName(String name) throws SQLException {
+		int teamId = -1;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = QueryBuilder.createSelect(getClass(), "Id") + " WHERE Name = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setString(1, name);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) {
+				teamId = rs.getInt("Id");
+			}
+		}
+		finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return teamId;
+	}
+	
+	/**
+	 * Gets the team by the Name.
+	 * @param name The Name of the team to search for
+	 * @return
+	 * @throws SQLException
+	 */
+	public TeamVO getTeamByName(String name) throws SQLException {
+		TeamVO team = null;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = QueryBuilder.createSelect(getClass(), "*") + " WHERE Name = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setString(1, name);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) {
+				team = getFullTeamVO(rs);
+			}
+		}
+		finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return team;
+	}
 
 	/**
 	 * Gets all the teams from the database.

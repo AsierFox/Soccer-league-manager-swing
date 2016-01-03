@@ -43,7 +43,7 @@ public class SeasonsTable extends JTable {
 		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().setResizingAllowed(false);
 		model.addColumn("Home team");
-		model.addColumn("Away Team");
+		model.addColumn("Away team");
 		model.addColumn("Game date");
 	}
 
@@ -53,7 +53,7 @@ public class SeasonsTable extends JTable {
 			Vector<String> row = new Vector<String>();
 			row.addElement(s.getGame().getHomeTeam().getName());
 			row.addElement(s.getGame().getAwayTeam().getName());
-			row.addElement(s.getDate());
+			row.addElement(s.getDate().isEmpty() ? s.getDate() : "Not set");
 			model.addRow(row);
 		}
 	}

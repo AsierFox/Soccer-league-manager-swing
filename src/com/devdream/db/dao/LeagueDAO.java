@@ -3,6 +3,7 @@ package com.devdream.db.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.devdream.db.vo.LeagueVO;
 import com.devdream.util.DateHelper;
@@ -15,13 +16,15 @@ public class LeagueDAO extends DAO {
 		super.initTableCreation(LeagueVO.class);
 	}
 	
-	/** Insert a new league.
-	 * WARN: Check if is NOT a league underway before!
-	 * @return The underway league value object
+	/**
+	 * Insert a new league returning the Id of it.
+	 * @return The Id of the league inserted
 	 * @throws SQLException
 	 */
-	public void insertLeague(LeagueVO newLeagueVO) throws SQLException {
+	public int insertLeague(LeagueVO newLeagueVO) throws SQLException {
+		int leagueId = -1;
 		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
 					new String[]{"StartDate", "EndDate", "Name", "Description", "NumSeasons"},
@@ -32,12 +35,17 @@ public class LeagueDAO extends DAO {
 							newLeagueVO.getDescription(),
 							Integer.toString(newLeagueVO.getNumSeasons())
 						});
-			preparedStmt = getConnection().prepareStatement(sql);
+			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();
+			rs = preparedStmt.getGeneratedKeys();
+            if(rs.next()) {
+            	leagueId = rs.getInt(1);
+            }
 		}
 		finally {
-			super.closeConnection(preparedStmt);
+			super.closeConnection(preparedStmt, rs);
 		}
+		return leagueId;
 	}
 	
 	/**

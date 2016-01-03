@@ -17,8 +17,6 @@ import com.devdream.ui.custom.Alert;
  * y to organize the view code separating different behaviors.
  * 
  * @author Asier Gonzalez
- * @version 1.1
- * @since 1.0
  */
 public abstract class View extends JFrame {
 	private static final long serialVersionUID = 6433561099170298893L;
@@ -54,7 +52,6 @@ public abstract class View extends JFrame {
 		protected static final String STATISTICS_ICON = ICONS + "statistics.png";	
 		
 		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
-		
 	}
 
 	//
@@ -125,8 +122,7 @@ public abstract class View extends JFrame {
 	
 	/** Closes the View. */
 	protected void sendExitAppRequest() {
-		int exitRequest = JOptionPane.showConfirmDialog(null, EXIT_QUESTION,
-				"Exit", JOptionPane.YES_NO_OPTION);
+		int exitRequest = Alert.showConfirm(null, "Exit", EXIT_QUESTION);
 		if (exitRequest == JOptionPane.OK_OPTION) {
 			closeApp();
 		}

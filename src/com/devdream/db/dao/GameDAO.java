@@ -1,7 +1,9 @@
 package com.devdream.db.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.devdream.db.vo.GameVO;
 import com.devdream.util.QueryBuilder;
@@ -13,11 +15,16 @@ public class GameDAO extends DAO {
 		super.initTableCreation(GameVO.class);
 	}
 
-	/** Insert a new game.
+	/**
+	 * Insert a game returning the Id of the game inserted.
+	 * @param newGameVO
+	 * @return The Id of the game inserted
 	 * @throws SQLException
 	 */
-	public void insertGame(GameVO newGameVO) throws SQLException {
+	public int insertGame(GameVO newGameVO) throws SQLException {
+		int gameId = -1;
 		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
 					new String[]{"IdHomeTeam", "IdAwayTeam"},
@@ -25,12 +32,17 @@ public class GameDAO extends DAO {
 							Integer.toString(newGameVO.getIdHomeTeam()),
 							Integer.toString(newGameVO.getIdAwayTeam())
 						});
-			preparedStmt = getConnection().prepareStatement(sql);
+			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();
+			rs = preparedStmt.getGeneratedKeys();
+            if(rs.next()) {
+                gameId = rs.getInt(1);
+            }
 		}
 		finally {
-			super.closeConnection(preparedStmt);
+			super.closeConnection(preparedStmt, rs);
 		}
+		return gameId;
 	}
 	
 }

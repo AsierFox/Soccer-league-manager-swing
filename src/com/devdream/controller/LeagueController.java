@@ -2,12 +2,13 @@ package com.devdream.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
+import com.devdream.db.dao.GameDAO;
 import com.devdream.db.dao.LeagueDAO;
 import com.devdream.db.dao.SeasonDAO;
 import com.devdream.db.dao.TeamDAO;
+import com.devdream.db.vo.GameVO;
 import com.devdream.db.vo.LeagueVO;
 import com.devdream.db.vo.SeasonVO;
 import com.devdream.db.vo.TeamVO;
@@ -17,8 +18,7 @@ import com.devdream.model.Game;
 import com.devdream.model.League;
 import com.devdream.model.Season;
 import com.devdream.model.Team;
-
-import validator.LeagueValidator;
+import com.devdream.validator.LeagueValidator;
 
 public class LeagueController extends Controller {
 
@@ -43,34 +43,65 @@ public class LeagueController extends Controller {
 				leagueVO.getName(), leagueVO.getDescription(), leagueVO.getNumSeasons());
 	}
 	
-	/** Creates a new league, submitting it to the database. */
-	public void createNewLeague(String name, String startDate, String endDate, String description, ArrayList<Team> teams)
+	/**
+	 * Creates a new league, submitting it to the database and returns the id of it.
+	 * @param name
+	 * @param startDate
+	 * @param endDate
+	 * @param description
+	 * @param teams
+	 * @return
+	 * @throws SQLException
+	 * @throws LeagueUnderwayException
+	 * @throws InvalidInputException
+	 */
+	public int submitNewLeague(String name, String startDate, String endDate, String description, ArrayList<Team> teams)
 			throws SQLException, LeagueUnderwayException, InvalidInputException {
 		LeagueValidator leagueValidator = new LeagueValidator(name, startDate, endDate, description, teams);
 		leagueValidator.validate();
-		leagueDAO.insertLeague(new LeagueVO(leagueValidator.getStartDate(), leagueValidator.getEndDate(),
+		return leagueDAO.insertLeague(new LeagueVO(leagueValidator.getStartDate(), leagueValidator.getEndDate(),
 				leagueValidator.getName(), leagueValidator.getDescription(), leagueValidator.getNumberSeasons()));
 	}
 	
 	/**
 	 * Generates the season pairing.
-	 * @param teams The ArrayList of selected team for pairing
+	 * @param teamIds The ArrayList of selected team for pairing
 	 */
-	public ArrayList<Team> generateSeasonsPairing(ArrayList<Team> teams) {
-		final int numTeams = teams.size();
-		Team[] teamOrder = new Team[numTeams];
+	private int[][] generateSeasonsGamePairing(int[] teamIds, int userTeamId) {
+		final int numTeams = teamIds.length;
+		int[][] gamesOrder = new int[numTeams][2];
 		boolean[] generatedIndexes = new boolean[numTeams];
-		Random r = new Random();
+		Random rand = new Random();
 		for (int i = 0; i < numTeams; ) {
-			int gen = r.nextInt(numTeams);
-			if (generatedIndexes[gen]) {
+			int opponentNum = rand.nextInt(numTeams);
+			boolean homeTeam = (rand.nextInt(2) == 1) ? true : false;
+			if (generatedIndexes[opponentNum]) {
 				continue;
 			}
-			generatedIndexes[gen] = true;
-			teamOrder[gen] = teams.get(i);
-			i++;
+			generatedIndexes[opponentNum] = true;
+			gamesOrder[opponentNum][homeTeam ? 0 : 1] = teamIds[i++];
+			gamesOrder[opponentNum][homeTeam ? 1 : 0] = userTeamId;
 		}
-		return new ArrayList<Team>(Arrays.asList(teamOrder));
+		return gamesOrder;
+	}
+	
+	public void submitSeasonsGames(int leagueId, ArrayList<Team> teams) throws SQLException {
+		TeamDAO teamDAO = new TeamDAO();
+		SeasonDAO seasonDAO = new SeasonDAO();
+		GameDAO gameDAO = new GameDAO();
+		int numSeasons = teams.size();
+		int i = 0;
+		int[] teamIds = new int[numSeasons];
+		for (Team team : teams) {
+			teamIds[i++] = teamDAO.getTeamIdByName(team.getName());
+		}
+		
+		int userTeamId = teamDAO.getUserTeam(Controller.getLoggedUser().getUsername()).getId();
+		int[][] games = generateSeasonsGamePairing(teamIds, userTeamId);
+		for (i = 0; i < numSeasons; ++i) {
+			int gameId = gameDAO.insertGame(new GameVO(games[i][0], games[i][1]));
+			seasonDAO.insertSeason(new SeasonVO(leagueId, gameId));
+		}
 	}
 	
 	/** Returns the league seasons games. */

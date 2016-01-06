@@ -14,7 +14,7 @@ import com.devdream.controller.LeagueController;
 import com.devdream.controller.TeamController;
 import com.devdream.exception.InvalidInputException;
 import com.devdream.exception.LeagueUnderwayException;
-import com.devdream.exception.NotTeamSelectedException;
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.DateObserverTextField;
@@ -54,7 +54,7 @@ public class CreateLeagueView extends View {
 	//
 	// Constructors
 	public CreateLeagueView() {
-		super();
+		super(false);
 		getContentPane().setLayout(null);
 		
 		try {
@@ -197,7 +197,7 @@ public class CreateLeagueView extends View {
 				else {
 					Alert.showError(this, "This team is already selected!");
 				}
-			} catch (NotTeamSelectedException err) {
+			} catch (NotTableItemSelectedException err) {
 				Alert.showError(this, err.getMessage());
 			}
 		});
@@ -207,7 +207,7 @@ public class CreateLeagueView extends View {
 				Team selectedTeam = selectedOpponentsTable.getSelectedTeam();
 				avaliableOpponentTeamsTable.addTeam(selectedTeam);
 				selectedOpponentsTable.removeTeam(selectedTeam);
-			} catch (NotTeamSelectedException err) {
+			} catch (NotTableItemSelectedException err) {
 				Alert.showError(this, err.getMessage());
 			}
 		});

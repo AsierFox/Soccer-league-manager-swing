@@ -3,10 +3,11 @@ package com.devdream.ui.custom;
 import java.util.HashMap;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Player;
 
 /**
@@ -19,17 +20,13 @@ public class PlayersTable extends JTable {
 	
 	//
 	// Globals
-	private static final String DELETE_ICON = "/img/icon/delete-player.png";
-	
 	private static final int DORSAL_COL = 3;
 	
 	//
 	// Attributes
-	public enum Column { FIRST_NAME, SURNAME, AGE, DORSAL, POSITION, QUIT }
-
 	private DefaultTableModel model;
-	private HashMap<Integer, Player> elements;
-	private ImageIcon deleteIcon;
+	/** Key -> Dorsal */
+	private HashMap<Integer, Player> players;
 	
 	//
 	// Constructors
@@ -41,12 +38,12 @@ public class PlayersTable extends JTable {
 	
 	public PlayersTable(HashMap<Integer, Player> elements) {
 		this();
-		this.elements = elements;
+		this.players = elements;
 	}
 	
 	//
 	// Methods
-	/** Sets the header to the table */
+	/** Sets the header to the table. */
 	private void setOffersTableHeader() {
 		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().setResizingAllowed(false);
@@ -55,47 +52,64 @@ public class PlayersTable extends JTable {
 		model.addColumn("Age");
 		model.addColumn("Dorsal");
 		model.addColumn("Position");
-		model.addColumn("Fire");
 	}
 
-	/** Updates the JTable with the updates collection */
+	/** Updates the JTable with the updates collection. */
 	public void update() {
-		for (Player p : elements.values()) {
-			Vector<String> row = new Vector<String>();
-			row.addElement(p.getFirstName());
-			row.addElement(p.getSurname());
-			row.addElement(Integer.toString(p.getAge()));
-			row.addElement(Integer.toString(p.getDorsal()));
-			row.addElement(p.getPosition());
-			row.addElement("X");
-			model.addRow(row);
+		model.setRowCount(0);
+		for (Player p : players.values()) {
+			addPlayer(p);
 		}
 	}
 	
-	public Player getSelectedPlayer() {
+	public void addPlayer(Player newPlayer) {
+		Vector<String> row = new Vector<String>();
+		row.addElement(newPlayer.getFirstName());
+		row.addElement(newPlayer.getSurname());
+		row.addElement(Integer.toString(newPlayer.getAge()));
+		row.addElement(Integer.toString(newPlayer.getDorsal()));
+		row.addElement(newPlayer.getPosition());
+		model.addRow(row);
+		players.put(newPlayer.getDorsal(), newPlayer);
+	}
+	
+	public void removePlayer(Player player) {
+		players.remove(player.getDorsal());
+		update();
+	}
+	
+	public Player getSelectedPlayer() throws NotTableItemSelectedException {
 		int selectedRowIndex = getSelectedRow();
-		if (selectedRowIndex > -1) {
-			int selectedPlayerDorsal = Integer.valueOf((String) model.getValueAt(getSelectedRow(), DORSAL_COL));
-			return elements.get(selectedPlayerDorsal);
+		if (selectedRowIndex <= -1) {
+			throw new NotTableItemSelectedException("player");
 		}
-		return null;
+		int selectedPlayerDorsal = Integer.valueOf((String) model.getValueAt(getSelectedRow(), DORSAL_COL));
+		return players.get(selectedPlayerDorsal);
 	}
 	
-	public Column getEditedColumn() {
-		int editedColumn = getEditingColumn();
-		int i = 0;
-		for (Column c : Column.values()) {
-			if (editedColumn == i++) {
-				return c;
-			}
+	@Override
+	public TableCellEditor getCellEditor() {
+		int col = getEditingColumn(), row = getEditingRow();
+		if (col < 0 || row < 0) {
+			return null;
 		}
-		return null;
+		// TODO Edit player
+		return super.getCellEditor();
 	}
 	
 	/** Sets the cells editable. */
 	@Override
 	public boolean isCellEditable(int row, int column) {
 		return true;
+	}
+	
+	//
+	// Getters and setters
+	public void setPlayers(HashMap<Integer, Player> players) {
+		this.players = players;
+	}
+	public HashMap<Integer, Player> getPlayers() {
+		return players;
 	}
 
 }

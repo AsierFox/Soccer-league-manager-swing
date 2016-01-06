@@ -5,8 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.devdream.db.vo.UserVO;
-import com.devdream.exception.TeamAlreadyExistsException;
-import com.devdream.exception.UserAlreadyExistsException;
+import com.devdream.exception.ItemAlreadyException;
 import com.devdream.util.QueryBuilder;
 
 public class UserDAO extends DAO {
@@ -22,9 +21,9 @@ public class UserDAO extends DAO {
 	 * @throws SQLException
 	 * @throws TeamAlreadyExistsException 
 	 */
-	public void insertUser(UserVO newUser) throws SQLException, UserAlreadyExistsException {
+	public void insertUser(UserVO newUser) throws SQLException, ItemAlreadyException {
 		if (existsUserUsername(newUser.getName())) {
-			throw new UserAlreadyExistsException(newUser.getUsername());
+			throw new ItemAlreadyException("user", "username", newUser.getUsername());
 		}
 		PreparedStatement preparedStmt = null;
 		try {

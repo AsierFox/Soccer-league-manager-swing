@@ -2,6 +2,7 @@ package com.devdream.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import com.devdream.db.dao.GameDAO;
@@ -50,7 +51,7 @@ public class LeagueController extends Controller {
 	 * @param endDate
 	 * @param description
 	 * @param teams
-	 * @return
+	 * @return The Id of the created league
 	 * @throws SQLException
 	 * @throws LeagueUnderwayException
 	 * @throws InvalidInputException
@@ -85,6 +86,12 @@ public class LeagueController extends Controller {
 		return gamesOrder;
 	}
 	
+	/**
+	 * Submit the generated seasons games
+	 * @param leagueId The league Id
+	 * @param teams The opponents teams
+	 * @throws SQLException
+	 */
 	public void submitSeasonsGames(int leagueId, ArrayList<Team> teams) throws SQLException {
 		TeamDAO teamDAO = new TeamDAO();
 		SeasonDAO seasonDAO = new SeasonDAO();
@@ -105,22 +112,24 @@ public class LeagueController extends Controller {
 	}
 	
 	/** Returns the league seasons games. */
-	public ArrayList<Season> getLeagueSeasons() {
-		ArrayList<Season> seasons = new ArrayList<>();
+	public HashMap<Integer, Season> getLeagueSeasons() {
+		HashMap<Integer, Season> seasons = new HashMap<>();
 		SeasonDAO seasonDAO = new SeasonDAO();
 		TeamDAO teamDAO = new TeamDAO();
 		try {
 			ArrayList<SeasonVO> seasonsVO = seasonDAO.getLeagueSeasonsGameAndDate(leagueVO.getId());
 			for (SeasonVO seasonVO : seasonsVO) {
-				TeamVO homeTeamVO = teamDAO.getGameHomeTeamById(seasonVO.getIdGame());
-				TeamVO awayTeamVO = teamDAO.getGameAwayTeamById(seasonVO.getIdGame());
+				int idGame = seasonVO.getIdGame();
+				TeamVO homeTeamVO = teamDAO.getGameHomeTeamById(idGame);
+				TeamVO awayTeamVO = teamDAO.getGameAwayTeamById(idGame);
 				
-				Team homeTeam = new Team(homeTeamVO.getName(), homeTeamVO.getShortName(),
+				Team homeTeam = new Team(homeTeamVO.getId(), homeTeamVO.getName(), homeTeamVO.getShortName(),
 						homeTeamVO.getFoundedYear(), homeTeamVO.getAchievements(), homeTeamVO.getLocation(), homeTeamVO.getLogo());
-				Team awayTeam = new Team(awayTeamVO.getName(), awayTeamVO.getShortName(),
+				Team awayTeam = new Team(awayTeamVO.getId(), awayTeamVO.getName(), awayTeamVO.getShortName(),
 						awayTeamVO.getFoundedYear(), awayTeamVO.getAchievements(), awayTeamVO.getLocation(), awayTeamVO.getLogo());
 				
-				seasons.add(new Season(new Game(homeTeam, awayTeam), seasonVO.getDate()));
+				Game game = new Game(idGame, homeTeam, awayTeam);
+				seasons.put(game.getId(), new Season(game, seasonVO.getDate()));
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();

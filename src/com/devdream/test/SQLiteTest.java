@@ -19,8 +19,8 @@ import com.devdream.db.vo.PlayerVO;
 import com.devdream.db.vo.SeasonVO;
 import com.devdream.db.vo.TeamVO;
 import com.devdream.db.vo.UserVO;
-import com.devdream.exception.TeamAlreadyExistsException;
-import com.devdream.exception.UserAlreadyExistsException;
+import com.devdream.exception.ItemAlreadyException;
+import com.devdream.util.DateHelper;
 
 /**
  * Class to test the connections and operations over the database.
@@ -30,7 +30,7 @@ import com.devdream.exception.UserAlreadyExistsException;
 @SuppressWarnings("unused")
 public class SQLiteTest {
 
-	public static void main(String[] args) throws SQLException, TeamAlreadyExistsException, UserAlreadyExistsException {
+	public static void main(String[] args) throws SQLException, ItemAlreadyException {
 		/*
 		 PRAGMA writable_schema = 1;
 		 delete from sqlite_master where type = 'table';
@@ -38,7 +38,7 @@ public class SQLiteTest {
 		 */
 //		createTables();
 //		insertValues();
-		selectValues();
+//		selectValues();
 		System.out.println("Ended");
 	}
 	
@@ -94,7 +94,7 @@ public class SQLiteTest {
 		}
 	}
 	
-	private static void insertValues() throws SQLException, TeamAlreadyExistsException, UserAlreadyExistsException {
+	private static void insertValues() throws SQLException, ItemAlreadyException {
 		TeamDAO teamDAO = new TeamDAO();
 		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
 		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));

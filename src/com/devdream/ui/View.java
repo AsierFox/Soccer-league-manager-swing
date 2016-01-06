@@ -26,7 +26,7 @@ public abstract class View extends JFrame {
 	 * 
 	 * @author Asier Gonzalez
 	 */
-	static class ImagePath {
+	public static class ImagePath {
 		private static final String IMG_DIR = "/img/";
 		
 		protected static final String LOGOS = IMG_DIR + "logo/";
@@ -52,6 +52,10 @@ public abstract class View extends JFrame {
 		protected static final String STATISTICS_ICON = ICONS + "statistics.png";	
 		
 		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
+		
+		protected static final String VIEW_SEASON_ICON = ICONS + "view-season-icon.png";
+		
+		public static final String DEFAULT_TEAM_LOGO = "team-default.png";
 	}
 
 	//
@@ -68,10 +72,14 @@ public abstract class View extends JFrame {
 	//
 	// Constructors
 	public View() {
+		this(true);
+	}
+	
+	public View(boolean closeOperation) {
 		super();
 		setTitle(APP_TITLE);
 		setSize(WIDTH, HEIGHT);
-		setCloseOperation();
+		if (closeOperation) setCloseOperation();
 		setLocationRelativeTo(null); // Center the window
 		setResizable(false);
 		setIconImage();

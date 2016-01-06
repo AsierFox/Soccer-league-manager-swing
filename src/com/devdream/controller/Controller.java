@@ -1,5 +1,10 @@
 package com.devdream.controller;
 
+import java.sql.SQLException;
+
+import com.devdream.db.dao.TeamDAO;
+import com.devdream.db.vo.TeamVO;
+import com.devdream.model.Team;
 import com.devdream.model.User;
 
 public abstract class Controller {
@@ -11,6 +16,15 @@ public abstract class Controller {
 	//
 	// Constructor
 	public Controller() {}
+
+	//
+	// Methods
+	public Team getUserTeam(String username) throws SQLException {
+		TeamDAO teamDAO = new TeamDAO();
+		TeamVO teamVO = teamDAO.getUserTeam(username);
+		return new Team(teamVO.getId(), teamVO.getName(), teamVO.getShortName(),
+				teamVO.getFoundedYear(), teamVO.getAchievements(), teamVO.getLocation(), teamVO.getLogo());
+	}
 	
 	//
 	// Getters and setters

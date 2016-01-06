@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,8 +18,10 @@ import javax.swing.border.TitledBorder;
 import com.devdream.controller.Controller;
 import com.devdream.controller.LeagueController;
 import com.devdream.controller.TeamController;
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.League;
 import com.devdream.model.Player;
+import com.devdream.model.Season;
 import com.devdream.model.Team;
 import com.devdream.model.User;
 import com.devdream.ui.custom.Alert;
@@ -48,7 +51,11 @@ public class MainView extends View {
 	
 	private JButton teamLogoEditButton;
 	private JButton createNewTeamButton;
-	private JButton createNewLeagueButton;
+	private JButton newLeagueButton;
+	private JButton newOpponentButton;
+	private JButton newPlayerButton;
+	private JButton deletePlayerButton;
+	private JButton viewSeasonButton;
 	
 	//
 	// Constructors
@@ -73,7 +80,7 @@ public class MainView extends View {
 		
 		// TODO For design
 		/*** BEGIN ***/
-//		loadTeamPane(new Team("qwe", "wqwe", 2, 2, "qwe", "team-default.png"));
+//		loadTeamPane(new Team(1, "qwe", "wqwe", 2, 2, "qwe", "team-default.png"));
 //		loadTeamPlayersTab(new HashMap<Integer, Player>());
 //		loadLeagueTab(new League("25/23/2333", "23/66/243", "LeagueLOL", "Description blah blah", 3));
 //		
@@ -214,9 +221,17 @@ public class MainView extends View {
 		teamLogoEditButton.setBorderPainted(false);
 		teamLogoEditButton.setOpaque(false);
 		teamPanel.add(teamLogoEditButton);
+
+		JLabel forNewOpponentLabel = new JLabel("Opponents teams");
+		forNewOpponentLabel.setBounds(10, 205, 97, 14);
+		teamPanel.add(forNewOpponentLabel);
+
+		newOpponentButton = new JButton("Add opponent team");
+		newOpponentButton.setBounds(127, 201, 170, 23);
+		teamPanel.add(newOpponentButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(23, 201, 340, 196);
+		scrollPane.setBounds(11, 230, 340, 211);
 		teamPanel.add(scrollPane);
 		
 		opponentTeamsTable = new TeamsTable(teamController.getOpponentTeams());
@@ -235,12 +250,24 @@ public class MainView extends View {
 		playersPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team players", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		
 		JScrollPane playersTableScrollPane = new JScrollPane();
-		playersTableScrollPane.setBounds(10, 51, 364, 267);
+		playersTableScrollPane.setBounds(10, 134, 364, 322);
 		playersPanel.add(playersTableScrollPane);
 		
 		playersTable = new PlayersTable(userTeamPlayers);
 		playersTable.update();
 		playersTableScrollPane.setViewportView(playersTable);
+		
+		JLabel forPlayersTableLabel = new JLabel("Players");
+		forPlayersTableLabel.setBounds(10, 109, 85, 14);
+		playersPanel.add(forPlayersTableLabel);
+		
+		newPlayerButton = new JButton("New player");
+		newPlayerButton.setBounds(42, 58, 131, 23);
+		playersPanel.add(newPlayerButton);
+		
+		deletePlayerButton = new JButton("Delete player");
+		deletePlayerButton.setBounds(196, 58, 131, 23);
+		playersPanel.add(deletePlayerButton);
 	}
 	
 	/**
@@ -265,12 +292,12 @@ public class MainView extends View {
 		featuresLabel.setBounds(423, 181, 379, 185);
 		getContentPane().add(featuresLabel);
 		
-		createNewLeagueButton = new JButton("Create a new League");
-		createNewLeagueButton.setFont(new Font("Tekton Pro Cond", Font.BOLD | Font.ITALIC, 26));
-		createNewLeagueButton.setBackground(new Color(153, 255, 255));
-		createNewLeagueButton.setForeground(new Color(255, 255, 255));
-		createNewLeagueButton.setBounds(491, 381, 242, 49);
-		getContentPane().add(createNewLeagueButton);
+		newLeagueButton = new JButton("Create a new League");
+		newLeagueButton.setFont(new Font("Tekton Pro Cond", Font.BOLD | Font.ITALIC, 26));
+		newLeagueButton.setBackground(new Color(153, 255, 255));
+		newLeagueButton.setForeground(new Color(255, 255, 255));
+		newLeagueButton.setBounds(491, 381, 242, 49);
+		getContentPane().add(newLeagueButton);
 	}
 	
 	/**
@@ -339,6 +366,12 @@ public class MainView extends View {
 		seasonsPanel.setBorder(new TitledBorder(null, "Seasons", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		leagueInformationTabbedPane.addTab("Seasons", renderImage(ImagePath.SEASONS_TAB_ICON), seasonsPanel, "Season tab");
 		seasonsPanel.setLayout(null);
+
+		viewSeasonButton = new JButton("View season game");
+		viewSeasonButton.setIcon(renderImage(View.ImagePath.VIEW_SEASON_ICON));
+		viewSeasonButton.setHorizontalTextPosition(AbstractButton.LEFT);
+		viewSeasonButton.setBounds(86, 23, 237, 48);
+		seasonsPanel.add(viewSeasonButton);
 		
 		JPanel matchesPanel = new JPanel();
 		matchesPanel.setBorder(new TitledBorder(null, "Matches", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -376,17 +409,37 @@ public class MainView extends View {
 			teamLogoEditButton.addActionListener((e) -> {
 				System.out.println("EDIT TEAM IMAGE\n");
 			});
+			
+			newOpponentButton.addActionListener((e) -> new CreateTeamView(teamController, opponentTeamsTable));
 			if (hasTeamPlayers) {
-				playersTable.getModel().addTableModelListener((e) -> {
-					System.out.println("EDITED PLAYER: " + playersTable.getSelectedPlayer().getFirstName());
-					System.out.println("EDITED COLUMN: " + playersTable.getEditedColumn() + "\n");
+				newPlayerButton.addActionListener((e) -> new CreatePlayerView(teamController, playersTable));
+				
+				deletePlayerButton.addActionListener((e) -> {
+					try {
+						Player selectedPlayer = playersTable.getSelectedPlayer();
+						teamController.deleteTeamPlayer(selectedPlayer.getDorsal());
+						playersTable.removePlayer(selectedPlayer);
+						Alert.showInfo(this, "Player deleted!");
+					} catch (NotTableItemSelectedException err) {
+						Alert.showError(this, err.getMessage());
+					} catch (SQLException err) {
+						Alert.showError(this, "Deletion could not be completed!");
+					}
 				});
 			}
 			if (isLeagueUnderway) {
-				
+				viewSeasonButton.addActionListener((e) -> {
+					try {
+						Season selectedSeason = seasonsTable.getSelectedSeason();
+						new SeasonGameView(selectedSeason);
+						dispose();
+					} catch (NotTableItemSelectedException err) {
+						Alert.showError(this, err.getMessage());
+					}
+				});
 			}
 			else {
-				createNewLeagueButton.addActionListener((e) -> changeView(this, CreateLeagueView.class));
+				newLeagueButton.addActionListener((e) -> changeView(this, CreateLeagueView.class));
 			}
 		}
 		else {
@@ -394,6 +447,18 @@ public class MainView extends View {
 				System.out.println("CREATE NEW TEAM\n");
 			});
 		}
+	}
+	
+	@Override
+	public boolean isFocused() {
+		update();
+		return super.isFocused();
+	}
+	
+	private void update() {
+		opponentTeamsTable.update();
+		playersTable.update();
+		seasonsTable.update();
 	}
 
 }

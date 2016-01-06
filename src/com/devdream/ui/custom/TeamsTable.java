@@ -7,11 +7,11 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.devdream.exception.NotTeamSelectedException;
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Team;
 
 /**
- * This class manages the JTable with players.
+ * This class manages the teams on a JTable.
  * 
  * @author Asier Gonzalez
  */
@@ -24,10 +24,8 @@ public class TeamsTable extends JTable {
 	
 	//
 	// Attributes
-	public enum Column { NAME, SHORTNAME, LOCATION }
-
 	private DefaultTableModel model;
-	private HashMap<String, Team> elements;
+	private HashMap<String, Team> teams;
 	
 	//
 	// Constructors
@@ -35,17 +33,17 @@ public class TeamsTable extends JTable {
 		model = new DefaultTableModel();
 		setModel(model);
 		setOffersTableHeader();
-		elements = new HashMap<>();
+		teams = new HashMap<>();
 	}
 	
 	public TeamsTable(HashMap<String, Team> elements) {
 		this();
-		this.elements = elements;
+		this.teams = elements;
 	}
 	
 	//
 	// Methods
-	/** Sets the header to the table */
+	/** Sets the header to the table. */
 	private void setOffersTableHeader() {
 		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().setResizingAllowed(false);
@@ -54,10 +52,10 @@ public class TeamsTable extends JTable {
 		model.addColumn("Location");
 	}
 
-	/** Updates the JTable with the updates collection */
+	/** Updates the JTable with the updates collection. */
 	public void update() {
 		model.setRowCount(0);
-		for (Team t : elements.values()) {
+		for (Team t : teams.values()) {
 			addTeam(t);
 		}
 	}
@@ -68,36 +66,25 @@ public class TeamsTable extends JTable {
 		row.addElement(newTeam.getShortName());
 		row.addElement(newTeam.getLocation());
 		model.addRow(row);
-		elements.put(newTeam.getName(), newTeam);
+		teams.put(newTeam.getName(), newTeam);
 	}
 	
-	public void removeTeam(Team newTeam) {
-		elements.remove(newTeam.getName());
+	public void removeTeam(Team team) {
+		teams.remove(team.getName());
 		update();
 	}
 	
-	public Team getSelectedTeam() throws NotTeamSelectedException {
+	public Team getSelectedTeam() throws NotTableItemSelectedException {
 		int selectedRowIndex = getSelectedRow();
 		if (selectedRowIndex <= -1) {
-			throw new NotTeamSelectedException();
+			throw new NotTableItemSelectedException("player");
 		}
 		String teamName = (String) model.getValueAt(selectedRowIndex, NAME_COL);
-		return elements.get(teamName);
+		return teams.get(teamName);
 	}
 	
 	public boolean hasAlreadyTeam(Team team) {
-		return elements.containsKey(team.getName());
-	}
-	
-	public Column getEditedColumn() {
-		int editedColumn = getEditingColumn();
-		int i = 0;
-		for (Column c : Column.values()) {
-			if (editedColumn == i++) {
-				return c;
-			}
-		}
-		return null;
+		return teams.containsKey(team.getName());
 	}
 	
 	/** Sets the cells no editable. */
@@ -109,7 +96,10 @@ public class TeamsTable extends JTable {
 	//
 	// Getters and setters
 	public ArrayList<Team> getTeams() {
-		return new ArrayList<Team>(elements.values());
+		return new ArrayList<Team>(teams.values());
 	}
-	
+	public void setTeams(HashMap<String, Team> teams) {
+		this.teams = teams;
+	}
+
 }

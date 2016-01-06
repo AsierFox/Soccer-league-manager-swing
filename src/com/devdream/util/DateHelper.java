@@ -34,6 +34,12 @@ public class DateHelper {
 		return new SimpleDateFormat(DATE_FORMAT).format(new Date());
 	}
 	
+	/** Returns the current year */
+	public static int getCurrentYear() {
+		String year = getCurrentDate();
+		return Integer.parseInt(year.substring(year.lastIndexOf("/") + 1));
+	}
+	
 	/** Returns the period (in months or days) between two dates. By default it return the period in months. */
 	public static int getDatePeriod(String sinceDate, String toDate) {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);

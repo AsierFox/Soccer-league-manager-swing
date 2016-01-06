@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.devdream.db.vo.TeamVO;
-import com.devdream.exception.TeamAlreadyExistsException;
+import com.devdream.exception.ItemAlreadyException;
 import com.devdream.util.QueryBuilder;
 
 public class TeamDAO extends DAO {
@@ -188,9 +188,9 @@ public class TeamDAO extends DAO {
 	 * @throws SQLException
 	 * @throws TeamAlreadyExistsException 
 	 */
-	public void insertTeam(TeamVO newTeam) throws SQLException, TeamAlreadyExistsException {
+	public void insertTeam(TeamVO newTeam) throws SQLException, ItemAlreadyException {
 		if (existsTeamName(newTeam.getName())) {
-			throw new TeamAlreadyExistsException(newTeam.getName());
+			throw new ItemAlreadyException("team", "name", newTeam.getName());
 		}
 		PreparedStatement preparedStmt = null;
 		try {

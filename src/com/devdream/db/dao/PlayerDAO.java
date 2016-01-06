@@ -69,4 +69,40 @@ public class PlayerDAO extends DAO {
 		return players;
 	}
 	
+	public boolean existsPlayerDorsal(int dorsal) throws SQLException {
+		boolean exists = false;
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = "SELECT 1 FROM " + QueryBuilder.getTableNameFromDAO(getClass())
+					+ " WHERE Dorsal = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, dorsal);
+			exists = preparedStmt.executeQuery().next();
+		}
+		finally {
+			super.closeConnection(preparedStmt);
+		}
+		return exists;
+	}
+	
+	/**
+	 * Deletes a player by the dorsal.
+	 * @param byDorsal The dorsal of the player
+	 * @return If it was deleted
+	 * @throws SQLException
+	 */
+	public boolean deletePlayer(int byDorsal) throws SQLException {
+		boolean deleted;
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = "DELETE FROM " + QueryBuilder.getTableNameFromDAO(getClass()) + " WHERE Dorsal = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, byDorsal);
+			deleted = preparedStmt.executeUpdate() == 1;
+		} finally {
+			super.closeConnection(preparedStmt);
+		}
+		return deleted;
+	}
+
 }

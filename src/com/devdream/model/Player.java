@@ -1,7 +1,12 @@
 package com.devdream.model;
 
 public class Player {
-
+	
+	//
+	// Globals
+	public static final int MIN_DORSAL_VALUE = 1;
+	public static final int MAX_DORSAL_VALUE = 23;
+	
 	//
 	// Attributes
 	private String firstName;

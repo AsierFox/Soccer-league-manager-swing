@@ -6,6 +6,7 @@ public class Team {
 
 	//
 	// Attributes
+	private int id;
 	private String name;
 	private String shortName;
 	private int foundedYear;
@@ -17,6 +18,7 @@ public class Team {
 	
 	//
 	// Constructors
+	// TODO use this() for constructor
 	public Team(String name, String shortName, int foundedYear, int achievements, String location, String logo) {
 		this.name = name;
 		this.shortName = shortName;
@@ -27,8 +29,19 @@ public class Team {
 		players = new HashMap<>();
 	}
 	
-	public Team(String name, String shortName, int foundedYear, int achievements, String location, String logo, HashMap<Integer, Player> players) {
-		this(name, shortName, foundedYear, achievements, location, logo);
+	public Team(final int id, String name, String shortName, int foundedYear, int achievements, String location, String logo) {
+		this.id = id;
+		this.name = name;
+		this.shortName = shortName;
+		this.foundedYear = foundedYear;
+		this.achievements = achievements;
+		this.location = location;
+		this.logo = logo;
+		players = new HashMap<>();
+	}
+	
+	public Team(final int id, String name, String shortName, int foundedYear, int achievements, String location, String logo, HashMap<Integer, Player> players) {
+		this(id, name, shortName, foundedYear, achievements, location, logo);
 		this.players = new HashMap<>();
 	}
 	
@@ -40,6 +53,9 @@ public class Team {
 	
 	//
 	// Getters and setters
+	public int getId() {
+		return id;
+	}
 	public String getName() {
 		return name;
 	}

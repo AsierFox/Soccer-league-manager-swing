@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.devdream.util.DateHelper;
 
-// TODO Display number of teams taking from the size() of the ArrayList
 public class League {
 
 	//
@@ -43,6 +42,9 @@ public class League {
 	}
 	public int getPeriod() {
 		return DateHelper.getDatePeriod(getStartDate(), getEndDate());
+	}
+	public int getLeftDays() {
+		return DateHelper.getDatePeriod(DateHelper.getCurrentDate(), getEndDate());
 	}
 	public String getName() {
 		return name;

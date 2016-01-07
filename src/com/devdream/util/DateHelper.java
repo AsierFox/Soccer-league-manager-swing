@@ -10,8 +10,6 @@ import java.util.Date;
  * This class is the helper for date management.
  * 
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public class DateHelper {
 

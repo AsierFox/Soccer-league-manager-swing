@@ -129,4 +129,18 @@ public class UserDAO extends DAO {
 		return userTeamId;
 	}
 
+	public void addTeam(String username, int teamId) throws SQLException {
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = "UPDATE Users SET IdTeam = ? WHERE Username = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, teamId);
+			preparedStmt.setString(2, username);
+			preparedStmt.executeUpdate();
+		}
+		finally {
+			super.closeConnection(preparedStmt);
+		}
+	}
+
 }

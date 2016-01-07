@@ -221,24 +221,13 @@ public class CreateLeagueView extends View {
 				leagueController.submitSeasonsGames(leagueId, selectedOpponentsTable.getTeams());
 				Alert.showInfo(this, "Seasons generated successfully.");
 				
-				if (Alert.showConfirm(this, "Return to the main view", "Do you wish to return to the main view?") == 0) {
-					changeView(this);
-				} else {
-					clearData();
-				}
+				changeView(this);
 			} catch(SQLException | InvalidInputException | LeagueUnderwayException err) {
 				Alert.showError(this, err.getMessage());
 			}
 		});
 		
 		cancelButton.addActionListener((e) -> changeView(this));
-	}
-	
-	private void clearData() {
-		nameTextField.setText("");
-		descriptionEditorPane.setText("");
-		startDateTextField.setText("");
-		endDateTextField.setText("");
 	}
 
 }

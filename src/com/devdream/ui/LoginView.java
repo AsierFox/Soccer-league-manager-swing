@@ -42,12 +42,12 @@ public class LoginView extends View {
 		super();
 		getContentPane().setLayout(null);
 		getContentPane().setBackground(SystemColor.control);
-
+		
 		loginController = new LoginController();
 		
 		loadUI();
 		loadListeners();
-
+		
 		render();
 	}
 
@@ -100,7 +100,7 @@ public class LoginView extends View {
 		loginButton.addActionListener((e) -> {
 			try {
 				loginController.login(usernameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-				changeView(this, MainView.class);
+				changeView(this);
 			} catch (InvalidInputException | LoginFailedException | SQLException err) {
 				Alert.showError(this, err.getMessage());
 			}

@@ -10,4 +10,11 @@ public class GoalDAO extends DAO {
 	public void createTable() throws SQLException {
 		super.initTableCreation(GoalVO.class);
 	}
+
+	public int getTeamScore() {
+		int goals = 0;
+		
+		return goals;
+	}
+
 }

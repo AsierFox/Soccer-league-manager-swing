@@ -3,6 +3,7 @@ package com.devdream.db.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.devdream.db.vo.TeamVO;
@@ -185,14 +186,17 @@ public class TeamDAO extends DAO {
 	/**
 	 * Inserts a new team to the database.
 	 * @param newTeam The new Team Value Object
+	 * @return The Id of the team inserted
 	 * @throws SQLException
 	 * @throws TeamAlreadyExistsException 
 	 */
-	public void insertTeam(TeamVO newTeam) throws SQLException, ItemAlreadyException {
+	public int insertTeam(TeamVO newTeam) throws SQLException, ItemAlreadyException {
 		if (existsTeamName(newTeam.getName())) {
 			throw new ItemAlreadyException("team", "name", newTeam.getName());
 		}
+		int teamId = -1;
 		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
 					new String[]{"Name", "ShortName", "FoundedYear", "Achievements", "Location", "Logo"},
@@ -204,12 +208,17 @@ public class TeamDAO extends DAO {
 							newTeam.getLocation(),
 							newTeam.getLogo()
 						});
-			preparedStmt = getConnection().prepareStatement(sql);
+			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();
+			rs = preparedStmt.getGeneratedKeys();
+            if(rs.next()) {
+            	teamId = rs.getInt(1);
+            }
 		}
 		finally {
-			super.closeConnection(preparedStmt);
+			super.closeConnection(preparedStmt, rs);
 		}
+		return teamId;
 	}
 	
 	public TeamVO getUserTeam(String username) throws SQLException {

@@ -1,16 +1,9 @@
-package com.devdream.db.vo;
+package com.devdream.model;
 
-import com.devdream.annotation.DBKey;
-import com.devdream.annotation.DBKey.Key;
+public class Performance {
 
-public class PerformanceVO {
-
-	@DBKey(key=Key.PRIMARY)
-	private int id;
-	@DBKey(key=Key.FOREIGN, REFERENCES="Games", ON="Id")
-	private int idGame;
-	@DBKey(key=Key.FOREIGN, REFERENCES="Teams", ON="Id")
-	private int idTeam;
+	//
+	// Attributes
 	private int goals;
 	private int shots;
 	private int passes;
@@ -19,11 +12,11 @@ public class PerformanceVO {
 	private int corners;
 	private float possession;
 	
-	public PerformanceVO(int id, int idGame, int idTeam, int goals, int shots, int passes, int fouls, int offsides,
-			int corners, float possession) {
-		this.id = id;
-		this.idGame = idGame;
-		this.idTeam = idTeam;
+	//
+	// Constructors
+	protected Performance() {}
+	
+	public Performance(int goals, int shots, int passes, int fouls, int offsides, int corners, float possession) {
 		this.goals = goals;
 		this.shots = shots;
 		this.passes = passes;
@@ -32,24 +25,9 @@ public class PerformanceVO {
 		this.corners = corners;
 		this.possession = possession;
 	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getIdGame() {
-		return idGame;
-	}
-	public void setIdGame(int idGame) {
-		this.idGame = idGame;
-	}
-	public int getIdTeam() {
-		return idTeam;
-	}
-	public void setIdTeam(int idTeam) {
-		this.idTeam = idTeam;
-	}
+
+	//
+	// Getters and setters
 	public int getGoals() {
 		return goals;
 	}
@@ -89,8 +67,8 @@ public class PerformanceVO {
 	public float getPossession() {
 		return possession;
 	}
-	public void setPossession(float possession) {
-		this.possession = possession;
+	public void setPossesion(float possesion) {
+		this.possession = possesion;
 	}
 
 }

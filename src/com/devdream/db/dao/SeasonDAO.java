@@ -57,5 +57,5 @@ public class SeasonDAO extends DAO {
 		}
 		return seasonsVO;
 	}
-	
+
 }

@@ -59,6 +59,31 @@ public class TeamController extends Controller {
 	}
 	
 	/**
+	 * Inserts a team for an user.
+	 * @param username
+	 * @param name
+	 * @param shortName
+	 * @param foundedYear
+	 * @param achievements
+	 * @param location
+	 * @param logo
+	 * @throws SQLException
+	 * @throws ItemAlreadyException
+	 * @throws InvalidInputException
+	 */
+	public void submitUserTeam(String username, String name, String shortName, String foundedYear, int achievements,
+			String location, String logo) throws SQLException, ItemAlreadyException, InvalidInputException
+	{
+		TeamValidator teamValidator = new TeamValidator(name, shortName, foundedYear, achievements, location, logo);
+		teamValidator.validate();
+		TeamDAO teamDAO = new TeamDAO();
+		int teamId = teamDAO.insertTeam(new TeamVO(name, shortName,
+				teamValidator.getFoundedYear(),achievements, location, logo));
+		UserDAO userDAO = new UserDAO();
+		userDAO.addTeam(username, teamId);
+	}
+	
+	/**
 	 * Submits a new team.
 	 * @param name
 	 * @param shortName

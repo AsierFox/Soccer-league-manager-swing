@@ -93,7 +93,7 @@ public class PlayersTable extends JTable {
 		if (col < 0 || row < 0) {
 			return null;
 		}
-		// TODO Edit player
+		Player selectedPlayer = players.get(Integer.valueOf((String) model.getValueAt(row, DORSAL_COL)));
 		return super.getCellEditor();
 	}
 	

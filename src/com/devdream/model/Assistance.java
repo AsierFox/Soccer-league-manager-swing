@@ -1,4 +1,5 @@
 package com.devdream.model;
 
-public class Goal {
+public class Assistance {
+
 }

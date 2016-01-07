@@ -38,7 +38,6 @@ public class MainView extends View {
 	private LeagueController leagueController;
 	
 	private boolean hasUserTeam;
-	private boolean hasTeamPlayers;
 	private boolean isLeagueUnderway;
 	
 	private JTabbedPane personalInformationTabbedPane;
@@ -72,7 +71,6 @@ public class MainView extends View {
 		}
 		
 		hasUserTeam = teamController.hasUserTeam();
-		hasTeamPlayers = teamController.hasTeamPlayers();
 		isLeagueUnderway = leagueController.isLeagueUnderway();
 		
 		loadUI();
@@ -103,10 +101,7 @@ public class MainView extends View {
 		if (hasUserTeam) {
 			loadUserTab();
 			loadTeamPane(teamController.getUserTeam());
-			
-			if (hasTeamPlayers) {
-				loadTeamPlayersTab(teamController.getTeamPlayers());
-			}
+			loadTeamPlayersTab(teamController.getTeamPlayers());
 			
 			// Only if the user has a team will be able to create a league
 			if (isLeagueUnderway) {
@@ -248,15 +243,7 @@ public class MainView extends View {
 		personalInformationTabbedPane.addTab("Players", renderImage(ImagePath.TEAM_TAB_ICON), playersPanel, "Team players tab");
 		playersPanel.setLayout(null);
 		playersPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team players", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		
-		JScrollPane playersTableScrollPane = new JScrollPane();
-		playersTableScrollPane.setBounds(10, 134, 364, 322);
-		playersPanel.add(playersTableScrollPane);
-		
-		playersTable = new PlayersTable(userTeamPlayers);
-		playersTable.update();
-		playersTableScrollPane.setViewportView(playersTable);
-		
+				
 		JLabel forPlayersTableLabel = new JLabel("Players");
 		forPlayersTableLabel.setBounds(10, 109, 85, 14);
 		playersPanel.add(forPlayersTableLabel);
@@ -268,6 +255,14 @@ public class MainView extends View {
 		deletePlayerButton = new JButton("Delete player");
 		deletePlayerButton.setBounds(196, 58, 131, 23);
 		playersPanel.add(deletePlayerButton);
+		
+		JScrollPane playersTableScrollPane = new JScrollPane();
+		playersTableScrollPane.setBounds(10, 134, 364, 322);
+		playersPanel.add(playersTableScrollPane);
+		
+		playersTable = new PlayersTable(userTeamPlayers);
+		playersTable.update();
+		playersTableScrollPane.setViewportView(playersTable);
 	}
 	
 	/**
@@ -345,13 +340,22 @@ public class MainView extends View {
 		leagueEndDateLabel.setBounds(175, 119, 91, 14);
 		leaguePanel.add(leagueEndDateLabel);
 		
-		JLabel forLeaguePeriodLabel = new JLabel("Days left");
+		JLabel forLeaguePeriodLabel = new JLabel("League period");
 		forLeaguePeriodLabel.setBounds(24, 154, 99, 14);
 		leaguePanel.add(forLeaguePeriodLabel);
 		
 		JLabel leaguePeriodLabel = new JLabel(Integer.toString(currentLeague.getPeriod()));
 		leaguePeriodLabel.setBounds(175, 154, 91, 14);
 		leaguePanel.add(leaguePeriodLabel);
+		
+
+		JLabel forLeagueLeftDaysLabel = new JLabel("Days left");
+		forLeagueLeftDaysLabel.setBounds(24, 174, 99, 14);
+		leaguePanel.add(forLeagueLeftDaysLabel);
+		
+		JLabel leagueLeftDaysLabel = new JLabel(Integer.toString(currentLeague.getLeftDays()));
+		leagueLeftDaysLabel.setBounds(175, 174, 91, 14);
+		leaguePanel.add(leagueLeftDaysLabel);
 		
 		JLabel forLeagueNumberSeasonsLabel = new JLabel("Number of seasons");
 		forLeagueNumberSeasonsLabel.setBounds(24, 195, 111, 14);
@@ -373,15 +377,15 @@ public class MainView extends View {
 		viewSeasonButton.setBounds(86, 23, 237, 48);
 		seasonsPanel.add(viewSeasonButton);
 		
-		JPanel matchesPanel = new JPanel();
-		matchesPanel.setBorder(new TitledBorder(null, "Matches", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		matchesPanel.setBounds(10, 93, 364, 353);
-		seasonsPanel.add(matchesPanel);
-		matchesPanel.setLayout(null);
+		JPanel gamesPanel = new JPanel();
+		gamesPanel.setBorder(new TitledBorder(null, "Games", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		gamesPanel.setBounds(10, 93, 364, 353);
+		seasonsPanel.add(gamesPanel);
+		gamesPanel.setLayout(null);
 		
 		JScrollPane matchesTableScrollPane = new JScrollPane();
 		matchesTableScrollPane.setBounds(10, 24, 344, 318);
-		matchesPanel.add(matchesTableScrollPane);
+		gamesPanel.add(matchesTableScrollPane);
 		
 		seasonsTable = new SeasonsTable(leagueController.getLeagueSeasons()); // TODO Take this from League object (CHANGE IN CONTROLLER TO ADD TO ITS ARRAYLIST ATTR)
 		seasonsTable.update();
@@ -411,27 +415,28 @@ public class MainView extends View {
 			});
 			
 			newOpponentButton.addActionListener((e) -> new CreateTeamView(teamController, opponentTeamsTable));
-			if (hasTeamPlayers) {
-				newPlayerButton.addActionListener((e) -> new CreatePlayerView(teamController, playersTable));
-				
-				deletePlayerButton.addActionListener((e) -> {
-					try {
-						Player selectedPlayer = playersTable.getSelectedPlayer();
-						teamController.deleteTeamPlayer(selectedPlayer.getDorsal());
-						playersTable.removePlayer(selectedPlayer);
-						Alert.showInfo(this, "Player deleted!");
-					} catch (NotTableItemSelectedException err) {
-						Alert.showError(this, err.getMessage());
-					} catch (SQLException err) {
-						Alert.showError(this, "Deletion could not be completed!");
-					}
-				});
-			}
+		
+			newPlayerButton.addActionListener((e) -> new CreatePlayerView(teamController, playersTable));
+			
+			deletePlayerButton.addActionListener((e) -> {
+				try {
+					Player selectedPlayer = playersTable.getSelectedPlayer();
+					teamController.deleteTeamPlayer(selectedPlayer.getDorsal());
+					playersTable.removePlayer(selectedPlayer);
+					
+					Alert.showInfo(this, "Player deleted!");
+				} catch (NotTableItemSelectedException err) {
+					Alert.showError(this, err.getMessage());
+				} catch (SQLException err) {
+					Alert.showError(this, "Deletion could not be completed!");
+				}
+			});
+			
 			if (isLeagueUnderway) {
 				viewSeasonButton.addActionListener((e) -> {
 					try {
 						Season selectedSeason = seasonsTable.getSelectedSeason();
-						new SeasonGameView(selectedSeason);
+						new SeasonGameView(teamController, selectedSeason);
 						dispose();
 					} catch (NotTableItemSelectedException err) {
 						Alert.showError(this, err.getMessage());
@@ -444,7 +449,8 @@ public class MainView extends View {
 		}
 		else {
 			createNewTeamButton.addActionListener((e) -> {
-				System.out.println("CREATE NEW TEAM\n");
+				new CreateUserTeamView(teamController, Controller.getLoggedUser());
+				dispose();
 			});
 		}
 	}
@@ -456,9 +462,9 @@ public class MainView extends View {
 	}
 	
 	private void update() {
-		opponentTeamsTable.update();
+		if (hasUserTeam) opponentTeamsTable.update();
 		playersTable.update();
-		seasonsTable.update();
+		if (isLeagueUnderway) seasonsTable.update();
 	}
 
 }

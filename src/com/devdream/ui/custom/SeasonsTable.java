@@ -72,7 +72,7 @@ public class SeasonsTable extends JTable {
 	public Season getSelectedSeason() throws NotTableItemSelectedException {
 		int selectedRowIndex = getSelectedRow();
 		if (selectedRowIndex <= -1) {
-			throw new NotTableItemSelectedException("season");
+			throw new NotTableItemSelectedException("season game");
 		}
 		return seasons.get(Integer.parseInt((String) model.getValueAt(selectedRowIndex, ID_COL)));
 	}

@@ -31,11 +31,6 @@ import com.devdream.util.DateHelper;
 public class SQLiteTest {
 
 	public static void main(String[] args) throws SQLException, ItemAlreadyException {
-		/*
-		 PRAGMA writable_schema = 1;
-		 delete from sqlite_master where type = 'table';
-		 PRAGMA writable_schema = 0;
-		 */
 //		createTables();
 //		insertValues();
 //		selectValues();
@@ -95,27 +90,27 @@ public class SQLiteTest {
 	}
 	
 	private static void insertValues() throws SQLException, ItemAlreadyException {
-		TeamDAO teamDAO = new TeamDAO();
-		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
-		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));
-		teamDAO.insertTeam(new TeamVO("HomeTeam", "HT", 2011, 0, "Hawaii", "team-default.png"));
-		teamDAO.insertTeam(new TeamVO("AwayTeam", "AT", 2012, 0, "Los Angeles", "team-default.png"));
-		
-		PlayerDAO playerDAO = new PlayerDAO();
-		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 32, 10, "Forward"));
-		playerDAO.insertPlayer(new PlayerVO(1, "Andoni", "ASds", 28, 6, "Defence"));
+//		TeamDAO teamDAO = new TeamDAO();
+//		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
+//		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));
+//		teamDAO.insertTeam(new TeamVO("HomeTeam", "HT", 2011, 0, "Hawaii", "team-default.png"));
+//		teamDAO.insertTeam(new TeamVO("AwayTeam", "AT", 2012, 0, "Los Angeles", "team-default.png"));
+//		
+//		PlayerDAO playerDAO = new PlayerDAO();
+//		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 32, 10, "Forward"));
+//		playerDAO.insertPlayer(new PlayerVO(1, "Andoni", "ASds", 28, 6, "Defence"));
 
 		UserDAO userDAO = new UserDAO();
 		userDAO.insertUser(new UserVO(1, "mikel", "123", "Mikel", "Linares"));
 		
-		LeagueDAO leagueDAO = new LeagueDAO();
-		leagueDAO.insertLeague(new LeagueVO("25/10/2015", "31/12/2015", "MyLeague", "League description", 1));
-		
-		GameDAO gameDAO = new GameDAO();
-		gameDAO.insertGame(new GameVO(3, 4));
-		
-		SeasonDAO seasonDAO = new SeasonDAO();
-		seasonDAO.insertSeason(new SeasonVO(1, 3, "28/12/2015"));
+//		LeagueDAO leagueDAO = new LeagueDAO();
+//		leagueDAO.insertLeague(new LeagueVO("25/10/2015", "31/12/2015", "MyLeague", "League description", 1));
+//		
+//		GameDAO gameDAO = new GameDAO();
+//		gameDAO.insertGame(new GameVO(3, 4));
+//		
+//		SeasonDAO seasonDAO = new SeasonDAO();
+//		seasonDAO.insertSeason(new SeasonVO(1, 3, "28/12/2015"));
 	}
 	
 	private static void tableExists() {

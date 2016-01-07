@@ -28,5 +28,5 @@ public class LoginController extends Controller {
 		
 		return super.setLoggedUser(user);
 	}
-	
+
 }

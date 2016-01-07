@@ -9,13 +9,16 @@ public class GoalVO {
 	private int id;
 	@DBKey(key=Key.FOREIGN, REFERENCES="Games", ON="Id")
 	private int idGame;
+	@DBKey(key=Key.FOREIGN, REFERENCES="Teams", ON="Id")
+	private int idTeam;
 	@DBKey(key=Key.FOREIGN, REFERENCES="Players", ON="Id")
 	private int idPlayer;
 	private int score;
 	
-	public GoalVO(int id, int idGame, int idPlayer, int score) {
+	public GoalVO(int id, int idGame, int idTeam, int idPlayer, int score) {
 		this.id = id;
 		this.idGame = idGame;
+		this.idTeam = idTeam;
 		this.idPlayer = idPlayer;
 		this.score = score;
 	}
@@ -31,6 +34,12 @@ public class GoalVO {
 	}
 	public void setIdGame(int idGame) {
 		this.idGame = idGame;
+	}
+	public int getIdTeam() {
+		return idTeam;
+	}
+	public void setIdTeam(int idTeam) {
+		this.idTeam = idTeam;
 	}
 	public int getIdPlayer() {
 		return idPlayer;

@@ -21,14 +21,15 @@ public class GameDAO extends DAO {
 	 * @return The Id of the game inserted
 	 * @throws SQLException
 	 */
-	public int insertGame(GameVO newGameVO) throws SQLException {
+	public int insertSeasonGame(int idSeason, GameVO newGameVO) throws SQLException {
 		int gameId = -1;
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
-					new String[]{"IdHomeTeam", "IdAwayTeam"},
+					new String[]{"IdSeason", "IdHomeTeam", "IdAwayTeam"},
 					new String[]{
+							Integer.toString(idSeason),
 							Integer.toString(newGameVO.getIdHomeTeam()),
 							Integer.toString(newGameVO.getIdAwayTeam())
 						});
@@ -45,4 +46,28 @@ public class GameDAO extends DAO {
 		return gameId;
 	}
 	
+	/**
+	 * Gets the season game with the specific Id.
+	 * @param id The Id of the game to search for
+	 * @return
+	 * @throws SQLException
+	 */
+	public GameVO getGameById(int id) throws SQLException {
+		GameVO game = null;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = QueryBuilder.createSelect(getClass(), "*") + " WHERE Id = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, id);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) {
+				game = new GameVO(rs.getInt("id"), rs.getInt("IdSeason"), rs.getInt("IdHomeTeam"), rs.getInt("IdAwayTeam"));
+			}
+		} finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return game;
+	}
+
 }

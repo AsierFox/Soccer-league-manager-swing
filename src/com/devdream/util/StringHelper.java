@@ -12,16 +12,19 @@ import java.text.DecimalFormat;
  */
 public class StringHelper {
 
+	private StringHelper() {}
+	
 	/**
 	 * Checks if a String is empty or null.
 	 * @param string The string to check the emptiness
 	 * @return True if it is an empty String
 	 */
 	public static boolean isStringNull(String s) {
+		if (s == null) return true;
 		s = s.trim();
-		return s != null && s.isEmpty();
+		return s.isEmpty();
 	}
-
+	
 	/**
 	 * Capitalizes the first letter of a text.
 	 * @param text

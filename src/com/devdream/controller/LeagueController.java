@@ -12,12 +12,10 @@ import com.devdream.db.dao.TeamDAO;
 import com.devdream.db.vo.GameVO;
 import com.devdream.db.vo.LeagueVO;
 import com.devdream.db.vo.SeasonVO;
-import com.devdream.db.vo.TeamVO;
 import com.devdream.exception.InvalidInputException;
 import com.devdream.exception.LeagueUnderwayException;
-import com.devdream.model.Game;
 import com.devdream.model.League;
-import com.devdream.model.Season;
+import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
 import com.devdream.validator.LeagueValidator;
 
@@ -102,39 +100,26 @@ public class LeagueController extends Controller {
 		for (Team team : teams) {
 			teamIds[i++] = teamDAO.getTeamIdByName(team.getName());
 		}
-		
 		int userTeamId = teamDAO.getUserTeam(Controller.getLoggedUser().getUsername()).getId();
 		int[][] games = generateSeasonsGamePairing(teamIds, userTeamId);
 		for (i = 0; i < numSeasons; ++i) {
-			int gameId = gameDAO.insertGame(new GameVO(games[i][0], games[i][1]));
-			seasonDAO.insertSeason(new SeasonVO(leagueId, gameId));
+			int idSeason = seasonDAO.insertSeason(new SeasonVO(leagueId));
+			gameDAO.insertSeasonGame(idSeason, new GameVO(games[i][0], games[i][1]));
 		}
 	}
 	
 	/** Returns the league seasons games. */
-	public HashMap<Integer, Season> getLeagueSeasons() {
-		HashMap<Integer, Season> seasons = new HashMap<>();
+	public HashMap<Integer, SeasonGame> getLeagueSeasonGames() {
+		HashMap<Integer, SeasonGame> seasonGames = new HashMap<>();
 		SeasonDAO seasonDAO = new SeasonDAO();
-		TeamDAO teamDAO = new TeamDAO();
 		try {
-			ArrayList<SeasonVO> seasonsVO = seasonDAO.getLeagueSeasonsGameAndDate(leagueVO.getId());
-			for (SeasonVO seasonVO : seasonsVO) {
-				int idGame = seasonVO.getIdGame();
-				TeamVO homeTeamVO = teamDAO.getGameHomeTeamById(idGame);
-				TeamVO awayTeamVO = teamDAO.getGameAwayTeamById(idGame);
-				
-				Team homeTeam = new Team(homeTeamVO.getId(), homeTeamVO.getName(), homeTeamVO.getShortName(),
-						homeTeamVO.getFoundedYear(), homeTeamVO.getAchievements(), homeTeamVO.getLocation(), homeTeamVO.getLogo());
-				Team awayTeam = new Team(awayTeamVO.getId(), awayTeamVO.getName(), awayTeamVO.getShortName(),
-						awayTeamVO.getFoundedYear(), awayTeamVO.getAchievements(), awayTeamVO.getLocation(), awayTeamVO.getLogo());
-				
-				Game game = new Game(idGame, homeTeam, awayTeam);
-				seasons.put(game.getId(), new Season(game, seasonVO.getDate()));
+			for (SeasonGame sg : seasonDAO.getLeagueSeasonsGamesAndDate(leagueVO.getId())) {
+				seasonGames.put(sg.getGame().getId(), sg);
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		return seasons;
+		return seasonGames;
 	}
 	
 	//

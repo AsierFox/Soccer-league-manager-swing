@@ -18,6 +18,13 @@ import com.devdream.ui.custom.Alert;
 public abstract class DBConnectionManager {
 
 	//
+	// Global
+	// TODO Getting the absolute path!
+	public static final String DB_PATH = System.getProperty("user.dir") + "/db/";
+	public static final String DB_FILE_EXT = ".db3";
+	public static final String DB_FILENAME = "soccermanager" + DB_FILE_EXT;
+	
+	//
 	// Attributes
 	private static String DB_DRIVER;
 	private static String DB_CONNECTION;
@@ -46,8 +53,7 @@ public abstract class DBConnectionManager {
 		DBProperties properties = new DBProperties();
 		
 		DB_DRIVER = properties.getProperty(DBProperties.DRIVER);
-		// TODO Getting the absolute path!
-		DB_CONNECTION = properties.getProperty(DBProperties.SERVER) + System.getProperty("user.dir") + "\\db\\" + properties.getProperty(DBProperties.DATABASE);
+		DB_CONNECTION = properties.getProperty(DBProperties.SERVER) + DB_PATH + properties.getProperty(DBProperties.DATABASE);
 		
 		properties.close();
 	}

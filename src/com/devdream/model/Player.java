@@ -1,7 +1,5 @@
 package com.devdream.model;
 
-import java.util.ArrayList;
-
 public class Player {
 
 	//
@@ -16,25 +14,31 @@ public class Player {
 	private int age;
 	private String position;
 	private int dorsal;
-	private ArrayList<Goal> goals; // TODO this?
-	private ArrayList<Assistance> assistances; // TODO this?
 	
 	//
 	// Constructors
+	public Player() {}
+	
 	public Player(String firstName, String surname, int age, int dorsal, String position) {
 		this.firstName = firstName;
 		this.surname = surname;
 		this.age = age;
 		this.dorsal = dorsal;
 		this.position = position;
-		goals = new ArrayList<>();
-		assistances = new ArrayList<>();
 	}
 	
-	public Player(String firstName, String surname, int age, int dorsal, String position, ArrayList<Goal> goals, ArrayList<Assistance> assistances) {
-		this(firstName, surname, age, dorsal, position);
-		this.goals = goals;
-		this.assistances = assistances;
+	//
+	// Methods
+	public static Player getAnonymousPlayer() {
+		return new Player("Anonymous", "anonymous", 0, 0, "retired");
+	}
+	
+	public void modifyPlayer(String firstName, String surname, int age, int dorsal, String position) {
+		setFirstName(firstName);
+		setSurname(surname);
+		setAge(age);
+		setPosition(position);
+		setDorsal(dorsal);
 	}
 	
 	//
@@ -68,18 +72,6 @@ public class Player {
 	}
 	public void setPosition(String position) {
 		this.position = position;
-	}
-	public ArrayList<Goal> getGoals() {
-		return goals;
-	}
-	public void setGoals(ArrayList<Goal> goals) {
-		this.goals = goals;
-	}
-	public ArrayList<Assistance> getAssistances() {
-		return assistances;
-	}
-	public void setAssistances(ArrayList<Assistance> assistances) {
-		this.assistances = assistances;
 	}
 
 }

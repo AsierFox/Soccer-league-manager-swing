@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 
 import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Player;
@@ -30,14 +29,10 @@ public class PlayersTable extends JTable {
 	
 	//
 	// Constructors
-	private PlayersTable() {
+	public PlayersTable(HashMap<Integer, Player> elements) {
 		model = new DefaultTableModel();
 		setModel(model);
 		setOffersTableHeader();
-	}
-	
-	public PlayersTable(HashMap<Integer, Player> elements) {
-		this();
 		this.players = elements;
 	}
 	
@@ -58,18 +53,22 @@ public class PlayersTable extends JTable {
 	public void update() {
 		model.setRowCount(0);
 		for (Player p : players.values()) {
-			addPlayer(p);
+			addRow(p);
 		}
 	}
 	
-	public void addPlayer(Player newPlayer) {
+	public void addRow(Player player) {
 		Vector<String> row = new Vector<String>();
-		row.addElement(newPlayer.getFirstName());
-		row.addElement(newPlayer.getSurname());
-		row.addElement(Integer.toString(newPlayer.getAge()));
-		row.addElement(Integer.toString(newPlayer.getDorsal()));
-		row.addElement(newPlayer.getPosition());
+		row.addElement(player.getFirstName());
+		row.addElement(player.getSurname());
+		row.addElement(Integer.toString(player.getAge()));
+		row.addElement(Integer.toString(player.getDorsal()));
+		row.addElement(player.getPosition());
 		model.addRow(row);
+	}
+	
+	public void addPlayer(Player newPlayer) {
+		addRow(newPlayer);
 		players.put(newPlayer.getDorsal(), newPlayer);
 	}
 	
@@ -87,20 +86,10 @@ public class PlayersTable extends JTable {
 		return players.get(selectedPlayerDorsal);
 	}
 	
-	@Override
-	public TableCellEditor getCellEditor() {
-		int col = getEditingColumn(), row = getEditingRow();
-		if (col < 0 || row < 0) {
-			return null;
-		}
-		Player selectedPlayer = players.get(Integer.valueOf((String) model.getValueAt(row, DORSAL_COL)));
-		return super.getCellEditor();
-	}
-	
-	/** Sets the cells editable. */
+	/** Sets the cells to not editable. */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return true;
+		return false;
 	}
 	
 	//

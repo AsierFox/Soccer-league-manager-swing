@@ -2,16 +2,16 @@ package com.devdream.ui;
 
 import java.sql.SQLException;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.TeamController;
 import com.devdream.exception.InvalidInputException;
-import com.devdream.exception.ItemAlreadyException;
+import com.devdream.exception.RecordAlreadyException;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.TeamsTable;
@@ -29,8 +29,6 @@ public class CreateTeamView extends View {
 	private JTextField shortNameTextField;
 	private JTextField foundedYearTextField;
 	private JTextField locationTextField;
-	
-	private JSpinner achievementsSpinner;
 	
 	private JButton newTeamButton;
 	private JButton cancelButton;
@@ -91,14 +89,6 @@ public class CreateTeamView extends View {
 		forFoundedYearLabel.setBounds(193, 48, 86, 14);
 		panel.add(forFoundedYearLabel);
 		
-		JLabel forAchievementsLabel = new JLabel("Achievements");
-		forAchievementsLabel.setBounds(193, 122, 86, 14);
-		panel.add(forAchievementsLabel);
-		
-		achievementsSpinner = new JSpinner();
-		achievementsSpinner.setBounds(193, 149, 46, 20);
-		panel.add(achievementsSpinner);
-		
 		JLabel forLocationLabel = new JLabel("Location");
 		forLocationLabel.setBounds(337, 48, 86, 14);
 		panel.add(forLocationLabel);
@@ -113,10 +103,14 @@ public class CreateTeamView extends View {
 		panel.add(lblLogo);
 		
 		newTeamButton = new JButton("New team");
+		newTeamButton.setIcon(renderImage(ImagePath.CREATE_ICON));
+		newTeamButton.setHorizontalTextPosition(AbstractButton.LEFT);
 		newTeamButton.setBounds(280, 488, 239, 60);
 		getContentPane().add(newTeamButton);
 		
 		cancelButton = new JButton("Cancel");
+		cancelButton.setIcon(renderImage(ImagePath.CANCEL_RETURN_ICON));
+		cancelButton.setHorizontalTextPosition(AbstractButton.LEFT);
 		cancelButton.setBounds(550, 496, 179, 45);
 		getContentPane().add(cancelButton);
 	}
@@ -128,20 +122,19 @@ public class CreateTeamView extends View {
 				String name = nameTextField.getText();
 				String shortName = shortNameTextField.getText();
 				String foundedYear = foundedYearTextField.getText();
-				int achievements = (Integer) achievementsSpinner.getValue();
 				String location = locationTextField.getText();
 				String logo = ""; // TODO GET PATH OF LOGO
 				
-				teamController.submitTeam(name, shortName, foundedYear, achievements, location, logo);
-				teamsTable.addTeam(new Team(name, shortName, Integer.parseInt(foundedYear), achievements, location, logo));
+				teamController.submitTeam(name, shortName, foundedYear, location, logo);
+				teamsTable.addTeam(new Team(name, shortName, Integer.parseInt(foundedYear), location, logo));
 				
 				Alert.showInfo(this, "Team created!");
-				if (Alert.showConfirm(this, "Return to the main view", "Do you wish to return to the main view?") == 0) {
+				if (Alert.showConfirm(this, "Return to the main view", "Do you wish to return to the main view?")) {
 					dispose();
 				} else {
 					clearData();
 				}
-			} catch (ItemAlreadyException | InvalidInputException err) {
+			} catch (RecordAlreadyException | InvalidInputException err) {
 				Alert.showError(this, err.getMessage());
 			} catch(SQLException err) {
 				Alert.showError(this, "Unable to connect to the database.");
@@ -155,7 +148,6 @@ public class CreateTeamView extends View {
 		nameTextField.setText("");
 		shortNameTextField.setText("");
 		foundedYearTextField.setText("");
-		achievementsSpinner.setValue(0);
 		locationTextField.setText("");
 		// TODO LOGO PATH
 	}

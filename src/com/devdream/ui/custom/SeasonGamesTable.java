@@ -8,14 +8,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.devdream.exception.NotTableItemSelectedException;
-import com.devdream.model.Season;
+import com.devdream.model.SeasonGame;
 
 /**
  * This class creates a table with season matches.
  * 
  * @author Asier Gonzalez
  */
-public class SeasonsTable extends JTable {
+public class SeasonGamesTable extends JTable {
 	private static final long serialVersionUID = 938427961541059122L;
 	
 	//
@@ -27,19 +27,19 @@ public class SeasonsTable extends JTable {
 	private TableColumn hiddenIdCol;
 	
 	private DefaultTableModel model;
-	private HashMap<Integer, Season> seasons;
+	private HashMap<Integer, SeasonGame> seasonGames;
 	
 	//
 	// Constructors
-	private SeasonsTable() {
+	private SeasonGamesTable() {
 		model = new DefaultTableModel();
 		setModel(model);
 		setOffersTableHeader();
 	}
 	
-	public SeasonsTable(HashMap<Integer, Season> seasons) {
+	public SeasonGamesTable(HashMap<Integer, SeasonGame> seasonGames) {
 		this();
-		this.seasons = seasons;
+		this.seasonGames = seasonGames;
 	}
 	
 	//
@@ -58,23 +58,23 @@ public class SeasonsTable extends JTable {
 	/** Updates the JTable with the updates collection. */
 	public void update() {
 		model.setRowCount(0);
-		for (Season s : seasons.values()) {
+		for (SeasonGame s : seasonGames.values()) {
 			Vector<String> row = new Vector<String>();
 			row.addElement(Integer.toString(s.getGame().getId()));
 			row.addElement(s.getGame().getHomeTeam().getName());
 			row.addElement(s.getGame().getAwayTeam().getName());
-			row.addElement(s.getDate().isEmpty() ? s.getDate() : "Not set");
+			row.addElement(s.getDate());
 			model.addRow(row);
 		}
 		getColumnModel().removeColumn(hiddenIdCol);
 	}
 	
-	public Season getSelectedSeason() throws NotTableItemSelectedException {
+	public SeasonGame getSelectedSeasonGame() throws NotTableItemSelectedException {
 		int selectedRowIndex = getSelectedRow();
 		if (selectedRowIndex <= -1) {
 			throw new NotTableItemSelectedException("season game");
 		}
-		return seasons.get(Integer.parseInt((String) model.getValueAt(selectedRowIndex, ID_COL)));
+		return seasonGames.get(Integer.parseInt((String) model.getValueAt(selectedRowIndex, ID_COL)));
 	}
 	
 	/** Sets the cells no editable. */
@@ -83,4 +83,8 @@ public class SeasonsTable extends JTable {
 		return false;
 	}
 	
+	public HashMap<Integer, SeasonGame> getSeasons() {
+		return seasonGames;
+	}
+
 }

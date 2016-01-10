@@ -1,8 +1,8 @@
 package com.devdream.ui.custom;
 
 import java.awt.Font;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -11,8 +11,6 @@ import javax.swing.JComboBox;
  * Personalized ComboBox for my custom objects.
  * 
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public class MyComboBox <K, V> extends JComboBox<V> {
 
@@ -21,11 +19,11 @@ public class MyComboBox <K, V> extends JComboBox<V> {
 	//
 	// Attributes
 	private DefaultComboBoxModel<V> model;
-	private HashMap<K, V> items;
+	private Map<K, V> items;
 	
 	//
 	// Constructors
-    public MyComboBox(HashMap<K, V> items) {
+    public MyComboBox(Map<K, V> items) {
     	this.items = items;
     	setFont(new Font("SansSerif", Font.PLAIN, 12));
     	update();
@@ -33,17 +31,23 @@ public class MyComboBox <K, V> extends JComboBox<V> {
     
     //
     // Methods
-    public V getSelected() {
-		return items.get(getSelectedIndex());
-    }
-    
     public void update() {
         model = new DefaultComboBoxModel<V>();
         setModel(model);
-        Iterator<V> it = items.values().iterator();
-        while (it.hasNext()) {
+        for (Iterator<V> it = items.values().iterator(); it.hasNext(); ) {
         	model.addElement(it.next());
         }
     }
+    
+    public K getSelected() {
+		return getKeyFromValue(model.getElementAt(getSelectedIndex()));
+    }
+    
+	private K getKeyFromValue(V value) {
+		for (K k : items.keySet())
+			if (items.get(k).equals(value))
+				return k;
+		return null;
+	}
 
 }

@@ -19,7 +19,7 @@ import com.devdream.db.vo.PlayerVO;
 import com.devdream.db.vo.SeasonVO;
 import com.devdream.db.vo.TeamVO;
 import com.devdream.db.vo.UserVO;
-import com.devdream.exception.ItemAlreadyException;
+import com.devdream.exception.RecordAlreadyException;
 import com.devdream.util.DateHelper;
 
 /**
@@ -30,7 +30,7 @@ import com.devdream.util.DateHelper;
 @SuppressWarnings("unused")
 public class SQLiteTest {
 
-	public static void main(String[] args) throws SQLException, ItemAlreadyException {
+	public static void main(String[] args) throws SQLException, RecordAlreadyException {
 //		createTables();
 //		insertValues();
 //		selectValues();
@@ -89,7 +89,7 @@ public class SQLiteTest {
 		}
 	}
 	
-	private static void insertValues() throws SQLException, ItemAlreadyException {
+	private static void insertValues() throws SQLException, RecordAlreadyException {
 //		TeamDAO teamDAO = new TeamDAO();
 //		teamDAO.insertTeam(new TeamVO("Test", "TT", 2015, 0, "Amurrio", "team-default.png"));
 //		teamDAO.insertTeam(new TeamVO("NoPlayers", "NP", 2012, 2, "Bilbao", "team-default.png"));
@@ -99,7 +99,7 @@ public class SQLiteTest {
 //		PlayerDAO playerDAO = new PlayerDAO();
 //		playerDAO.insertPlayer(new PlayerVO(1, "Asier", "Gonzalez", 32, 10, "Forward"));
 //		playerDAO.insertPlayer(new PlayerVO(1, "Andoni", "ASds", 28, 6, "Defence"));
-
+		
 		UserDAO userDAO = new UserDAO();
 		userDAO.insertUser(new UserVO(1, "mikel", "123", "Mikel", "Linares"));
 		

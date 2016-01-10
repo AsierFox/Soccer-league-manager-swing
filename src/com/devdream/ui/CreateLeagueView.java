@@ -2,6 +2,7 @@ package com.devdream.ui;
 
 import java.sql.SQLException;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -54,7 +55,7 @@ public class CreateLeagueView extends View {
 	//
 	// Constructors
 	public CreateLeagueView() {
-		super(false);
+		super();
 		getContentPane().setLayout(null);
 		
 		try {
@@ -81,28 +82,31 @@ public class CreateLeagueView extends View {
 		createLeaguePanel.setLayout(null);
 		
 		nameTextField = new JTextField();
-		nameTextField.setBounds(33, 65, 130, 32);
+		nameTextField.setBounds(22, 58, 196, 31);
 		createLeaguePanel.add(nameTextField);
-		
 		nameTextField.setColumns(10);
+		
 		JLabel forNameLabel = new JLabel("Name");
-		forNameLabel.setBounds(37, 40, 82, 14);
+		forNameLabel.setFont(FontStyle.BOLD_FONT);
+		forNameLabel.setBounds(22, 37, 82, 14);
 		createLeaguePanel.add(forNameLabel);
 		
 		JLabel forDescriptionLabel = new JLabel("Description");
-		forDescriptionLabel.setBounds(194, 40, 82, 14);
+		forDescriptionLabel.setFont(FontStyle.BOLD_FONT);
+		forDescriptionLabel.setBounds(22, 107, 82, 14);
 		createLeaguePanel.add(forDescriptionLabel);
 		
 		descriptionEditorPane = new JEditorPane();
-		descriptionEditorPane.setBounds(194, 65, 183, 87);
+		descriptionEditorPane.setBounds(22, 128, 298, 71);
 		createLeaguePanel.add(descriptionEditorPane);
 		
 		JLabel forStartDateLabel = new JLabel("Start date");
-		forStartDateLabel.setBounds(435, 69, 86, 14);
+		forStartDateLabel.setFont(FontStyle.BOLD_FONT);
+		forStartDateLabel.setBounds(413, 62, 86, 14);
 		createLeaguePanel.add(forStartDateLabel);
 		
 		JPanel startDatePanel = new JPanel();
-		startDatePanel.setBounds(531, 58, 236, 39);
+		startDatePanel.setBounds(509, 54, 236, 39);
 		createLeaguePanel.add(startDatePanel);
 		startDatePanel.setLayout(null);
 		
@@ -112,16 +116,18 @@ public class CreateLeagueView extends View {
 		startDatePanel.add(startDateTextField);
 		
 		startDateButton = new JButton("Start date");
+		startDateButton.setFont(FontStyle.BOLD_FONT);
 		startDateButton.setBounds(118, 10, 108, 23);
 		startDatePanel.add(startDateButton);
 
 		JLabel forEndDateLabel = new JLabel("End date");
-		forEndDateLabel.setBounds(435, 128, 86, 14);
+		forEndDateLabel.setFont(FontStyle.BOLD_FONT);
+		forEndDateLabel.setBounds(413, 124, 86, 14);
 		createLeaguePanel.add(forEndDateLabel);
 		
 		JPanel endDatePanel = new JPanel();
 		endDatePanel.setLayout(null);
-		endDatePanel.setBounds(531, 116, 236, 39);
+		endDatePanel.setBounds(509, 120, 236, 39);
 		createLeaguePanel.add(endDatePanel);
 		
 		endDateTextField = new DateObserverTextField();
@@ -138,10 +144,12 @@ public class CreateLeagueView extends View {
 		createLeaguePanel.add(avaliableOpponentsScrollPane);
 		
 		JLabel opponentsTeamsLabel = new JLabel("Opponents teams");
+		opponentsTeamsLabel.setFont(FontStyle.BOLD_FONT);
 		opponentsTeamsLabel.setBounds(435, 210, 196, 14);
 		createLeaguePanel.add(opponentsTeamsLabel);
 
 		JLabel forAvaliableOpponentsTable = new JLabel("Avaliable opponents teams");
+		forAvaliableOpponentsTable.setFont(FontStyle.BOLD_FONT);
 		forAvaliableOpponentsTable.setBounds(22, 210, 196, 14);
 		createLeaguePanel.add(forAvaliableOpponentsTable);
 		
@@ -157,18 +165,22 @@ public class CreateLeagueView extends View {
 		selectedOpponentsScrollPane.setViewportView(selectedOpponentsTable);
 		
 		addOpponentTeamButton = new JButton(">>");
-		addOpponentTeamButton.setBounds(355, 286, 70, 23);
+		addOpponentTeamButton.setBounds(355, 294, 70, 23);
 		createLeaguePanel.add(addOpponentTeamButton);
 		
 		removeOpponentTeamButton = new JButton("<<");
-		removeOpponentTeamButton.setBounds(355, 320, 70, 23);
+		removeOpponentTeamButton.setBounds(355, 328, 70, 23);
 		createLeaguePanel.add(removeOpponentTeamButton);
 		
 		createNewLeagueButton = new JButton("Create the new league");
+		createNewLeagueButton.setIcon(renderImage(ImagePath.CREATE_ICON));
+		createNewLeagueButton.setHorizontalTextPosition(AbstractButton.LEFT);
 		createNewLeagueButton.setBounds(305, 487, 233, 57);
 		getContentPane().add(createNewLeagueButton);
 		
 		cancelButton = new JButton("Cancel");
+		cancelButton.setIcon(renderImage(ImagePath.CANCEL_RETURN_ICON));
+		cancelButton.setHorizontalTextPosition(AbstractButton.LEFT);
 		cancelButton.setBounds(579, 494, 130, 42);
 		getContentPane().add(cancelButton);
 	}

@@ -27,13 +27,14 @@ public class LeagueDAO extends DAO {
 		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
-					new String[]{"StartDate", "EndDate", "Name", "Description", "NumSeasons"},
+					new String[]{"StartDate", "EndDate", "Name", "Description", "NumSeasons", "Period"},
 					new String[]{
 							newLeagueVO.getStartDate(),
 							newLeagueVO.getEndDate(),
 							newLeagueVO.getName(),
 							newLeagueVO.getDescription(),
-							Integer.toString(newLeagueVO.getNumSeasons())
+							Integer.toString(newLeagueVO.getNumSeasons()),
+							Integer.toString(DateHelper.getDatePeriod(newLeagueVO.getStartDate(), newLeagueVO.getEndDate()))
 						});
 			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();
@@ -90,7 +91,7 @@ public class LeagueDAO extends DAO {
 			while (rs.next()) {
 				if (!DateHelper.hasDatePeriodPassed(rs.getString("EndDate"))) {
 					leagueVO = new LeagueVO(rs.getInt("Id"), rs.getString("StartDate"), rs.getString("EndDate"),
-							rs.getString("Name"), rs.getString("Description"), rs.getInt("NumSeasons"));
+							rs.getString("Name"), rs.getString("Description"), rs.getInt("NumSeasons"), rs.getInt("Period"));
 					break; // Founded the underway league
 				}
 			}

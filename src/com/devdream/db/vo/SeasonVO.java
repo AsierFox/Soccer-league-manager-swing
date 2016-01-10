@@ -3,35 +3,40 @@ package com.devdream.db.vo;
 import com.devdream.annotation.DBKey;
 import com.devdream.annotation.DBKey.Key;
 
+/**
+ * The Value Object of the Season.
+ * 
+ * @author Asier Gonzalez
+ */
 public class SeasonVO {
 
 	@DBKey(key=Key.PRIMARY)
 	private int id;
 	@DBKey(key=Key.FOREIGN, REFERENCES="Leagues", ON="Id")
 	private int idLeague;
-	@DBKey(key=Key.FOREIGN, REFERENCES="Games", ON="Id")
-	private int idGame;
 	private String date;
 	
-	public SeasonVO(int idLeague, int idGame) {
+	public SeasonVO(int idLeague) {
 		this.idLeague = idLeague;
-		this.idGame = idGame;
 	}
-
-	public SeasonVO(int idGame, String date) {
-		this.idGame = idGame;
+	
+	public SeasonVO(String date) {
 		this.date = date;
 	}
 	
-	public SeasonVO(int idLeague, int idGame, String date) {
+	public SeasonVO(int idLeague, String date) {
 		this.idLeague = idLeague;
-		this.idGame = idGame;
 		this.date = date;
 	}
 	
-	public SeasonVO(int id, int idLeague, int idGame, String date) {
-		this(idLeague, idGame, date);
+	public SeasonVO(int id, int idLeague, String date) {
+		this(idLeague, date);
 		this.id = id;
+	}
+	
+	@Override
+	public String toString() {
+		return "SeasonVO [id=" + id + ", idLeague=" + idLeague + ", date=" + date + "]";
 	}
 	
 	public int getId() {
@@ -45,12 +50,6 @@ public class SeasonVO {
 	}
 	public void setIdLeague(int idLeague) {
 		this.idLeague = idLeague;
-	}
-	public int getIdGame() {
-		return idGame;
-	}
-	public void setIdGame(int idGame) {
-		this.idGame = idGame;
 	}
 	public String getDate() {
 		return date;

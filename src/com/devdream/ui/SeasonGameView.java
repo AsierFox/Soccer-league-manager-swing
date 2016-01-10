@@ -1,20 +1,28 @@
 package com.devdream.ui;
 
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.SeasonGameController;
-import com.devdream.controller.TeamController;
-import com.devdream.model.Season;
+import com.devdream.exception.InvalidInputException;
+import com.devdream.model.Performance;
+import com.devdream.model.Scorer;
+import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
+import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.DateObserverTextField;
+import com.devdream.ui.custom.MyList;
 import com.qt.datapicker.DatePicker;
 
 public class SeasonGameView extends View {
@@ -22,15 +30,15 @@ public class SeasonGameView extends View {
 	
 	//
 	// Attributes
-	private TeamController teamController;
 	private SeasonGameController seasonGameController;
 	
 	private JPanel gamePanel;
+	private JPanel homeTeamPanel;
+	private JPanel awayTeamPanel;
 	
 	private DateObserverTextField gameDateObserverTextField;
 	
 	private JTextField homeTeamGoalsTextField;
-	private JTextField homeTeamPossessionTextField;
 	private JTextField homeTeamShotsTextField;
 	private JTextField homeTeamPassesTextField;
 	private JTextField homeTeamFoulsTextField;
@@ -38,7 +46,6 @@ public class SeasonGameView extends View {
 	private JTextField homeTeamCornersTextField;
 	
 	private JTextField awayTeamGoalsTextField;
-	private JTextField awayTeamPossessionTextField;
 	private JTextField awayTeamShotsTextField;
 	private JTextField awayTeamPassesTextField;
 	private JTextField awayTeamFoulsTextField;
@@ -51,12 +58,11 @@ public class SeasonGameView extends View {
 	
 	//
 	// Constructors
-	public SeasonGameView(TeamController teamController, Season selectedSeason) { // TODO Controller for statistics and that
+	public SeasonGameView(SeasonGame selSeasonGame) {
 		super();
 		getContentPane().setLayout(null);
 		
-		this.teamController = teamController; // TODO I really need this on this class? (ONLY PASS THE USER TEAM)
-		seasonGameController = new SeasonGameController(selectedSeason);
+		seasonGameController = new SeasonGameController(selSeasonGame);
 		
 		loadUI();
 		loadListeners();
@@ -70,12 +76,12 @@ public class SeasonGameView extends View {
 	protected void loadUI() {
 		gamePanel = new JPanel();
 		gamePanel.setBorder(new TitledBorder(null, "Game", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		gamePanel.setBounds(69, 69, 728, 377);
+		gamePanel.setBounds(28, 48, 759, 427);
 		getContentPane().add(gamePanel);
 		gamePanel.setLayout(null);
 		
 		JLabel forSeasonTitleLabel = new JLabel("Season");
-		forSeasonTitleLabel.setBounds(231, 29, 46, 14);
+		forSeasonTitleLabel.setBounds(301, 23, 46, 14);
 		getContentPane().add(forSeasonTitleLabel);
 
 		JPanel gameDatePanel = new JPanel();
@@ -87,11 +93,8 @@ public class SeasonGameView extends View {
 		forGameDateLabel.setBounds(157, 36, 69, 14);
 		gamePanel.add(forGameDateLabel);
 		
-		JLabel seasonDateLabel = new JLabel("DATE");
-		seasonDateLabel.setBounds(314, 29, 86, 14);
-		getContentPane().add(seasonDateLabel);
-		
 		gameDateObserverTextField = new DateObserverTextField();
+		gameDateObserverTextField.setText(seasonGameController.getSeason().getDate());
 		gameDateObserverTextField.setEditable(false);
 		gameDateObserverTextField.setBounds(10, 11, 98, 20);
 		gameDatePanel.add(gameDateObserverTextField);
@@ -103,41 +106,145 @@ public class SeasonGameView extends View {
 		loadHomeTeam(seasonGameController.getHomeTeam());
 		loadAwayTeam(seasonGameController.getAwayTeam());
 		
+		// TODO Scorers!!
+//		loadScorers(seasonGameController.isUserHomeTeam() ? homeTeamPanel : awayTeamPanel);
+		
+		//TODO DESIGN
+		/*** */
+//		loadScorers(awayTeamPanel);
+		/*** */
+		
 		JLabel forGoalLabel = new JLabel("Goals");
-		forGoalLabel.setBounds(296, 163, 46, 14);
+		forGoalLabel.setBounds(358, 372, 46, 14);
 		gamePanel.add(forGoalLabel);
 		
 		JLabel forShotsLabel = new JLabel("Shots");
-		forShotsLabel.setBounds(296, 224, 46, 14);
+		forShotsLabel.setBounds(358, 172, 46, 14);
 		gamePanel.add(forShotsLabel);
 		
 		JLabel forPassesLabel = new JLabel("Passes");
-		forPassesLabel.setBounds(296, 249, 46, 14);
+		forPassesLabel.setBounds(358, 206, 46, 14);
 		gamePanel.add(forPassesLabel);
 		
 		JLabel forFoulsLabel = new JLabel("Fouls");
-		forFoulsLabel.setBounds(296, 283, 46, 14);
+		forFoulsLabel.setBounds(358, 237, 46, 14);
 		gamePanel.add(forFoulsLabel);
 		
 		JLabel forOffsidesLabel = new JLabel("Offsides");
-		forOffsidesLabel.setBounds(296, 308, 46, 14);
+		forOffsidesLabel.setBounds(358, 272, 46, 14);
 		gamePanel.add(forOffsidesLabel);
 		
 		JLabel forCornersLabel = new JLabel("Corners");
-		forCornersLabel.setBounds(296, 336, 46, 14);
+		forCornersLabel.setBounds(358, 298, 46, 14);
 		gamePanel.add(forCornersLabel);
 		
-		JLabel forPossessionLabel = new JLabel("Possesion %");
-		forPossessionLabel.setBounds(281, 199, 70, 14);
-		gamePanel.add(forPossessionLabel);
-		
 		returnButton = new JButton("Return");
-		returnButton.setBounds(437, 492, 122, 45);
+		returnButton.setIcon(renderImage(ImagePath.CANCEL_RETURN_ICON));
+		returnButton.setHorizontalTextPosition(AbstractButton.LEFT);
+		returnButton.setBounds(429, 509, 122, 45);
 		getContentPane().add(returnButton);
 		
 		saveButton = new JButton("Save");
-		saveButton.setBounds(278, 486, 122, 57);
+		saveButton.setIcon(renderImage(ImagePath.CREATE_ICON));
+		saveButton.setHorizontalTextPosition(AbstractButton.LEFT);
+		saveButton.setBounds(273, 503, 122, 57);
 		getContentPane().add(saveButton);
+	}
+	
+	private void loadHomeTeam(Team homeTeam) {
+		homeTeamPanel = new JPanel();
+		homeTeamPanel.setBorder(new TitledBorder(null, "Home team", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		homeTeamPanel.setBounds(29, 120, 309, 285);
+		gamePanel.add(homeTeamPanel);
+		homeTeamPanel.setLayout(null);
+		
+		JLabel homeTeamLabel = new JLabel(homeTeam.getName());
+		homeTeamLabel.setBounds(21, 26, 104, 14);
+		homeTeamPanel.add(homeTeamLabel);
+
+		homeTeamGoalsTextField = new JTextField(Integer.toString(homeTeam.getScore()));
+		homeTeamGoalsTextField.setEditable(false);
+		homeTeamGoalsTextField.setBounds(175, 254, 44, 20);
+		homeTeamPanel.add(homeTeamGoalsTextField);
+		
+		homeTeamShotsTextField = new JTextField(Integer.toString(homeTeam.getShots()));
+		homeTeamShotsTextField.setBounds(175, 52, 44, 20);
+		homeTeamPanel.add(homeTeamShotsTextField);
+		
+		homeTeamPassesTextField = new JTextField(Integer.toString(homeTeam.getPasses()));
+		homeTeamPassesTextField.setBounds(175, 83, 44, 20);
+		homeTeamPanel.add(homeTeamPassesTextField);
+		
+		homeTeamFoulsTextField = new JTextField(Integer.toString(homeTeam.getFouls()));
+		homeTeamFoulsTextField.setBounds(175, 114, 44, 20);
+		homeTeamPanel.add(homeTeamFoulsTextField);
+		
+		homeTeamOffsidesTextField = new JTextField(Integer.toString(homeTeam.getOffsides()));
+		homeTeamOffsidesTextField.setBounds(175, 145, 44, 20);
+		homeTeamPanel.add(homeTeamOffsidesTextField);
+		
+		homeTeamCornersTextField = new JTextField(Integer.toString(homeTeam.getCorners()));
+		homeTeamCornersTextField.setBounds(175, 176, 44, 20);
+		homeTeamPanel.add(homeTeamCornersTextField);
+	}
+	
+	private void loadAwayTeam(Team awayTeam) {
+		awayTeamPanel = new JPanel();
+		awayTeamPanel.setLayout(null);
+		awayTeamPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Away team", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		awayTeamPanel.setBounds(427, 120, 309, 285);
+		gamePanel.add(awayTeamPanel);
+		
+		JLabel awayTeamLabel = new JLabel(awayTeam.getName());
+		awayTeamLabel.setBounds(144, 45, 104, 14);
+		awayTeamPanel.add(awayTeamLabel);
+		
+		awayTeamGoalsTextField = new JTextField(Integer.toString(awayTeam.getScore()));
+		awayTeamGoalsTextField.setEditable(false);
+		awayTeamGoalsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamGoalsTextField.setBounds(10, 254, 44, 20);
+		awayTeamPanel.add(awayTeamGoalsTextField);
+		
+		awayTeamShotsTextField = new JTextField(Integer.toString(awayTeam.getShots()));
+		awayTeamShotsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamShotsTextField.setBounds(10, 55, 44, 20);
+		awayTeamPanel.add(awayTeamShotsTextField);
+		
+		awayTeamPassesTextField = new JTextField(Integer.toString(awayTeam.getPasses()));
+		awayTeamPassesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamPassesTextField.setBounds(10, 86, 44, 20);
+		awayTeamPanel.add(awayTeamPassesTextField);
+		
+		awayTeamFoulsTextField = new JTextField(Integer.toString(awayTeam.getFouls()));
+		awayTeamFoulsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamFoulsTextField.setBounds(10, 117, 44, 20);
+		awayTeamPanel.add(awayTeamFoulsTextField);
+		
+		awayTeamOffsidesTextField = new JTextField(Integer.toString(awayTeam.getOffsides()));
+		awayTeamOffsidesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamOffsidesTextField.setBounds(10, 148, 44, 20);
+		awayTeamPanel.add(awayTeamOffsidesTextField);
+		
+		awayTeamCornersTextField = new JTextField(Integer.toString(awayTeam.getCorners()));
+		awayTeamCornersTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		awayTeamCornersTextField.setBounds(10, 179, 44, 20);
+		awayTeamPanel.add(awayTeamCornersTextField);
+	}
+	
+	private void loadScorers(JPanel teamPanel) {
+		JScrollPane scorersScrollPane = new JScrollPane();
+		scorersScrollPane.setBounds(132, 179, 116, 95);
+		
+		JLabel scorersLabel = new JLabel("Scorers");
+		scorersLabel.setBounds(130, 151, 61, 14);
+		teamPanel.add(scorersLabel);
+		
+		ArrayList<Scorer> scorers = seasonGameController.isUserHomeTeam()
+				? seasonGameController.getHomeTeam().getScorers()
+				: seasonGameController.getAwayTeam().getScorers();
+		MyList<Scorer> scorersList = new MyList<>(scorers);
+		scorersScrollPane.setViewportView(scorersList);
+		teamPanel.add(scorersScrollPane);
 	}
 	
 	@Override
@@ -148,94 +255,36 @@ public class SeasonGameView extends View {
 	        dp.start(gameDateObserverTextField);
 		});
 		
+		saveButton.addActionListener((e) -> {
+			try {
+				String gameDate = gameDateObserverTextField.getText();
+				Performance homeTeamPerformance = new Performance(Integer.parseInt(homeTeamGoalsTextField.getText()),
+						Integer.parseInt(homeTeamShotsTextField.getText()),
+						Integer.parseInt(homeTeamPassesTextField.getText()),
+						Integer.parseInt(homeTeamFoulsTextField.getText()),
+						Integer.parseInt(homeTeamOffsidesTextField.getText()),
+						Integer.parseInt(homeTeamCornersTextField.getText()));
+				Performance awayTeamPerformance = new Performance(Integer.parseInt(awayTeamGoalsTextField.getText()),
+						Integer.parseInt(awayTeamShotsTextField.getText()),
+						Integer.parseInt(awayTeamPassesTextField.getText()),
+						Integer.parseInt(awayTeamFoulsTextField.getText()),
+						Integer.parseInt(awayTeamOffsidesTextField.getText()),
+						Integer.parseInt(awayTeamCornersTextField.getText()));
+				
+				seasonGameController.updateStats(gameDate, homeTeamPerformance, awayTeamPerformance);
+				
+				Alert.showInfo(this, "Statistics updated!");
+			} catch(InvalidInputException err){
+				Alert.showError(this, err.getMessage());
+			} catch(SQLException err) {
+				err.printStackTrace();
+				Alert.showError(this, "Unable to connect to the database!");
+			} catch(NumberFormatException err) {
+				Alert.showError(this, "All the stats values must be numeric!");
+			}
+		});
+		
 		returnButton.addActionListener((e) -> changeView(this));
-	}
-	
-	private void loadHomeTeam(Team homeTeam) {
-		JPanel homeTeampanel = new JPanel();
-		homeTeampanel.setBorder(new TitledBorder(null, "Home team", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		homeTeampanel.setBounds(29, 120, 242, 246);
-		gamePanel.add(homeTeampanel);
-		homeTeampanel.setLayout(null);
-		
-		JLabel homeTeamLabel = new JLabel(homeTeam.getName());
-		homeTeamLabel.setBounds(21, 29, 104, 14);
-		homeTeampanel.add(homeTeamLabel);
-
-		homeTeamGoalsTextField = new JTextField(Integer.toString(homeTeam.getGoals()));
-		homeTeamGoalsTextField.setBounds(175, 41, 44, 20);
-		homeTeampanel.add(homeTeamGoalsTextField);
-		
-		homeTeamPossessionTextField = new JTextField(Float.toString(homeTeam.getPossession()));
-		homeTeamPossessionTextField.setBounds(175, 72, 44, 20);
-		homeTeampanel.add(homeTeamPossessionTextField);
-		
-		homeTeamShotsTextField = new JTextField(Integer.toString(homeTeam.getShots()));
-		homeTeamShotsTextField.setBounds(175, 103, 44, 20);
-		homeTeampanel.add(homeTeamShotsTextField);
-		
-		homeTeamPassesTextField = new JTextField(Integer.toString(homeTeam.getPasses()));
-		homeTeamPassesTextField.setBounds(175, 134, 44, 20);
-		homeTeampanel.add(homeTeamPassesTextField);
-		
-		homeTeamFoulsTextField = new JTextField(Integer.toString(homeTeam.getFouls()));
-		homeTeamFoulsTextField.setBounds(175, 165, 44, 20);
-		homeTeampanel.add(homeTeamFoulsTextField);
-		
-		homeTeamOffsidesTextField = new JTextField(Integer.toString(homeTeam.getOffsides()));
-		homeTeamOffsidesTextField.setBounds(175, 196, 44, 20);
-		homeTeampanel.add(homeTeamOffsidesTextField);
-		
-		homeTeamCornersTextField = new JTextField(Integer.toString(homeTeam.getCorners()));
-		homeTeamCornersTextField.setBounds(175, 215, 44, 20);
-		homeTeampanel.add(homeTeamCornersTextField);
-	}
-	
-	private void loadAwayTeam(Team awayTeam) {
-		JPanel awayTeamPanel = new JPanel();
-		awayTeamPanel.setLayout(null);
-		awayTeamPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Away team", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		awayTeamPanel.setBounds(361, 107, 357, 259);
-		gamePanel.add(awayTeamPanel);
-		
-		JLabel awayTeamLabel = new JLabel(awayTeam.getName());
-		awayTeamLabel.setBounds(144, 45, 104, 14);
-		awayTeamPanel.add(awayTeamLabel);
-		
-		awayTeamGoalsTextField = new JTextField(Integer.toString(awayTeam.getGoals()));
-		awayTeamGoalsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamGoalsTextField.setBounds(10, 54, 44, 20);
-		awayTeamPanel.add(awayTeamGoalsTextField);
-		
-		awayTeamPossessionTextField = new JTextField(Float.toString(awayTeam.getPossession()));
-		awayTeamPossessionTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamPossessionTextField.setBounds(10, 85, 44, 20);
-		awayTeamPanel.add(awayTeamPossessionTextField);
-		
-		awayTeamShotsTextField = new JTextField(Integer.toString(awayTeam.getShots()));
-		awayTeamShotsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamShotsTextField.setBounds(10, 116, 44, 20);
-		awayTeamPanel.add(awayTeamShotsTextField);
-		
-		awayTeamPassesTextField = new JTextField(Integer.toString(awayTeam.getPasses()));
-		awayTeamPassesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamPassesTextField.setBounds(10, 147, 44, 20);
-		awayTeamPanel.add(awayTeamPassesTextField);
-		
-		awayTeamFoulsTextField = new JTextField(Integer.toString(awayTeam.getFouls()));
-		awayTeamFoulsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamFoulsTextField.setBounds(10, 178, 44, 20);
-		awayTeamPanel.add(awayTeamFoulsTextField);
-		
-		awayTeamOffsidesTextField = new JTextField(Integer.toString(awayTeam.getOffsides()));
-		awayTeamOffsidesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamOffsidesTextField.setBounds(10, 209, 44, 20);
-		awayTeamPanel.add(awayTeamOffsidesTextField);
-		
-		awayTeamCornersTextField = new JTextField(Integer.toString(awayTeam.getCorners()));
-		awayTeamCornersTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamCornersTextField.setBounds(10, 228, 44, 20);
-		awayTeamPanel.add(awayTeamCornersTextField);
 	}
 
 }

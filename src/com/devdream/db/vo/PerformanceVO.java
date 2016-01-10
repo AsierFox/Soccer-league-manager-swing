@@ -11,26 +11,22 @@ public class PerformanceVO {
 	private int idGame;
 	@DBKey(key=Key.FOREIGN, REFERENCES="Teams", ON="Id")
 	private int idTeam;
-	private int goals;
 	private int shots;
 	private int passes;
 	private int fouls;
 	private int offsides;
 	private int corners;
-	private float possession;
 	
-	public PerformanceVO(int id, int idGame, int idTeam, int goals, int shots, int passes, int fouls, int offsides,
-			int corners, float possession) {
+	public PerformanceVO(int id, int idGame, int idTeam, int shots, int passes, int fouls, int offsides,
+			int corners) {
 		this.id = id;
 		this.idGame = idGame;
 		this.idTeam = idTeam;
-		this.goals = goals;
 		this.shots = shots;
 		this.passes = passes;
 		this.fouls = fouls;
 		this.offsides = offsides;
 		this.corners = corners;
-		this.possession = possession;
 	}
 	public int getId() {
 		return id;
@@ -49,12 +45,6 @@ public class PerformanceVO {
 	}
 	public void setIdTeam(int idTeam) {
 		this.idTeam = idTeam;
-	}
-	public int getGoals() {
-		return goals;
-	}
-	public void setGoals(int goals) {
-		this.goals = goals;
 	}
 	public int getShots() {
 		return shots;
@@ -85,12 +75,6 @@ public class PerformanceVO {
 	}
 	public void setCorners(int corners) {
 		this.corners = corners;
-	}
-	public float getPossession() {
-		return possession;
-	}
-	public void setPossession(float possession) {
-		this.possession = possession;
 	}
 
 }

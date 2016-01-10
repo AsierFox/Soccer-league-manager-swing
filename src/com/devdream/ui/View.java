@@ -1,5 +1,6 @@
 package com.devdream.ui;
 
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -7,7 +8,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import com.devdream.main.App;
 import com.devdream.ui.custom.Alert;
@@ -21,50 +21,14 @@ import com.devdream.ui.custom.Alert;
 public abstract class View extends JFrame {
 	private static final long serialVersionUID = 6433561099170298893L;
 	
-	/**
-	 * Class for saving the image relative paths.
-	 * 
-	 * @author Asier Gonzalez
-	 */
-	public static class ImagePath {
-		private static final String IMG_DIR = "/img/";
-		
-		protected static final String LOGOS = IMG_DIR + "logo/";
-		protected static final String ICONS = IMG_DIR + "icon/";
-		
-		private static final String FAVICON = IMG_DIR + "favicon/favicon.png";
-		
-		protected static final String LOGO = LOGOS + "app-logo.png";
-		
-		protected static final String LOGIN_ICON = ICONS + "login.png";
-		protected static final String EXIT_ICON = ICONS + "exit.png";
-		
-		protected static final String FEATURES_ICON = ICONS + "features.png";
-		
-		protected static final String USER_TAB_ICON = ICONS + "user-tab.png";
-		protected static final String TEAM_TAB_ICON = ICONS + "team-tab.png";
-		protected static final String SEASONS_TAB_ICON = ICONS + "seasons-tab.png";
-		
-		protected static final String CREATE_TEAM_ICON = ICONS + "create-team.png";
-		
-		protected static final String LEAGUE_ICON = ICONS + "league-icon.png";
-		
-		protected static final String STATISTICS_ICON = ICONS + "statistics.png";	
-		
-		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
-		
-		protected static final String VIEW_SEASON_ICON = ICONS + "view-season-icon.png";
-		
-		public static final String DEFAULT_TEAM_LOGO = "team-default.png";
-	}
-
 	//
 	// Global
 	/** Application title */
-	public static final String APP_TITLE = "APP Title"; // TODO Set title for the application
+	public static final String APP_TITLE = "Soccer manager";
 	
 	/** Height and Width of the JFrame. */
 	public static final int WIDTH = 830, HEIGHT = 600;
+	public static final int OTHER_WIDTH = 430, OTHER_HEIGHT = 400;
 	
 	/** On exit question for the user. */
 	private static final String EXIT_QUESTION = "Are you sure you want to exit?";
@@ -75,11 +39,15 @@ public abstract class View extends JFrame {
 		this(true);
 	}
 	
-	public View(boolean closeOperation) {
+	public View(boolean rootView) {
 		super();
 		setTitle(APP_TITLE);
-		setSize(WIDTH, HEIGHT);
-		if (closeOperation) setCloseOperation();
+		if (rootView) {
+			setSize(WIDTH, HEIGHT);
+			setCloseOperation();
+		} else {
+			setSize(OTHER_WIDTH, OTHER_HEIGHT);
+		}
 		setLocationRelativeTo(null); // Center the window
 		setResizable(false);
 		setIconImage();
@@ -130,8 +98,7 @@ public abstract class View extends JFrame {
 	
 	/** Closes the View. */
 	protected void sendExitAppRequest() {
-		int exitRequest = Alert.showConfirm(null, "Exit", EXIT_QUESTION);
-		if (exitRequest == JOptionPane.OK_OPTION) {
+		if (Alert.showConfirm(null, "Exit", EXIT_QUESTION)) {
 			closeApp();
 		}
 	}
@@ -179,4 +146,60 @@ public abstract class View extends JFrame {
 	 */
 	protected abstract void loadListeners();
 	
+	/**
+	 * Class for saving the image relative paths.
+	 */
+	public static class ImagePath {
+		private static final String IMG_DIR = "/img/";
+		
+		public static final String LOGOS = IMG_DIR + "logo/";
+		protected static final String ICONS = IMG_DIR + "icon/";
+		
+		private static final String FAVICON = IMG_DIR + "favicon/favicon.png";
+		
+		protected static final String LOGO = LOGOS + "app-logo.png";
+		
+		protected static final String LOGIN_ICON = ICONS + "login.png";
+		protected static final String EXIT_ICON = ICONS + "exit.png";
+		
+		protected static final String FEATURES_ICON = ICONS + "features.png";
+		
+		protected static final String USER_TAB_ICON = ICONS + "user-tab.png";
+		protected static final String TEAM_TAB_ICON = ICONS + "team-tab.png";
+		protected static final String PLAYER_TAB_ICON = ICONS + "player-tab.png";
+		protected static final String SEASONS_TAB_ICON = ICONS + "seasons-tab.png";
+		
+		protected static final String CREATE_TEAM_ICON = ICONS + "create-team.png";
+		
+		protected static final String PLAYER_TOP_SCORERS_ICON = ICONS + "player-scorers.png";
+		
+		protected static final String LEAGUE_ICON = ICONS + "league-icon.png";
+		
+		protected static final String STATISTICS_ICON = ICONS + "statistics-icon.png";
+		protected static final String STATISTICS_TITLE_ICON = ICONS + "statistics-title-icon.png";
+		
+		protected static final String VIEW_SEASON_ICON = ICONS + "view-season-icon.png";
+		
+		protected static final String TOP_SCORERS_ICON = ICONS + "top-scorers-icon.png";
+
+		protected static final String CSV_ICON = ICONS + "csv-icon.png";
+		protected static final String PDF_ICON = ICONS + "pdf-icon.png";
+		protected static final String DDBB_ICON = ICONS + "database-icon.png";
+
+		protected static final String SEARCH_ICON = ICONS + "search-icon.png";
+		protected static final String EDIT_IMG_ICON = ICONS + "edit-image.png";
+		protected static final String CREATE_ICON = ICONS + "create-icon.png";
+		protected static final String CANCEL_RETURN_ICON = ICONS + "return-icon.png";
+		
+		public static final String DEFAULT_TEAM_LOGO = "team-default-logo.png";
+	}
+	
+	/**
+	 * Class for saving the font style of the application.
+	 */
+	public static class FontStyle {
+		public static final Font TITLE_FONT = new Font("Verdana", Font.BOLD | Font.ITALIC, 15);
+		public static final Font BOLD_FONT = new Font("Verdana", Font.BOLD, 13);
+	}
+
 }

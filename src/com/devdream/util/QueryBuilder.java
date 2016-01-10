@@ -115,7 +115,7 @@ public class QueryBuilder extends DBConnectionManager {
 		query += " WHERE " + colCond + "=" + valueCond;
 		return query + ";";
 	}
-
+	
 	/**
 	 * Creates the SQL query to make an insert.
 	 * @param dao The Data Access Object class

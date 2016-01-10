@@ -7,7 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.devdream.db.vo.TeamVO;
-import com.devdream.exception.ItemAlreadyException;
+import com.devdream.exception.RecordAlreadyException;
+import com.devdream.ui.View;
 import com.devdream.util.QueryBuilder;
 
 public class TeamDAO extends DAO {
@@ -190,23 +191,22 @@ public class TeamDAO extends DAO {
 	 * @throws SQLException
 	 * @throws TeamAlreadyExistsException 
 	 */
-	public int insertTeam(TeamVO newTeam) throws SQLException, ItemAlreadyException {
+	public int insertTeam(TeamVO newTeam) throws SQLException, RecordAlreadyException {
 		if (existsTeamName(newTeam.getName())) {
-			throw new ItemAlreadyException("team", "name", newTeam.getName());
+			throw new RecordAlreadyException("team", "name", newTeam.getName());
 		}
 		int teamId = -1;
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
 			String sql = QueryBuilder.createInsert(getClass(),
-					new String[]{"Name", "ShortName", "FoundedYear", "Achievements", "Location", "Logo"},
+					new String[]{"Name", "ShortName", "FoundedYear", "Location", "Logo"},
 					new String[]{
 							newTeam.getName(),
 							newTeam.getShortName(),
 							Integer.toString(newTeam.getFoundedYear()),
-							Integer.toString(newTeam.getAchievements()),
 							newTeam.getLocation(),
-							newTeam.getLogo()
+							newTeam.getLogo().isEmpty() ? View.ImagePath.DEFAULT_TEAM_LOGO : newTeam.getLogo()
 						});
 			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();
@@ -295,7 +295,7 @@ public class TeamDAO extends DAO {
 	 */
 	protected static TeamVO getFullTeamVO(ResultSet rs) throws SQLException {
 		return new TeamVO(rs.getInt("Id"), rs.getString("Name"), rs.getString("ShortName"), rs.getInt("FoundedYear"),
-				rs.getInt("Achievements"), rs.getString("Location"), rs.getString("Logo"));
+				rs.getString("Location"), rs.getString("Logo"));
 	}
 	
 }

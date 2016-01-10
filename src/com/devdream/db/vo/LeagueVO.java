@@ -2,7 +2,6 @@ package com.devdream.db.vo;
 
 import com.devdream.annotation.DBKey;
 import com.devdream.annotation.DBKey.Key;
-import com.devdream.util.DateHelper;
 
 public class LeagueVO {
 
@@ -13,6 +12,7 @@ public class LeagueVO {
 	private String name;
 	private String description;
 	private int numSeasons;
+	private int period;
 
 	public LeagueVO(String startDate, String endDate, String name, String description, int numSeasons) {
 		this.startDate = startDate;
@@ -22,8 +22,13 @@ public class LeagueVO {
 		this.numSeasons = numSeasons;
 	}
 	
-	public LeagueVO(int id, String startDate, String endDate, String name, String description, int numSeasons) {
+	public LeagueVO(String startDate, String endDate, String name, String description, int numSeasons, int period) {
 		this(startDate, endDate, name, description, numSeasons);
+		this.period = period;
+	}
+	
+	public LeagueVO(int id, String startDate, String endDate, String name, String description, int numSeasons, int period) {
+		this(startDate, endDate, name, description, numSeasons, period);
 		this.id = id;
 	}
 	
@@ -45,9 +50,6 @@ public class LeagueVO {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public int getPeriod() {
-		return DateHelper.getDatePeriod(getStartDate(), getEndDate());
-	}
 	public String getName() {
 		return name;
 	}
@@ -66,5 +68,11 @@ public class LeagueVO {
 	public void setNumSeasons(int numSeasons) {
 		this.numSeasons = numSeasons;
 	}
-	
+	public int getPeriod() {
+		return period;
+	}
+	public void setPeriod(int period) {
+		this.period = period;
+	}
+
 }

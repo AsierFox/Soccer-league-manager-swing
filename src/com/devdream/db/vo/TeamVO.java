@@ -17,23 +17,21 @@ public class TeamVO {
 	private String name;
 	private String shortName;
 	private int foundedYear;
-	private int achievements;
 	private String location;
 	private String logo;
 	
 	//
 	// Constructors
-	public TeamVO(String name, String shortName, int foundedYear, int achievements, String location, String logo) {
+	public TeamVO(String name, String shortName, int foundedYear, String location, String logo) {
 		this.name = name;
 		this.shortName = shortName;
 		this.foundedYear = foundedYear;
-		this.achievements = achievements;
 		this.location = location;
 		this.logo = logo;
 	}
 	
-	public TeamVO(int id, String name, String shortName, int foundedYear, int achievements, String location, String logo) {
-		this(name, shortName, foundedYear, achievements, location, logo);
+	public TeamVO(int id, String name, String shortName, int foundedYear, String location, String logo) {
+		this(name, shortName, foundedYear, location, logo);
 		this.id = id;
 	}
 	
@@ -42,7 +40,7 @@ public class TeamVO {
 	@Override
 	public String toString() {
 		return "TeamVO [id=" + id + ", name=" + name + ", shortName=" + shortName + ", foundedYear=" + foundedYear
-				+ ", achievements=" + achievements + ", location=" + location + ", logo=" + logo + "]";
+				+ ", location=" + location + ", logo=" + logo + "]";
 	}
 	
 	//
@@ -71,12 +69,6 @@ public class TeamVO {
 	public void setFoundedYear(int foundedYear) {
 		this.foundedYear = foundedYear;
 	}
-	public int getAchievements() {
-		return achievements;
-	}
-	public void setAchievements(int achievements) {
-		this.achievements = achievements;
-	}
 	public String getLocation() {
 		return location;
 	}
@@ -89,5 +81,5 @@ public class TeamVO {
 	public void setLogo(String logo) {
 		this.logo = logo;
 	}
-	
+
 }

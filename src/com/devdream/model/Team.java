@@ -1,5 +1,6 @@
 package com.devdream.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,58 +12,47 @@ public class Team {
 
 	//
 	// Attributes
+	private boolean userTeam;
 	private int id;
 	private String name;
 	private String shortName;
 	private int foundedYear;
-	private int achievements;
 	private String location;
 	private String logo;
-	/** Store the team players indexing them with its dorsal. */
-	private HashMap<Integer, Player> players;
 	private Performance performances;
+	/** Store the team players indexing them with its dorsal number. */
+	private HashMap<Integer, Player> players;
 	
 	//
 	// Constructors
-	public Team(String name, String shortName, int foundedYear, int achievements, int score, String location, String logo) {
+	public Team(String name, String shortName, int foundedYear, String location, String logo) {
 		this.name = name;
 		this.shortName = shortName;
 		this.foundedYear = foundedYear;
-		this.achievements = achievements;
 		this.location = location;
 		this.logo = logo;
 		init();
 	}
 	
-	public Team(String name, String shortName, int foundedYear, int achievements, String location, String logo) {
-		this.name = name;
-		this.shortName = shortName;
-		this.foundedYear = foundedYear;
-		this.achievements = achievements;
-		this.location = location;
-		this.logo = logo;
-		init();
-	}
-	
-	public Team(final int id, String name, String shortName, int foundedYear, int achievements, String location, String logo) {
+	public Team(final int id, String name, String shortName, int foundedYear, String location, String logo) {
 		this.id = id;
 		this.name = name;
 		this.shortName = shortName;
 		this.foundedYear = foundedYear;
-		this.achievements = achievements;
 		this.location = location;
 		this.logo = logo;
 		init();
 	}
 	
-	public Team(final int id, String name, String shortName, int foundedYear, int achievements, String location, String logo, HashMap<Integer, Player> players) {
-		this(id, name, shortName, foundedYear, achievements, location, logo);
-		init();
+	public Team(final int id, String name, String shortName, int foundedYear, String location, String logo, HashMap<Integer, Player> players) {
+		this(id, name, shortName, foundedYear, location, logo);
+		this.players = players;
 	}
 	
 	//
 	// Methods
 	private void init() {
+		userTeam = false;
 		this.players = new HashMap<>();
 		performances = new Performance();
 	}
@@ -73,6 +63,12 @@ public class Team {
 	
 	//
 	// Getters and setters
+	public void setUserTeam(boolean isUserTeam) {
+		this.userTeam = isUserTeam;
+	}
+	public boolean isUserTeam() {
+		return userTeam;
+	}
 	public int getId() {
 		return id;
 	}
@@ -94,17 +90,11 @@ public class Team {
 	public void setFoundedYear(int foundedYear) {
 		this.foundedYear = foundedYear;
 	}
-	public int getAchievements() {
-		return achievements;
-	}
-	public void setAchievements(int achievements) {
-		this.achievements = achievements;
-	}
 	public Performance getPerformances() {
 		return performances;
 	}
-	public int getGoals() {
-		return performances.getGoals();
+	public ArrayList<Scorer> getScorers() {
+		return performances.getScorers();
 	}
 	public int getShots() {
 		return performances.getShots();
@@ -121,14 +111,17 @@ public class Team {
 	public int getCorners() {
 		return performances.getCorners();
 	}
-	public float getPossession() {
-		return performances.getPossession();
-	}
 	public void setPerformances(Performance performances) {
 		this.performances = performances;
 	}
-	public void setGoals(int goals) {
-		performances.setGoals(goals);
+	public void setScore(int score) {
+		performances.setScore(score);
+	}
+	public int getScore() {
+		return performances.getScore();
+	}
+	public void setScorers(ArrayList<Scorer> scorers) {
+		performances.setScorers(scorers);
 	}
 	public void setShots(int shots) {
 		performances.setShots(shots);
@@ -144,9 +137,6 @@ public class Team {
 	}
 	public void setCorners(int corners) {
 		performances.setCorners(corners);
-	}
-	public void setPossesion(float possesion) {
-		performances.setPossesion(possesion);
 	}
 	public String getLocation() {
 		return location;

@@ -87,6 +87,10 @@ public class TeamsTable extends JTable {
 		return teams.containsKey(team.getName());
 	}
 	
+	public boolean isEmpty() {
+		return getRowCount() <= 0;
+	}
+	
 	/** Sets the cells no editable. */
 	@Override
 	public boolean isCellEditable(int row, int column) {

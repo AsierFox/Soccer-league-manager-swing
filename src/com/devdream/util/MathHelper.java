@@ -15,7 +15,7 @@ public class MathHelper {
 	public static boolean isNegativeNumber(int num) {
 		return num < 0;
 	}
-
+	
 	/**
 	 * Checks if a String is numerical.
 	 * @param string The string to check with

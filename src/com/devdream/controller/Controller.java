@@ -22,11 +22,9 @@ public abstract class Controller {
 	public Team getUserTeam(String username) throws SQLException {
 		TeamDAO teamDAO = new TeamDAO();
 		TeamVO teamVO = teamDAO.getUserTeam(username);
-		if (teamVO == null) {
-			return null;
-		}
+		if (teamVO == null) return null;
 		return new Team(teamVO.getId(), teamVO.getName(), teamVO.getShortName(),
-				teamVO.getFoundedYear(), teamVO.getAchievements(), teamVO.getLocation(), teamVO.getLogo());
+				teamVO.getFoundedYear(), teamVO.getLocation(), teamVO.getLogo());
 	}
 	
 	//

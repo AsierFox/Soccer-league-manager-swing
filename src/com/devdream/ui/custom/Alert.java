@@ -1,8 +1,13 @@
 package com.devdream.ui.custom;
 
 import java.awt.Component;
+import java.io.File;
+import java.sql.SQLException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+import com.devdream.exception.OperationCancelledException;
 
 /**
  * This class shows alerts using JOptions Pane class.
@@ -28,9 +33,28 @@ public class Alert extends JOptionPane {
 		showMessageDialog(c, msg, "Information", INFORMATION_MESSAGE);
 	}
 	
-	/** Shows a confirm dialog. */
-	public static int showConfirm(Component c, String title, String msg) {
-		return showConfirmDialog(c, msg, title, JOptionPane.YES_NO_OPTION);
+	/**
+	 * Shows a confirm dialog.s
+	 * @return Return true if OK / Confirm is pressed
+	 */
+	public static boolean showConfirm(Component c, String title, String msg) {
+		return showConfirmDialog(c, msg, title, JOptionPane.YES_NO_OPTION) == OK_OPTION;
+	}
+	
+	/**
+	 * Shows a file chooser dialog.
+	 * @return The selected path
+	 * @throws OperationCancelledException 
+	 * @throws SQLException
+	 */
+	public static String showFileChooser(String fileExtension) throws OperationCancelledException {
+		JFileChooser fileChooser = new JFileChooser();
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		    File file = fileChooser.getSelectedFile();
+		    if (file.getAbsolutePath().contains(fileExtension)) return file.getAbsolutePath();
+		    return file.getAbsolutePath() + fileExtension;
+		}
+		throw new OperationCancelledException();
 	}
 
 }

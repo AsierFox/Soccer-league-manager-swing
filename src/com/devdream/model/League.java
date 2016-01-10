@@ -13,7 +13,7 @@ public class League {
 	private String name;
 	private String description;
 	private int numSeasons;
-	private ArrayList<Season> seasons;
+	private ArrayList<SeasonGame> seasons;
 	
 	//
 	// Constructors
@@ -61,10 +61,10 @@ public class League {
 	public int getNumberSeasons() {
 		return numSeasons;
 	}
-	public ArrayList<Season> getSeasons() {
+	public ArrayList<SeasonGame> getSeasons() {
 		return seasons;
 	}
-	public void setSeasons(ArrayList<Season> seasons) {
+	public void setSeasons(ArrayList<SeasonGame> seasons) {
 		this.seasons = seasons;
 	}
 

@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.devdream.db.vo.UserVO;
-import com.devdream.exception.ItemAlreadyException;
+import com.devdream.exception.RecordAlreadyException;
 import com.devdream.util.QueryBuilder;
 
 public class UserDAO extends DAO {
@@ -21,9 +21,9 @@ public class UserDAO extends DAO {
 	 * @throws SQLException
 	 * @throws TeamAlreadyExistsException 
 	 */
-	public void insertUser(UserVO newUser) throws SQLException, ItemAlreadyException {
+	public void insertUser(UserVO newUser) throws SQLException, RecordAlreadyException {
 		if (existsUserUsername(newUser.getName())) {
-			throw new ItemAlreadyException("user", "username", newUser.getUsername());
+			throw new RecordAlreadyException("user", "username", newUser.getUsername());
 		}
 		PreparedStatement preparedStmt = null;
 		try {
@@ -76,7 +76,7 @@ public class UserDAO extends DAO {
 	public boolean checkLogin(String username, String password) throws SQLException {
 		boolean success = false;
 		PreparedStatement preparedStmt = null;
-		try { // TODO CHANGE TO CREATESELECT -> QueryBuilder.createSelect(getClass(), "1")
+		try {
 			String sql = "SELECT 1 FROM " + QueryBuilder.getTableNameFromDAO(getClass())
 					+ " WHERE Username = ? AND Password = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);

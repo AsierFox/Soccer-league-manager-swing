@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.devdream.controller.Controller;
 import com.devdream.db.vo.GameVO;
 import com.devdream.db.vo.SeasonVO;
 import com.devdream.db.vo.TeamVO;
@@ -64,7 +63,6 @@ public class SeasonDAO extends DAO {
 		ArrayList<SeasonGame> seasonGames = new ArrayList<>();
 		GameDAO gameDAO = new GameDAO();
 		TeamDAO teamDAO = new TeamDAO();
-		String userTeamName = Controller.getLoggedUser().getTeam().getName();
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
@@ -84,15 +82,37 @@ public class SeasonDAO extends DAO {
 				Team awayTeam = new Team(awayTeamVO.getId(), awayTeamVO.getName(), awayTeamVO.getShortName(),
 						awayTeamVO.getFoundedYear(), awayTeamVO.getLocation(), awayTeamVO.getLogo());
 				
-				homeTeam.setUserTeam(homeTeam.getName().equals(userTeamName));
-				awayTeam.setUserTeam(homeTeam.getName().equals(userTeamName));
-				
 				seasonGames.add(new SeasonGame(new Game(gameVO.getId(), homeTeam, awayTeam), rs.getString("Date")));
 			}
 		} finally {
 			super.closeConnection(preparedStmt, rs);
 		}
 		return seasonGames;
+	}
+	
+	/**
+	 * Updates the season date passing the id of a game.
+	 * @throws SQLException
+	 */
+	public boolean updateDate(int idGame, String date) throws SQLException {
+		boolean updated;
+		PreparedStatement preparedStmt = null;
+		String seasonsTableName = QueryBuilder.getTableNameFromDAO(getClass());
+		String gamesTableName = QueryBuilder.getTableNameFromDAO(GameDAO.class);
+		try {
+			String sql = "REPLACE INTO " + seasonsTableName + " (Id, IdLeague, Date) VALUES (" +
+					"(SELECT IdSeason FROM " + gamesTableName + " WHERE Id = ?), " +
+					"(SELECT s.IdLeague FROM " + gamesTableName + " g JOIN " + seasonsTableName + " s ON g.IdSeason = s.Id WHERE g.Id = ?), " +
+					"?);";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, idGame);
+			preparedStmt.setInt(2, idGame);
+			preparedStmt.setString(3, date);
+			updated = preparedStmt.executeUpdate() == 1;
+		} finally {
+			super.closeConnection(preparedStmt);
+		}
+		return updated;
 	}
 
 }

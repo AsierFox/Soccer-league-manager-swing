@@ -1,14 +1,12 @@
 package com.devdream.util;
 
+import java.io.File;
 import java.text.DecimalFormat;
 
 /**
- * Helper class that contains static methods
- * to manage text.
+ * Helper class that contains static methods to manage text.
  * 
  * @author Asier Gonzalez
- * @version 1.1
- * @since 1.0
  */
 public class StringHelper {
 
@@ -41,6 +39,11 @@ public class StringHelper {
 	 */
 	public static String formatAmount(double amount) {
 		return new DecimalFormat("0.00").format(amount);
+	}
+
+	/** Gets the file name from a path. */
+	public static String getFileNameFromPath(final String FILE_PATH) {
+		return FILE_PATH.substring(FILE_PATH.lastIndexOf(File.separator) + 1);
 	}
 
 }

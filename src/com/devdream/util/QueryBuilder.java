@@ -13,14 +13,14 @@ import com.devdream.db.dao.DAO;
  * Class containing static methods for creating dynamic queries.
  *
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public class QueryBuilder extends DBConnectionManager {
 	/**
 	 * The SQL syntax for the typical ID primary key.
 	 */
 	private static final String PK_AUTOINCREMENT_ATTR = " PRIMARY KEY AUTOINCREMENT";
+	
+	private QueryBuilder() {}
 	
 	/**
 	 * Creates the select for creating a table.
@@ -143,8 +143,8 @@ public class QueryBuilder extends DBConnectionManager {
 	 * @param valueCond The value to compare with on the conditional
 	 * @return String The SQL query for an insert
 	 */
-	public static String createDelete(Class<?> vo, String colCond, String valueCond) {
-		String query = "DELETE FROM " + getTableNameFromVO(vo) + " WHERE " + colCond + "=" + valueCond;
+	public static String createDelete(Class<DAO> dao, String colCond, String valueCond) {
+		String query = "DELETE FROM " + getTableNameFromDAO(dao) + " WHERE " + colCond + " = " + valueCond;
 		return query + ";";
 	}
 	

@@ -39,6 +39,7 @@ public class TeamsTable extends JTable {
 	public TeamsTable(HashMap<String, Team> elements) {
 		this();
 		this.teams = elements;
+		update();
 	}
 	
 	//

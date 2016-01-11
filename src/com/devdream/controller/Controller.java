@@ -7,16 +7,21 @@ import com.devdream.db.vo.TeamVO;
 import com.devdream.model.Team;
 import com.devdream.model.User;
 
+/**
+ * The controller abstract class. The controller manages
+ * the classes connecting the model actions
+ * that are called by a view. That is, it is used to
+ * communicate between model classes and view. Also retains
+ * the logged user of the application.
+ * 
+ * @author Asier Gonzalez
+ */
 public abstract class Controller {
 
 	//
 	// Attributes
 	private static User loggedUser;
 	
-	//
-	// Constructor
-	public Controller() {}
-
 	//
 	// Methods
 	public Team getUserTeam(String username) throws SQLException {

@@ -43,6 +43,9 @@ public class Alert extends JOptionPane {
 	
 	/**
 	 * Shows a file chooser dialog.
+	 * @param fileExtension The file extension including '.':
+	 * <br>
+	 * <b>Example -> showFileChooser(".csv")</b>
 	 * @return The selected path
 	 * @throws OperationCancelledException 
 	 * @throws SQLException

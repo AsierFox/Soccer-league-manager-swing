@@ -10,6 +10,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * This class can encrypt and decrypt a character strings.
+ * 
+ * @author Asier Gonzalez
+ */
 public class EncryptUtil {
 
 	//

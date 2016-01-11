@@ -1,5 +1,11 @@
 package com.devdream.model;
 
+/**
+ * An scorer consists of the scores in goals achieved by
+ * a specific player on a game.
+ * 
+ * @author Asier Gonzalez
+ */
 public class Scorer {
 
 	//
@@ -10,7 +16,6 @@ public class Scorer {
 	//
 	// Constructors
 	public Scorer(int score, Player player) {
-		super();
 		this.score = score;
 		this.player = player;
 	}

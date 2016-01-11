@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 
 import com.devdream.controller.Controller;
 import com.devdream.controller.SeasonGameController;
+import com.devdream.exception.OperationCancelledException;
 import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
+import com.devdream.ui.custom.Alert;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
@@ -25,7 +27,9 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @author Asier Gonzalez
  */
 public class PDFBuilder {
-	private static String FILE = "C:/dev/workspace/wales/java/Tema11Project/mypdf.pdf";
+	public static final String FILE_EXT = ".pdf";
+	
+	private static String FILE_SAVE_PATH;
 	
 	private static Font sBoldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	private static Font sSubFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
@@ -39,7 +43,12 @@ public class PDFBuilder {
 	private Document document;
 	private Chapter chapter;
 	
-	public PDFBuilder(SeasonGame season) throws FileNotFoundException, DocumentException {
+	public PDFBuilder() throws OperationCancelledException {
+		FILE_SAVE_PATH = Alert.showFileChooser(FILE_EXT);
+	}
+	
+	public PDFBuilder(SeasonGame season) throws FileNotFoundException, DocumentException, OperationCancelledException {
+		this();
 		SeasonGameController controller = new SeasonGameController(season);
 		this.season = season;
 		homeTeam = controller.getHomeTeam();
@@ -47,7 +56,7 @@ public class PDFBuilder {
 		winnerTeam = season.getGame().getWinnerTeam();
 		
 		document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream(FILE));
+		PdfWriter.getInstance(document, new FileOutputStream(FILE_SAVE_PATH));
 		chapter = new Chapter(1);
 	}
 

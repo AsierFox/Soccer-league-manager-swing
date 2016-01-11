@@ -11,6 +11,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.SeasonGameController;
+import com.devdream.model.Performance;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.MyComboBox;
@@ -18,7 +19,7 @@ import com.devdream.ui.custom.PerformancesTable;
 
 public class PerformanceSearchView extends View {
 	private static final long serialVersionUID = 2353183308699502451L;
-
+	
 	//
 	// Attributes
 	private SeasonGameController seasonGameController;
@@ -51,7 +52,7 @@ public class PerformanceSearchView extends View {
 	protected void loadUI() {
 		JPanel forPerformanceSearchPanel = new JPanel();
 		forPerformanceSearchPanel.setBorder(new TitledBorder(null, "Search", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		forPerformanceSearchPanel.setBounds(70, 96, 717, 394);
+		forPerformanceSearchPanel.setBounds(52, 96, 717, 394);
 		getContentPane().add(forPerformanceSearchPanel);
 		forPerformanceSearchPanel.setLayout(null);
 		
@@ -71,7 +72,7 @@ public class PerformanceSearchView extends View {
 		searchButton.setBounds(338, 11, 111, 23);
 		searchPanel.add(searchButton);
 		
-		performanceComboBox = new MyComboBox<>(seasonGameController.getPerformanceMap());
+		performanceComboBox = new MyComboBox<>(Performance.sPerformances);
 		performanceComboBox.setBounds(111, 11, 89, 20);
 		searchPanel.add(performanceComboBox);
 		
@@ -80,7 +81,7 @@ public class PerformanceSearchView extends View {
 		searchPanel.add(orderComboBox);
 		
 		JScrollPane performancesScrollPane = new JScrollPane();
-		performancesScrollPane.setBounds(46, 93, 671, 282);
+		performancesScrollPane.setBounds(22, 82, 671, 282);
 		forPerformanceSearchPanel.add(performancesScrollPane);
 		
 		performancesTable = new PerformancesTable();
@@ -89,11 +90,11 @@ public class PerformanceSearchView extends View {
 		returnButton = new JButton("Return");
 		returnButton.setIcon(renderImage(ImagePath.CANCEL_RETURN_ICON));
 		returnButton.setHorizontalTextPosition(AbstractButton.LEFT);
-		returnButton.setBounds(327, 501, 187, 53);
+		returnButton.setBounds(308, 501, 187, 53);
 		getContentPane().add(returnButton);
 		
 		JLabel statsTitleImageLabel = new JLabel(renderImage(ImagePath.STATISTICS_TITLE_ICON));
-		statsTitleImageLabel.setBounds(345, 0, 157, 103);
+		statsTitleImageLabel.setBounds(316, 0, 157, 103);
 		getContentPane().add(statsTitleImageLabel);
 	}
 	
@@ -105,9 +106,15 @@ public class PerformanceSearchView extends View {
 			
 			try {
 				ArrayList<Team> teams = new ArrayList<>();
-				teams = seasonGameController.searchTeamsByPerformance(selPerformance, selOrder);
+				if (selPerformance.equals(Performance.sPerformances.get("Total goals"))) {
+					teams = seasonGameController.searchTeamsByTotalGoals(selOrder);
+				} else {
+					teams = seasonGameController.searchTeamsByPerformance(selPerformance, selOrder);
+				}
 				performancesTable.setSeachBy(selPerformance);
 				performancesTable.setTeams(teams);
+				
+				if (teams.isEmpty()) Alert.showInfo(this, "There are no teams with performances!");
 			} catch (SQLException err) {
 				Alert.showError(this, "Error connecting to the database");
 			}
@@ -115,4 +122,5 @@ public class PerformanceSearchView extends View {
 		
 		returnButton.addActionListener((e) -> changeView(this));
 	}
+
 }

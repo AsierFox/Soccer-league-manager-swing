@@ -19,14 +19,26 @@ import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
 import com.devdream.validator.LeagueValidator;
 
+/**
+ * This controller manages the league associated actions,
+ * like generating the game season, loading the current league,
+ * submit a new league, etc.
+ * 
+ * @author Asier Gonzalez
+ */
 public class LeagueController extends Controller {
 
+	//
+	// Attributes
 	private LeagueDAO leagueDAO;
 	private LeagueVO leagueVO;
 	private League currentLeague;
-
+	
 	private boolean isLeagueUnderway;
 	
+	//
+	// Constructors
+	/** Loads the current league if there is any. */
 	public LeagueController() throws SQLException {
 		leagueDAO = new LeagueDAO();
 		isLeagueUnderway = leagueDAO.isLeagueUnderway();
@@ -35,6 +47,8 @@ public class LeagueController extends Controller {
 		}
 	}
 	
+	//
+	// Methods
 	/** Set the league that is underway. */
 	private void setCurrentLeague() throws SQLException {
 		leagueVO = leagueDAO.getCurrentLeague();
@@ -44,11 +58,6 @@ public class LeagueController extends Controller {
 	
 	/**
 	 * Creates a new league, submitting it to the database and returns the id of it.
-	 * @param name
-	 * @param startDate
-	 * @param endDate
-	 * @param description
-	 * @param teams
 	 * @return The Id of the created league
 	 * @throws SQLException
 	 * @throws LeagueUnderwayException

@@ -13,7 +13,7 @@ import com.devdream.model.Team;
 import com.devdream.ui.View.FontStyle;
 
 /**
- * This class manages the JTable with performances.
+ * This class manages the JTable with team performances.
  * 
  * @author Asier Gonzalez
  */

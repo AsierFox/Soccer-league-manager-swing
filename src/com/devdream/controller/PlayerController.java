@@ -11,6 +11,12 @@ import com.devdream.exception.RecordAlreadyException;
 import com.devdream.model.Scorer;
 import com.devdream.validator.PlayerValidator;
 
+/**
+ * This controller manages the player associated activities,
+ * like submitting, modifying, deleting...
+ * 
+ * @author Asier Gonzalez
+ */
 public class PlayerController extends Controller {
 
 	/**
@@ -31,7 +37,7 @@ public class PlayerController extends Controller {
 	}
 	
 	/**
-	 * Updates a player
+	 * Updates a player.
 	 * @throws InvalidInputException
 	 * @throws SQLException
 	 * @throws RecordAlreadyException
@@ -50,7 +56,7 @@ public class PlayerController extends Controller {
 	}
 	
 	/**
-	 * Deletes a player from a team
+	 * Deletes a player from a team.
 	 * @param playerDorsal The dorsal of the player
 	 * @throws SQLException
 	 */
@@ -61,8 +67,8 @@ public class PlayerController extends Controller {
 	
 	/** Returns the top scorers. */
 	public ArrayList<Scorer> getTopScorers() {
-		GoalDAO goalDAO = new GoalDAO();
 		try {
+			GoalDAO goalDAO = new GoalDAO();
 			return goalDAO.getTopScorers();
 		} catch (SQLException e) {
 			e.printStackTrace();

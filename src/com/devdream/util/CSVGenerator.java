@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.devdream.controller.SeasonGameController;
+import com.devdream.exception.OperationCancelledException;
 import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
+import com.devdream.ui.custom.Alert;
 
 /**
  * Generates a CSV of a season game or all season games.
@@ -16,13 +18,16 @@ import com.devdream.model.Team;
  */
 public class CSVGenerator {
 	public static final String SEPARATOR = ",";
-
+	
+	private static final String FILE_EXT = ".csv";
+	private final String FILE_SAVE_PATH;
+	
 	private ArrayList<SeasonGame> seasons;
 	private FileWriter fw;
 
-	public CSVGenerator(ArrayList<SeasonGame> seasons) throws IOException {
-		File f = new File("C:/dev/workspace/wales/java/Tema11Project/filePath.csv");
-		fw = new FileWriter(f);
+	public CSVGenerator(ArrayList<SeasonGame> seasons) throws IOException, OperationCancelledException {
+		FILE_SAVE_PATH = Alert.showFileChooser(FILE_EXT);
+		fw = new FileWriter(new File(FILE_SAVE_PATH));
 		this.seasons = seasons;
 	}
 

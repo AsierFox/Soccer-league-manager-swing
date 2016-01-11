@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.devdream.db.vo.LeagueVO;
 import com.devdream.db.vo.PerformanceVO;
 import com.devdream.model.Performance;
 import com.devdream.model.Team;
@@ -16,15 +17,21 @@ public class PerformanceDAO extends DAO {
 	// Attributes
 	private int idTeam;
 	private int idGame;
+	private int idLeague;
 	
 	//
 	// Constructors
 	public PerformanceDAO() {
 		idTeam = -1;
 		idGame = -1;
+		try {
+			LeagueVO currentLeague = new LeagueDAO().getCurrentLeague();
+			if (currentLeague != null) idLeague = currentLeague.getId();
+		} catch (SQLException e) {}
 	}
 	
 	public PerformanceDAO(int idTeam, int idGame) {
+		this();
 		this.idTeam = idTeam;
 		this.idGame = idGame;
 	}
@@ -50,16 +57,20 @@ public class PerformanceDAO extends DAO {
 		ResultSet rs = null;
 		String performaceTableName = QueryBuilder.getTableNameFromDAO(getClass());
 		String teamsTableName = QueryBuilder.getTableNameFromDAO(TeamDAO.class);
+		String seasonsTableName = QueryBuilder.getTableNameFromDAO(SeasonDAO.class);
 		try {
 			String sql = "SELECT t.*," +
+					"(SELECT IdGame FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'IdGame', " +
 					"(SELECT SUM(Shots) FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'Shots', " +
 					"(SELECT SUM(Passes)  FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'Passes', " +
 					"(SELECT SUM(Fouls)  FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'Fouls', " +
 					"(SELECT SUM(Offsides)  FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'Offsides', " +
 					"(SELECT SUM(Corners)  FROM " + performaceTableName + " WHERE t.Id = IdTeam) 'Corners' " +
 					"FROM " + teamsTableName + " t WHERE Shots IS NOT NULL AND Passes IS NOT NULL AND Fouls IS NOT NULL AND Offsides IS NOT NULL AND Corners IS NOT NULL " +
+					"AND IdGame IN (SELECT Id FROM " + seasonsTableName + " WHERE IdLeague = ?) " +
 					"ORDER BY " + performance + " " + order + ";";
 			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, idLeague);
 			rs = preparedStmt.executeQuery();
 			while (rs.next()) {
 				Team team = new Team(rs.getString("Name"), rs.getString("ShortName"), rs.getInt("FoundedYear"),
@@ -77,6 +88,40 @@ public class PerformanceDAO extends DAO {
 		return teams;
 	}
 	
+	public ArrayList<Team> getTeamByGoals(String selOrder) throws SQLException {
+		ArrayList<Team> teams = new ArrayList<>();
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		String performancesTableName = QueryBuilder.getTableNameFromDAO(getClass());
+		String teamsTableName = QueryBuilder.getTableNameFromDAO(TeamDAO.class);
+		String goalsTableName = QueryBuilder.getTableNameFromDAO(GoalDAO.class);
+		try {
+			String sql = "SELECT t.*, " +
+					"(SELECT Shots FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Shots', " +
+					"(SELECT Passes FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Passes', " +
+					"(SELECT Fouls FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Fouls', " +
+					"(SELECT Offsides FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Offsides', " +
+					"(SELECT Corners FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Corners', " +
+					" SUM(g.Score) 'TotalGoals' FROM " + goalsTableName + " g " +
+					"JOIN (SELECT * FROM " + teamsTableName + ") t ON t.Id = g.IdTeam " +
+					"GROUP BY g.IdTeam ORDER BY TotalGoals " + selOrder + ";";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			rs = preparedStmt.executeQuery();
+			while (rs.next()) {
+				Team team = new Team(rs.getString("Name"), rs.getString("ShortName"),
+						rs.getInt("FoundedYear"), rs.getString("Location"), rs.getString("Logo"));
+				
+				team.setPerformances(new Performance(rs.getInt("TotalGoals"), rs.getInt("Shots"),  rs.getInt("Passes"),
+						 rs.getInt("Fouls"), rs.getInt("Offsides"),  rs.getInt("Corners")));
+				
+				teams.add(team);
+			}
+		} finally {
+			super.closeConnection(preparedStmt);
+		}
+		return teams;
+	}
+	
 	/**
 	 * Updates a team season game performance, if it does not exist it creates it.
 	 * @param idGame The season game id
@@ -87,25 +132,15 @@ public class PerformanceDAO extends DAO {
 	 */
 	public boolean updatePerformances(int idGame, int idTeam, Performance performance) throws SQLException {
 		PreparedStatement preparedStmt = null;
-		ResultSet rs = null;
-		String idPerformance = "NULL";
+		boolean updated;
+		String performancesTableName = QueryBuilder.getTableNameFromDAO(getClass());
 		try {
-			String sqlId = QueryBuilder.createSelect(getClass(), "Id") + " WHERE IdGame = ? AND IdTeam = ?;";
-			preparedStmt = super.getConnection().prepareStatement(sqlId);
-			preparedStmt.setInt(1, idGame);
-			preparedStmt.setInt(2, idTeam);
-			rs = preparedStmt.executeQuery();
-			if (rs.next()) idPerformance = Integer.toString(rs.getInt(1));
-		} finally {
-			super.closeConnection(preparedStmt, rs);
-		}
-		boolean modified;
-		try {
+			String idPerformance = getTeamPerformanceIdByTeam(idGame, idTeam);
 			String sql = "INSERT OR REPLACE INTO " + QueryBuilder.getTableNameFromDAO(getClass()) +
 					" (Id, IdGame, IdTeam, Shots, Passes, Fouls, Offsides, Corners) VALUES ( " +
-					idPerformance + "," +
-					"COALESCE((SELECT IdGame FROM Performances WHERE IdGame = ? AND IdTeam = ?), ?)," +
-					"COALESCE((SELECT IdTeam FROM Performances WHERE IdGame = ? AND IdTeam = ?), ?)," +
+					idPerformance + ", " +
+					"COALESCE((SELECT IdGame FROM " + performancesTableName + " WHERE IdGame = ? AND IdTeam = ?), ?), " +
+					"COALESCE((SELECT IdTeam FROM " + performancesTableName + " WHERE IdGame = ? AND IdTeam = ?), ?), " +
 					"?, ?, ?, ?, ?);";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idGame);
@@ -119,11 +154,32 @@ public class PerformanceDAO extends DAO {
 			preparedStmt.setInt(9, performance.getFouls());
 			preparedStmt.setInt(10, performance.getOffsides());
 			preparedStmt.setInt(11, performance.getCorners());
-			modified = preparedStmt.executeUpdate() == 1;
+			updated = preparedStmt.executeUpdate() == 1;
 		} finally {
 			super.closeConnection(preparedStmt);
 		}
-		return modified;
+		return updated;
+	}
+	
+	/**
+	 * Gets the performance id if exists, if not it returns 'NULL'.
+	 * @throws SQLException
+	 */
+	public String getTeamPerformanceIdByTeam(int idGame, int idTeam) throws SQLException {
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		String idPerformance = "NULL";
+		try {
+			String sqlId = QueryBuilder.createSelect(getClass(), "Id") + " WHERE IdGame = ? AND IdTeam = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sqlId);
+			preparedStmt.setInt(1, idGame);
+			preparedStmt.setInt(2, idTeam);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) idPerformance = Integer.toString(rs.getInt(1));
+		} finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return idPerformance;
 	}
 	
 	public int getShots() throws SQLException {
@@ -131,7 +187,7 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT Shots FROM Performances WHERE IdTeam = ? AND IdGame = ?;";
+			String sql = QueryBuilder.createSelect(getClass(), "Shots") + " WHERE IdTeam = ? AND IdGame = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idTeam);
 			preparedStmt.setInt(2, idGame);
@@ -150,7 +206,7 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT Passes FROM Performances WHERE IdTeam = ? AND IdGame = ?;";
+			String sql = QueryBuilder.createSelect(getClass(), "Passes") + " WHERE IdTeam = ? AND IdGame = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idTeam);
 			preparedStmt.setInt(2, idGame);
@@ -158,8 +214,7 @@ public class PerformanceDAO extends DAO {
 			if (rs.next()) {
 				passes = rs.getInt(1);
 			}
-		}
-		finally {
+		} finally {
 			super.closeConnection(preparedStmt, rs);
 		}
 		return passes;
@@ -170,7 +225,7 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT Fouls FROM Performances WHERE IdTeam = ? AND IdGame = ?;";
+			String sql = QueryBuilder.createSelect(getClass(), "Fouls") + " WHERE IdTeam = ? AND IdGame = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idTeam);
 			preparedStmt.setInt(2, idGame);
@@ -178,8 +233,7 @@ public class PerformanceDAO extends DAO {
 			if (rs.next()) {
 				fouls = rs.getInt(1);
 			}
-		}
-		finally {
+		} finally {
 			super.closeConnection(preparedStmt, rs);
 		}
 		return fouls;
@@ -190,7 +244,7 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT Offsides FROM Performances WHERE IdTeam = ? AND IdGame = ?;";
+			String sql = QueryBuilder.createSelect(getClass(), "Offsides") + " WHERE IdTeam = ? AND IdGame = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idTeam);
 			preparedStmt.setInt(2, idGame);
@@ -210,8 +264,7 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT Corners FROM " + QueryBuilder.getTableNameFromDAO(getClass())
-					+ " WHERE IdTeam = ? AND IdGame = ?;";
+			String sql = QueryBuilder.createSelect(getClass(), "Corners") + " WHERE IdTeam = ? AND IdGame = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idTeam);
 			preparedStmt.setInt(2, idGame);
@@ -225,7 +278,7 @@ public class PerformanceDAO extends DAO {
 		}
 		return corners;
 	}
-
+	
 	/**
 	 * Gets the total score of a team on a specific game.
 	 * @param idGame
@@ -238,8 +291,8 @@ public class PerformanceDAO extends DAO {
 		PreparedStatement preparedStmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = "SELECT SUM(g.Score) FROM " + QueryBuilder.getTableNameFromDAO(GoalDAO.class) + " g " +
-					"WHERE IdGame = ? AND IdTeam = ?;";
+			String sql = QueryBuilder.createSelect(GoalDAO.class, "SUM(g.Score)") +
+					" g WHERE IdGame = ? AND IdTeam = ?;";
 			preparedStmt = super.getConnection().prepareStatement(sql);
 			preparedStmt.setInt(1, idGame);
 			preparedStmt.setInt(2, idTeam);

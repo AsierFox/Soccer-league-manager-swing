@@ -103,8 +103,7 @@ public class UserDAO extends DAO {
 				user = new UserVO(rs.getInt("IdTeam"), rs.getString("Username"),
 						rs.getString("Name"), rs.getString("Surname"));
 			}
-		}
-		finally {
+		} finally {
 			super.closeConnection(preparedStmt, rs);
 		}
 		return user;

@@ -10,10 +10,21 @@ import com.devdream.model.Team;
 import com.devdream.model.User;
 import com.devdream.util.StringHelper;
 
+/**
+ * This controller manages the login for the user, getting it and
+ * redirecting to the main application.
+ * 
+ * @author Asier Gonzalez
+ */
 public class LoginController extends Controller {
-	
-	public LoginController() {}
 
+	/**
+	 * This method logins an user by its user name and password entered.
+	 * @return User The logged user
+	 * @throws InvalidInputException
+	 * @throws LoginFailedException
+	 * @throws SQLException
+	 */
 	public User login(String username, String password) throws InvalidInputException, LoginFailedException, SQLException {
 		if (StringHelper.isStringNull(username) || StringHelper.isStringNull(password)) {
 			throw new InvalidInputException("login", "username or password");

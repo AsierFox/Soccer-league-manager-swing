@@ -6,29 +6,31 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Player;
-import com.devdream.model.Scorer;
+import com.devdream.model.Sanctioned;
 
 /**
- * This class manages the JTable with scorer players.
+ * This class retains a table of sanctioned players.
  * 
  * @author Asier Gonzalez
  */
-public class ScorersTable extends JTable {
-	private static final long serialVersionUID = -2727533720033456242L;
+public class SanctionsTable extends JTable {
+	private static final long serialVersionUID = -1561102919384332771L;
 	
 	//
 	// Attributes
 	private DefaultTableModel model;
-	private ArrayList<Scorer> scorers;
+	private ArrayList<Sanctioned> sanctions;
 	
 	//
 	// Constructors
-	public ScorersTable(ArrayList<Scorer> scorers) {
+	public SanctionsTable(ArrayList<Sanctioned> sanctions) {
 		model = new DefaultTableModel();
 		setModel(model);
 		setOffersTableHeader();
-		this.scorers = scorers;
+		this.sanctions = sanctions;
+		update();
 	}
 	
 	//
@@ -37,30 +39,34 @@ public class ScorersTable extends JTable {
 	private void setOffersTableHeader() {
 		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().setResizingAllowed(false);
-		model.addColumn("Rank.");
-		model.addColumn("First name");
-		model.addColumn("Surname");
+		model.addColumn("Player");
 		model.addColumn("Dorsal");
-		model.addColumn("Goals");
+		model.addColumn("Sanction");
 	}
-
+	
 	/** Updates the JTable with the updates collection. */
 	public void update() {
 		model.setRowCount(0);
-		for (Scorer s : scorers) {
-			addScorer(s);
+		for (Sanctioned s : sanctions) {
+			addSanctioned(s);
 		}
 	}
 	
-	public void addScorer(Scorer scorer) {
-		Player player = scorer.getPlayer();
+	public void addSanctioned(Sanctioned sanctioned) {
+		Player player = sanctioned.getPlayer();
 		Vector<String> row = new Vector<String>();
-		row.addElement(Integer.toString(model.getRowCount() + 1));
 		row.addElement(player.getFirstName());
-		row.addElement(player.getSurname());
 		row.addElement(Integer.toString(player.getDorsal()));
-		row.addElement(Integer.toString(scorer.getScore()));
+		row.addElement(sanctioned.getSanction().getType());
 		model.addRow(row);
+	}
+	
+	public Sanctioned getSelectedSanctioned() throws NotTableItemSelectedException {
+		int selectedRowIndex = getSelectedRow();
+		if (selectedRowIndex <= -1) {
+			throw new NotTableItemSelectedException("sanctioned");
+		}
+		return sanctions.get(getSelectedRow());
 	}
 	
 	/** Sets the cells to not editable. */

@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -126,7 +127,6 @@ public class MainView extends View {
 			loadUserTeam();
 			loadTeamPane(teamController.getUserTeam());
 			loadTeamPlayersTab(teamController.getTeamPlayers());
-			
 			if (isLeagueUnderway) {
 				loadLeagueTab(leagueController.getCurrentLeague());
 			} else {
@@ -140,11 +140,10 @@ public class MainView extends View {
 	private void loadUserTeam() {
 		JLabel forUserTeamNameLabel = new JLabel("Team");
 		forUserTeamNameLabel.setFont(FontStyle.BOLD_FONT);
-		forUserTeamNameLabel.setBounds(33, 145, 73, 14);
+		forUserTeamNameLabel.setBounds(23, 145, 73, 14);
 		userPanel.add(forUserTeamNameLabel);
 		
 		JLabel userTeamNameLabel = new JLabel(Controller.getLoggedUser().getTeam().getName());
-		userTeamNameLabel.setFont(FontStyle.BOLD_FONT);
 		userTeamNameLabel.setBounds(177, 145, 103, 14);
 		userPanel.add(userTeamNameLabel);
 	}
@@ -203,43 +202,47 @@ public class MainView extends View {
 		teamPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		
 		JLabel forTeamNameLabel = new JLabel("Team name");
-		forTeamNameLabel.setBounds(23, 33, 73, 14);
+		forTeamNameLabel.setFont(FontStyle.BOLD_FONT);
+		forTeamNameLabel.setBounds(23, 29, 92, 14);
 		teamPanel.add(forTeamNameLabel);
 		
 		JLabel forTeamShortNameLabel = new JLabel("Short name");
-		forTeamShortNameLabel.setBounds(23, 54, 73, 14);
+		forTeamShortNameLabel.setFont(FontStyle.BOLD_FONT);
+		forTeamShortNameLabel.setBounds(23, 54, 92, 14);
 		teamPanel.add(forTeamShortNameLabel);
 		
 		JLabel forTeamFoundedYearLabel = new JLabel("Founded year");
-		forTeamFoundedYearLabel.setBounds(23, 75, 73, 14);
+		forTeamFoundedYearLabel.setFont(FontStyle.BOLD_FONT);
+		forTeamFoundedYearLabel.setBounds(23, 79, 128, 14);
 		teamPanel.add(forTeamFoundedYearLabel);
 		
 		JLabel forTeamLocationLabel = new JLabel("Location");
-		forTeamLocationLabel.setBounds(23, 125, 73, 14);
+		forTeamLocationLabel.setFont(FontStyle.BOLD_FONT);
+		forTeamLocationLabel.setBounds(23, 132, 73, 14);
 		teamPanel.add(forTeamLocationLabel);
 		
 		JLabel teamTeamNameLabel = new JLabel(userTeam.getName());
-		teamTeamNameLabel.setBounds(106, 33, 73, 14);
+		teamTeamNameLabel.setBounds(146, 31, 73, 14);
 		teamPanel.add(teamTeamNameLabel);
 		
 		JLabel teamShortNameLabel = new JLabel(userTeam.getShortName());
-		teamShortNameLabel.setBounds(106, 54, 73, 14);
+		teamShortNameLabel.setBounds(146, 56, 73, 14);
 		teamPanel.add(teamShortNameLabel);
 		
 		JLabel teamFoundedYearLabel = new JLabel(Integer.toString(userTeam.getFoundedYear()));
-		teamFoundedYearLabel.setBounds(106, 75, 73, 14);
+		teamFoundedYearLabel.setBounds(23, 104, 73, 14);
 		teamPanel.add(teamFoundedYearLabel);
 		
 		JLabel teamLocationLabel = new JLabel(userTeam.getLocation());
-		teamLocationLabel.setBounds(106, 125, 73, 14);
+		teamLocationLabel.setBounds(23, 157, 73, 14);
 		teamPanel.add(teamLocationLabel);
 		
 		teamLogoLabel = new JLabel(renderImage(ImagePath.LOGOS + userTeam.getLogo()));
-		teamLogoLabel.setBounds(223, 33, 128, 97);
+		teamLogoLabel.setBounds(229, 33, 128, 97);
 		teamPanel.add(teamLogoLabel);
 		
 		teamLogoEditButton = new JButton(renderImage(ImagePath.EDIT_IMG_ICON));
-		teamLogoEditButton.setBounds(276, 125, 64, 46);
+		teamLogoEditButton.setBounds(305, 127, 52, 44);
 		teamLogoEditButton.setFocusPainted(false);
 		teamLogoEditButton.setMargin(new Insets(0, 0, 0, 0));
 		teamLogoEditButton.setContentAreaFilled(false);
@@ -248,19 +251,19 @@ public class MainView extends View {
 		teamPanel.add(teamLogoEditButton);
 		
 		JLabel forNewOpponentLabel = new JLabel("Opponents teams");
-		forNewOpponentLabel.setBounds(10, 205, 97, 14);
+		forNewOpponentLabel.setFont(FontStyle.BOLD_FONT);
+		forNewOpponentLabel.setBounds(10, 205, 161, 14);
 		teamPanel.add(forNewOpponentLabel);
 
 		newOpponentButton = new JButton("Add opponent team");
-		newOpponentButton.setBounds(127, 201, 170, 23);
+		newOpponentButton.setBounds(181, 203, 170, 23);
 		teamPanel.add(newOpponentButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(11, 230, 340, 211);
+		scrollPane.setBounds(11, 230, 340, 237);
 		teamPanel.add(scrollPane);
 		
 		opponentTeamsTable = new TeamsTable(teamController.getOpponentTeams());
-		opponentTeamsTable.update();
 		scrollPane.setViewportView(opponentTeamsTable);
 	}
 	
@@ -274,8 +277,9 @@ public class MainView extends View {
 		playersPanel.setLayout(null);
 		playersPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Team players", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 				
-		JLabel forPlayersTableLabel = new JLabel("Players");
-		forPlayersTableLabel.setBounds(10, 109, 85, 14);
+		JLabel forPlayersTableLabel = new JLabel("Team players");
+		forPlayersTableLabel.setFont(FontStyle.BOLD_FONT);
+		forPlayersTableLabel.setBounds(10, 109, 124, 14);
 		playersPanel.add(forPlayersTableLabel);
 		
 		newPlayerButton = new JButton("New player");
@@ -295,7 +299,6 @@ public class MainView extends View {
 		playersPanel.add(playersTableScrollPane);
 		
 		playersTable = new PlayersTable(userTeamPlayers);
-		playersTable.update();
 		playersTableScrollPane.setViewportView(playersTable);
 	}
 	
@@ -343,73 +346,84 @@ public class MainView extends View {
 		leaguePanel.setLayout(null);
 		
 		JLabel forLeagueNameLabel = new JLabel("League name");
-		forLeagueNameLabel.setBounds(24, 46, 99, 14);
+		forLeagueNameLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueNameLabel.setBounds(24, 46, 111, 14);
 		leaguePanel.add(forLeagueNameLabel);
 		
 		JLabel leagueNameLabel = new JLabel(currentLeague.getName());
-		leagueNameLabel.setBounds(175, 46, 91, 14);
+		leagueNameLabel.setBounds(24, 71, 111, 14);
 		leaguePanel.add(leagueNameLabel);
 
 		JLabel forLeagueDescriptionLabel = new JLabel("Description");
-		forLeagueDescriptionLabel.setBounds(24, 71, 99, 14);
+		forLeagueDescriptionLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueDescriptionLabel.setBounds(175, 46, 99, 14);
 		leaguePanel.add(forLeagueDescriptionLabel);
 		
-		JLabel leagueDescriptionLabel = new JLabel(currentLeague.getDescription());
-		leagueDescriptionLabel.setBounds(175, 69, 91, 14);
-		leaguePanel.add(leagueDescriptionLabel);
-		
 		JLabel forLeagueStartDateLabel = new JLabel("Start date");
-		forLeagueStartDateLabel.setBounds(24, 94, 99, 14);
+		forLeagueStartDateLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueStartDateLabel.setBounds(24, 107, 99, 14);
 		leaguePanel.add(forLeagueStartDateLabel);
 		
 		JLabel leagueStartDateLabel = new JLabel(currentLeague.getStartDate());
-		leagueStartDateLabel.setBounds(175, 94, 91, 14);
+		leagueStartDateLabel.setBounds(24, 132, 91, 14);
 		leaguePanel.add(leagueStartDateLabel);
 		
 		JLabel forLeagueEndDateLabel = new JLabel("End date");
-		forLeagueEndDateLabel.setBounds(24, 119, 99, 14);
+		forLeagueEndDateLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueEndDateLabel.setBounds(24, 163, 99, 14);
 		leaguePanel.add(forLeagueEndDateLabel);
 		
 		JLabel leagueEndDateLabel = new JLabel(currentLeague.getEndDate());
-		leagueEndDateLabel.setBounds(175, 119, 91, 14);
+		leagueEndDateLabel.setBounds(24, 188, 91, 14);
 		leaguePanel.add(leagueEndDateLabel);
 		
-		JLabel forLeaguePeriodLabel = new JLabel("League period");
-		forLeaguePeriodLabel.setBounds(24, 154, 99, 14);
+		JLabel forLeaguePeriodLabel = new JLabel("League period (in days)");
+		forLeaguePeriodLabel.setFont(FontStyle.BOLD_FONT);
+		forLeaguePeriodLabel.setBounds(175, 163, 147, 14);
 		leaguePanel.add(forLeaguePeriodLabel);
 		
 		JLabel leaguePeriodLabel = new JLabel(Integer.toString(currentLeague.getPeriod()));
-		leaguePeriodLabel.setBounds(175, 154, 91, 14);
+		leaguePeriodLabel.setBounds(175, 188, 91, 14);
 		leaguePanel.add(leaguePeriodLabel);
 		
 
 		JLabel forLeagueLeftDaysLabel = new JLabel("Days left");
-		forLeagueLeftDaysLabel.setBounds(24, 174, 99, 14);
+		forLeagueLeftDaysLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueLeftDaysLabel.setBounds(24, 216, 99, 14);
 		leaguePanel.add(forLeagueLeftDaysLabel);
 		
 		JLabel leagueLeftDaysLabel = new JLabel(Integer.toString(currentLeague.getLeftDays()));
-		leagueLeftDaysLabel.setBounds(175, 174, 91, 14);
+		leagueLeftDaysLabel.setBounds(24, 244, 91, 14);
 		leaguePanel.add(leagueLeftDaysLabel);
 		
 		JLabel forLeagueNumberSeasonsLabel = new JLabel("Number of seasons");
-		forLeagueNumberSeasonsLabel.setBounds(24, 195, 111, 14);
+		forLeagueNumberSeasonsLabel.setFont(FontStyle.BOLD_FONT);
+		forLeagueNumberSeasonsLabel.setBounds(175, 213, 163, 14);
 		leaguePanel.add(forLeagueNumberSeasonsLabel);
 		
 		JLabel leagueNumberSeasonsLabel = new JLabel(Integer.toString(currentLeague.getNumberSeasons()));
-		leagueNumberSeasonsLabel.setBounds(175, 195, 91, 14);
+		leagueNumberSeasonsLabel.setBounds(175, 244, 91, 14);
 		leaguePanel.add(leagueNumberSeasonsLabel);
 		
-		topScorersButton = new JButton("Top League scorers");
+		topScorersButton = new JButton("Top league scorers");
 		topScorersButton.setIcon(renderImage(ImagePath.TOP_SCORERS_ICON));
 		topScorersButton.setHorizontalTextPosition(AbstractButton.LEFT);
-		topScorersButton.setBounds(84, 302, 238, 57);
+		topScorersButton.setBounds(84, 317, 238, 57);
 		leaguePanel.add(topScorersButton);
 		
 		searchPerformancesButton = new JButton("Search by performances");
 		searchPerformancesButton.setIcon(renderImage(ImagePath.STATISTICS_ICON));
 		searchPerformancesButton.setHorizontalTextPosition(AbstractButton.LEFT);
-		searchPerformancesButton.setBounds(84, 382, 238, 57);
+		searchPerformancesButton.setBounds(84, 402, 238, 57);
 		leaguePanel.add(searchPerformancesButton);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(175, 71, 181, 71);
+		leaguePanel.add(scrollPane);
+		
+		JTextArea leagueDescriptionTextArea = new JTextArea(currentLeague.getDescription());
+		leagueDescriptionTextArea.setEditable(false);
+		scrollPane.setViewportView(leagueDescriptionTextArea);
 		
 		JPanel seasonsPanel = new JPanel();
 		seasonsPanel.setBorder(new TitledBorder(null, "Seasons", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -424,7 +438,7 @@ public class MainView extends View {
 		
 		JPanel gamesPanel = new JPanel();
 		gamesPanel.setBorder(new TitledBorder(null, "Games", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		gamesPanel.setBounds(10, 78, 364, 327);
+		gamesPanel.setBounds(10, 78, 364, 323);
 		seasonsPanel.add(gamesPanel);
 		gamesPanel.setLayout(null);
 		
@@ -433,11 +447,10 @@ public class MainView extends View {
 		gamesPanel.add(matchesTableScrollPane);
 		
 		seasonsTable = new SeasonGamesTable(leagueController.getLeagueSeasonGames());
-		seasonsTable.update();
 		matchesTableScrollPane.setViewportView(seasonsTable);
 
 		exportAllSeasonsGamesCSVButton = new JButton("Export All seasons games to CSV");
-		exportAllSeasonsGamesCSVButton.setBounds(76, 457, 243, 24);
+		exportAllSeasonsGamesCSVButton.setBounds(75, 467, 257, 25);
 		exportAllSeasonsGamesCSVButton.setIcon(renderImage(ImagePath.CSV_ICON));
 		exportAllSeasonsGamesCSVButton.setHorizontalTextPosition(AbstractButton.LEFT);
 		seasonsPanel.add(exportAllSeasonsGamesCSVButton);
@@ -445,13 +458,13 @@ public class MainView extends View {
 		exportSeasonGameCSVButton = new JButton("Export season game to CSV");
 		exportSeasonGameCSVButton.setIcon(renderImage(ImagePath.CSV_ICON));
 		exportSeasonGameCSVButton.setHorizontalTextPosition(SwingConstants.LEFT);
-		exportSeasonGameCSVButton.setBounds(76, 432, 243, 24);
+		exportSeasonGameCSVButton.setBounds(75, 436, 256, 25);
 		seasonsPanel.add(exportSeasonGameCSVButton);
 		
 		exportSeasonGamePDFButton = new JButton("Export season game to PDF");
 		exportSeasonGamePDFButton.setIcon(renderImage(ImagePath.PDF_ICON));
 		exportSeasonGamePDFButton.setHorizontalTextPosition(SwingConstants.LEFT);
-		exportSeasonGamePDFButton.setBounds(76, 407, 243, 24);
+		exportSeasonGamePDFButton.setBounds(75, 404, 257, 25);
 		seasonsPanel.add(exportSeasonGamePDFButton);
 	}
 	
@@ -476,15 +489,18 @@ public class MainView extends View {
 			teamLogoEditButton.addActionListener((e) -> {
 				try {
 					Alert.showInfo(this, "Select the new image for your team.");
+					
 					String imgPath = Alert.showFileChooser("");
 					UploadImage uploadImage = new UploadImage(imgPath);
-					uploadImage.copyFileToPath();
+					String fileName = uploadImage.uploadImage();
+					
+					teamLogoLabel.setIcon(renderImage(ImagePath.LOGOS + fileName));
+					teamController.updateLogoImage(fileName, teamController.getUserTeam().getId());
+					
 					Alert.showInfo(this, "Image uploaded.");
-//					teamLogoLabel.setText(renderImage(ImagePath.LOGOS + userTeam)); TODO SAVE IMG
 				} catch (OperationCancelledException err) {
 					Alert.showError(this, err.getMessage());
-				} catch (IOException | URISyntaxException err) {
-					err.printStackTrace();
+				} catch (IOException | URISyntaxException | SQLException err) {
 					Alert.showError(this, "Error uploading the image!");
 				}
 			});
@@ -540,6 +556,8 @@ public class MainView extends View {
 					try {
 						SeasonGame.exportToCSV(new ArrayList<SeasonGame>(seasonsTable.getSeasons().values()));
 						Alert.showInfo(this, "CSV exported successfully!");
+					} catch(OperationCancelledException err) {
+						Alert.showError(this, err.getMessage());
 					} catch (IOException err) {
 						Alert.showError(this, "Error creating the CSV of the season.");
 					}
@@ -551,7 +569,7 @@ public class MainView extends View {
 						selectedSeason = seasonsTable.getSelectedSeasonGame();
 						selectedSeason.exportToCSV();
 						Alert.showInfo(this, "CSV exported successfully!");
-					} catch (NotTableItemSelectedException err) {
+					} catch (NotTableItemSelectedException | OperationCancelledException err) {
 						Alert.showError(this, err.getMessage());
 					} catch (IOException err) {
 						Alert.showError(this, "Error creating the CSV of the season.");
@@ -564,7 +582,7 @@ public class MainView extends View {
 						selectedSeason = seasonsTable.getSelectedSeasonGame();
 						selectedSeason.exportToPDF();
 						Alert.showInfo(this, "PDF exported successfully!");
-					} catch (NotTableItemSelectedException err) {
+					} catch (NotTableItemSelectedException | OperationCancelledException err) {
 						Alert.showError(this, err.getMessage());
 					} catch (IOException | DocumentException err) {
 						Alert.showError(this, "Error creating the CSV of the season.");
@@ -584,7 +602,7 @@ public class MainView extends View {
 			}
 		} else {
 			createNewTeamButton.addActionListener((e) -> {
-				new CreateUserTeamView(teamController, Controller.getLoggedUser());
+				new CreateUserTeamView(teamController);
 				dispose();
 			});
 		}
@@ -601,4 +619,5 @@ public class MainView extends View {
 		if (hasTeamPlayers) playersTable.update();
 		if (isLeagueUnderway) seasonsTable.update();
 	}
+
 }

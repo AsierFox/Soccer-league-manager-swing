@@ -241,6 +241,21 @@ public class TeamDAO extends DAO {
 		return team;
 	}
 	
+	public boolean updateLogoImage(int idTeam, String fileName) throws SQLException {
+		boolean updated;
+		PreparedStatement preparedStmt = null;
+		try {
+			String sql = "UPDATE " + QueryBuilder.getTableNameFromDAO(getClass())+ " SET Logo = ? WHERE Id = ?";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setString(1, fileName);
+			preparedStmt.setInt(2, idTeam);
+			updated = preparedStmt.executeUpdate() == 1;
+		} finally {
+			super.closeConnection(preparedStmt);
+		}
+		return updated;
+	}
+	
 	/**
 	 * Get home team from a game.
 	 * @param idGame
@@ -297,5 +312,5 @@ public class TeamDAO extends DAO {
 		return new TeamVO(rs.getInt("Id"), rs.getString("Name"), rs.getString("ShortName"), rs.getInt("FoundedYear"),
 				rs.getString("Location"), rs.getString("Logo"));
 	}
-	
+
 }

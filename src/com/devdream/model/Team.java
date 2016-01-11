@@ -3,8 +3,12 @@ package com.devdream.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.devdream.controller.Controller;
+
 /**
- * The team model for the application.
+ * The team model for the application. Containing the information of it
+ * and the performances that it has. Also contains the players, that
+ * can play in the team.
  * 
  * @author Asier Gonzalez
  */
@@ -12,9 +16,8 @@ public class Team {
 
 	//
 	// Attributes
-	private boolean userTeam;
-	private int id;
 	private String name;
+	private int id;
 	private String shortName;
 	private int foundedYear;
 	private String location;
@@ -52,7 +55,6 @@ public class Team {
 	//
 	// Methods
 	private void init() {
-		userTeam = false;
 		this.players = new HashMap<>();
 		performances = new Performance();
 	}
@@ -63,11 +65,8 @@ public class Team {
 	
 	//
 	// Getters and setters
-	public void setUserTeam(boolean isUserTeam) {
-		this.userTeam = isUserTeam;
-	}
 	public boolean isUserTeam() {
-		return userTeam;
+		return name.equals(Controller.getLoggedUser().getTeam().getName());
 	}
 	public int getId() {
 		return id;
@@ -155,6 +154,12 @@ public class Team {
 	}
 	public void setPlayers(HashMap<Integer, Player> players) {
 		this.players = players;
+	}
+	public void setSanctions(ArrayList<Sanctioned> sanctions) {
+		performances.setSactions(sanctions);
+	}
+	public ArrayList<Sanctioned> getSanctions() {
+		return performances.getSactions();
 	}
 
 }

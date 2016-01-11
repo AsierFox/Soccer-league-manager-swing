@@ -34,6 +34,7 @@ public class PlayersTable extends JTable {
 		setModel(model);
 		setOffersTableHeader();
 		this.players = elements;
+		update();
 	}
 	
 	//

@@ -14,17 +14,14 @@ import com.devdream.ui.custom.Alert;
  * @author Asier Gonzalez
  */
 public class App {
-
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
-	/** Main method. Runs the application 
-	 * @throws SQLException */
+	/** Main method. Runs the application. */
 	public static void main(String[] args) {
 		try {
-			DAO.createTables();
+			DAO.checkTables();
 		} catch (SQLException e) {
 			Alert.showError(null, "Error connecting to the database.");
-			System.exit(1);
 		}
 		SwingUtilities.invokeLater(() -> new LoginView());
 	}

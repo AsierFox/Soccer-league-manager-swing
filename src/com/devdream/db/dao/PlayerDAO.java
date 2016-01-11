@@ -69,6 +69,28 @@ public class PlayerDAO extends DAO {
 	}
 	
 	/**
+	 * Gets the id by the player dorsal.
+	 * @throws SQLException 
+	 */
+	public int getIdByDorsal(int dorsal) throws SQLException {
+		int id = 0;
+		PreparedStatement preparedStmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = QueryBuilder.createSelect(getClass(), "Id") + " WHERE Dorsal = ?;";
+			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, dorsal);
+			rs = preparedStmt.executeQuery();
+			if (rs.next()) {
+				id = rs.getInt(1);
+			}
+		} finally {
+			super.closeConnection(preparedStmt, rs);
+		}
+		return id;
+	}
+	
+	/**
 	 * Gets all the team players of a team passing the id of the target team.
 	 * @param idTeam Id of the Team
 	 * @return All the Player Value Objects in an ArrayList
@@ -88,8 +110,7 @@ public class PlayerDAO extends DAO {
 				players.put(dorsal, new Player(rs.getString("FirstName"), rs.getString("Surname"), rs.getInt("Age"),
 						dorsal, rs.getString("Position")));
 			}
-		}
-		finally {
+		} finally {
 			super.closeConnection(preparedStmt, rs);
 		}
 		return players;

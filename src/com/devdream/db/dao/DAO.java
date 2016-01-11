@@ -8,6 +8,13 @@ import com.devdream.db.vo.UserVO;
 import com.devdream.exception.RecordAlreadyException;
 import com.devdream.util.QueryBuilder;
 
+/**
+ * The abstract class for all the DAO objects, this class
+ * creates the table for all DAO objects and checks if they
+ * are created on the database.
+ * 
+ * @author Asier Gonzalez
+ */
 public abstract class DAO extends DBConnectionManager {
 
 	/** Checks if the table exists. */
@@ -48,56 +55,50 @@ public abstract class DAO extends DBConnectionManager {
 	public abstract void createTable() throws SQLException;
 	
 	/** Creates all the application tables. */
-	public static void createTables() throws SQLException {
+	public static void checkTables() throws SQLException {
 		TeamDAO teamDAO = new TeamDAO();
+		PlayerDAO playerDAO = new PlayerDAO();
+		UserDAO userDAO = new UserDAO();
+		LeagueDAO leagueDAO = new LeagueDAO();
+		GameDAO gameDAO = new GameDAO();
+		SeasonDAO seasonDAO = new SeasonDAO();
+		GoalDAO goalDAO = new GoalDAO();
+		PerformanceDAO performanceDAO = new PerformanceDAO();
+		SanctionTypeDAO sanctionTypeDAO = new SanctionTypeDAO();
+		SanctionDAO sanctionDAO = new SanctionDAO();
+		
 		if (!teamDAO.tableExists()) {
 			teamDAO.createTable();
 		}
-		
-		PlayerDAO playerDAO = new PlayerDAO();
 		if (!playerDAO.tableExists()) {
 			playerDAO.createTable();
 		}
-		
-		UserDAO userDAO = new UserDAO();
 		if (!userDAO.tableExists()) {
 			userDAO.createTable();
 			try {
 				userDAO.insertUser(new UserVO(1, "mikel", "123", "Mikel", "Linares"));
 			} catch (RecordAlreadyException e) {}
 		}
-		
-		LeagueDAO leagueDAO = new LeagueDAO();
 		if (!leagueDAO.tableExists()) {
 			leagueDAO.createTable();
 		}
-		
-		SeasonDAO seasonDAO = new SeasonDAO();
 		if (!seasonDAO.tableExists()) {
 			seasonDAO.createTable();
 		}
-		
-		GameDAO gameDAO = new GameDAO();
 		if (!gameDAO.tableExists()) {
 			gameDAO.createTable();
 		}
-		
-		PerformanceDAO performanceDAO = new PerformanceDAO();
 		if (!performanceDAO.tableExists()) {
 			performanceDAO.createTable();
 		}
-		
-		GoalDAO goalDAO = new GoalDAO();
 		if (!goalDAO.tableExists()) {
 			goalDAO.createTable();
 		}
-		
-		SanctionTypeDAO sanctionTypeDAO = new SanctionTypeDAO();
 		if (!sanctionTypeDAO.tableExists()) {
 			sanctionTypeDAO.createTable();
+			sanctionTypeDAO.insertSanctionType("Yellow card");
+			sanctionTypeDAO.insertSanctionType("Red card");
 		}
-		
-		SanctionDAO sanctionDAO = new SanctionDAO();
 		if (!sanctionDAO.tableExists()) {
 			sanctionDAO.createTable();
 		}

@@ -40,6 +40,7 @@ public class SeasonGamesTable extends JTable {
 	public SeasonGamesTable(HashMap<Integer, SeasonGame> seasonGames) {
 		this();
 		this.seasonGames = seasonGames;
+		update();
 	}
 	
 	//

@@ -53,65 +53,75 @@ public class CreateTeamView extends View {
 	@Override
 	protected void loadUI() {
 		JLabel createTeamTitleLabel = new JLabel("Create team");
-		createTeamTitleLabel.setBounds(396, 56, 99, 14);
+		createTeamTitleLabel.setFont(FontStyle.TITLE_FONT);
+		createTeamTitleLabel.setBounds(174, 14, 99, 14);
 		getContentPane().add(createTeamTitleLabel);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "New team", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(155, 153, 534, 289);
+		panel.setBounds(20, 39, 368, 241);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel forNameLabel = new JLabel("Name");
-		forNameLabel.setBounds(42, 48, 70, 14);
+		forNameLabel.setFont(FontStyle.BOLD_FONT);
+		forNameLabel.setBounds(42, 33, 70, 14);
 		panel.add(forNameLabel);
 		
 		nameTextField = new JTextField();
-		nameTextField.setBounds(42, 75, 86, 20);
+		nameTextField.setBounds(42, 58, 86, 20);
 		panel.add(nameTextField);
 		nameTextField.setColumns(10);
 		
 		shortNameTextField = new JTextField();
 		shortNameTextField.setColumns(10);
-		shortNameTextField.setBounds(42, 149, 86, 20);
+		shortNameTextField.setBounds(42, 114, 86, 20);
 		panel.add(shortNameTextField);
 		
 		JLabel forShortNameLabel = new JLabel("Short name");
-		forShortNameLabel.setBounds(42, 122, 70, 14);
+		forShortNameLabel.setFont(FontStyle.BOLD_FONT);
+		forShortNameLabel.setBounds(42, 89, 100, 14);
 		panel.add(forShortNameLabel);
 		
 		foundedYearTextField = new JTextField();
 		foundedYearTextField.setColumns(10);
-		foundedYearTextField.setBounds(193, 75, 86, 20);
+		foundedYearTextField.setBounds(193, 58, 86, 20);
 		panel.add(foundedYearTextField);
 		
 		JLabel forFoundedYearLabel = new JLabel("Founded year");
-		forFoundedYearLabel.setBounds(193, 48, 86, 14);
+		forFoundedYearLabel.setFont(FontStyle.BOLD_FONT);
+		forFoundedYearLabel.setBounds(193, 33, 130, 14);
 		panel.add(forFoundedYearLabel);
 		
 		JLabel forLocationLabel = new JLabel("Location");
-		forLocationLabel.setBounds(337, 48, 86, 14);
+		forLocationLabel.setFont(FontStyle.BOLD_FONT);
+		forLocationLabel.setBounds(193, 89, 86, 14);
 		panel.add(forLocationLabel);
 		
 		locationTextField = new JTextField();
 		locationTextField.setColumns(10);
-		locationTextField.setBounds(337, 75, 86, 20);
+		locationTextField.setBounds(193, 114, 86, 20);
 		panel.add(locationTextField);
 		
 		JLabel lblLogo = new JLabel("Logo");
-		lblLogo.setBounds(337, 122, 86, 14);
+		lblLogo.setFont(FontStyle.BOLD_FONT);
+		lblLogo.setBounds(42, 150, 86, 14);
 		panel.add(lblLogo);
+		
+		JButton selectLogoButton = new JButton("Choose your logo");
+		selectLogoButton.setBounds(42, 176, 137, 23);
+		panel.add(selectLogoButton);
 		
 		newTeamButton = new JButton("New team");
 		newTeamButton.setIcon(renderImage(ImagePath.CREATE_ICON));
 		newTeamButton.setHorizontalTextPosition(AbstractButton.LEFT);
-		newTeamButton.setBounds(280, 488, 239, 60);
+		newTeamButton.setBounds(70, 303, 145, 49);
 		getContentPane().add(newTeamButton);
 		
 		cancelButton = new JButton("Cancel");
 		cancelButton.setIcon(renderImage(ImagePath.CANCEL_RETURN_ICON));
 		cancelButton.setHorizontalTextPosition(AbstractButton.LEFT);
-		cancelButton.setBounds(550, 496, 179, 45);
+		cancelButton.setBounds(225, 311, 108, 33);
 		getContentPane().add(cancelButton);
 	}
 

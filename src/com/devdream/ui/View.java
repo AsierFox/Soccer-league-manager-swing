@@ -39,6 +39,10 @@ public abstract class View extends JFrame {
 		this(true);
 	}
 	
+	/**
+	 * Creates a view.
+	 * @param rootView If the view is root / main or not.
+	 */
 	public View(boolean rootView) {
 		super();
 		setTitle(APP_TITLE);
@@ -200,6 +204,7 @@ public abstract class View extends JFrame {
 	public static class FontStyle {
 		public static final Font TITLE_FONT = new Font("Verdana", Font.BOLD | Font.ITALIC, 15);
 		public static final Font BOLD_FONT = new Font("Verdana", Font.BOLD, 13);
+		public static final Font NORMAL_FONT = new Font("Verdana", 0, 10);
 	}
 
 }

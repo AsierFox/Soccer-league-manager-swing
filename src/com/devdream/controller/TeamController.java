@@ -43,6 +43,7 @@ public class TeamController extends Controller {
 	
 	//
 	// Methods
+	/** Loads the user team players. */
 	private void setUserTeamPlayers() throws SQLException {
 		UserDAO userDAO = new UserDAO();
 		PlayerDAO playerDAO = new PlayerDAO();
@@ -58,13 +59,6 @@ public class TeamController extends Controller {
 	
 	/**
 	 * Inserts a team for an user.
-	 * @param username
-	 * @param name
-	 * @param shortName
-	 * @param foundedYear
-	 * @param achievements
-	 * @param location
-	 * @param logo
 	 * @throws SQLException
 	 * @throws RecordAlreadyException
 	 * @throws InvalidInputException
@@ -83,12 +77,6 @@ public class TeamController extends Controller {
 	
 	/**
 	 * Submits a new team.
-	 * @param name
-	 * @param shortName
-	 * @param foundedYear
-	 * @param achievements
-	 * @param location
-	 * @param logo
 	 * @throws InvalidInputException
 	 * @throws SQLException
 	 * @throws RecordAlreadyException
@@ -102,18 +90,13 @@ public class TeamController extends Controller {
 		teamDAO.insertTeam(new TeamVO(name, shortName, teamValidator.getFoundedYear(), location, logo));
 	}
 	
-	//
-	// Getters and setters
-	/** Returns the current user team. */
-	public Team getUserTeam() {
-		return userTeam;
-	}
-	/** Returns the current user team players. */
-	public HashMap<Integer, Player> getTeamPlayers() {
-		return teamPlayers;
-	}
-	public void setTeamPlayers(HashMap<Integer, Player> teamPlayers) {
-		this.teamPlayers = teamPlayers;
+	/**
+	 * Updates the logo for a specific team.
+	 * @throws SQLException 
+	 */
+	public void updateLogoImage(String fileName, int idTeam) throws SQLException {
+		TeamDAO teamDAO = new TeamDAO();
+		teamDAO.updateLogoImage(idTeam, fileName);
 	}
 	
 	/** Returns the opponent teams. */
@@ -136,6 +119,19 @@ public class TeamController extends Controller {
 		return allTeams;
 	}
 	
+	//
+	// Getters and setters
+	/** Returns the current user team. */
+	public Team getUserTeam() {
+		return userTeam;
+	}
+	/** Returns the current user team players. */
+	public HashMap<Integer, Player> getTeamPlayers() {
+		return teamPlayers;
+	}
+	public void setTeamPlayers(HashMap<Integer, Player> teamPlayers) {
+		this.teamPlayers = teamPlayers;
+	}
 	public boolean hasUserTeam() {
 		return hasUserTeam;
 	}

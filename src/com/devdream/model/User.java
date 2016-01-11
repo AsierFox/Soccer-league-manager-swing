@@ -1,5 +1,11 @@
 package com.devdream.model;
 
+/**
+ * The model of the user contains the information of the user
+ * and team that they have.
+ * 
+ * @author Asier Gonzalez
+ */
 public class User {
 
 	//
@@ -17,7 +23,7 @@ public class User {
 		this.surname = surname;
 		this.team = team;
 	}
-
+	
 	//
 	// Methods
 	/** If the user has a team returns true. */

@@ -1,5 +1,7 @@
 package com.devdream.db;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,18 +11,15 @@ import java.sql.SQLException;
 import com.devdream.ui.custom.Alert;
 
 /**
- * Class to manage connection to the database.
+ * Class to manage the connections to the database.
  *
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public abstract class DBConnectionManager {
 
 	//
 	// Global
-	// TODO Getting the absolute path!
-	public static final String DB_PATH = System.getProperty("user.dir") + "/db/";
+	public static final String DB_PATH = "db" + File.separator;
 	public static final String DB_FILE_EXT = ".db3";
 	public static final String DB_FILENAME = "soccermanager" + DB_FILE_EXT;
 	
@@ -50,12 +49,17 @@ public abstract class DBConnectionManager {
 	// Methods
 	/** Sets the properties needed to connect to the database. */
 	private void setProperties() {
-		DBProperties properties = new DBProperties();
-		
-		DB_DRIVER = properties.getProperty(DBProperties.DRIVER);
-		DB_CONNECTION = properties.getProperty(DBProperties.SERVER) + DB_PATH + properties.getProperty(DBProperties.DATABASE);
-		
-		properties.close();
+		try {
+			DBProperties properties = new DBProperties();
+
+			DB_DRIVER = properties.getProperty(DBProperties.DRIVER);
+			DB_CONNECTION = properties.getProperty(DBProperties.SERVER) + DB_PATH
+					+ properties.getProperty(DBProperties.DATABASE);
+			
+			if (properties != null) properties.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/** Connects to the loaded database */

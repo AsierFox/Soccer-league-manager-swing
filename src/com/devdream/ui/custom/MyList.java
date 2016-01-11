@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
+import com.devdream.exception.NotTableItemSelectedException;
+
 /**
  * Personalized JList component of Swing.
  * 
  * @author Asier Gonzalez
- * @version 1.0
- * @since 1.0
  */
 public class MyList <E> extends JList<E> {
 
@@ -23,13 +23,30 @@ public class MyList <E> extends JList<E> {
 		this.items = items;
 		model = new DefaultListModel<E>();
 		setModel(model);
-		fillList();
+		update();
 	}
 	
-	private void fillList() {
+	public void update() {
+		model.removeAllElements();
         for (E e : items) {
         	model.addElement(e);
         }
+	}
+	
+	public void addItem(E e) {
+		items.add(e);
+		update();
+	}
+	
+	public E getSelectedItem(String itemName) throws NotTableItemSelectedException {
+		if (getSelectedValue() == null) {
+			throw new NotTableItemSelectedException(itemName);
+		}
+		return getSelectedValue();
+	}
+	
+	public ArrayList<E> getItems() {
+		return items;
 	}
 
 }

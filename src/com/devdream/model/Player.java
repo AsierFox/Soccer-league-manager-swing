@@ -1,5 +1,10 @@
 package com.devdream.model;
 
+/**
+ * The player model.
+ * 
+ * @author Asier Gonzalez
+ */
 public class Player {
 
 	//
@@ -29,16 +34,28 @@ public class Player {
 	
 	//
 	// Methods
-	public static Player getAnonymousPlayer() {
-		return new Player("Anonymous", "anonymous", 0, 0, "retired");
-	}
-	
+	/** Modifies all the attributes of a player. */
 	public void modifyPlayer(String firstName, String surname, int age, int dorsal, String position) {
 		setFirstName(firstName);
 		setSurname(surname);
 		setAge(age);
 		setPosition(position);
 		setDorsal(dorsal);
+	}
+
+	@Override
+	public String toString() {
+		return getFirstName() + " " + getSurname() + "  > " + getDorsal();
+	}
+	
+	/**
+	 * Creates an anonymous player. This method is used when a player is an scorer (or
+	 * a sanctioned) and is deleted from the application. Instead of displaying any player
+	 * to the user, this methods creates an anonymous player.
+	 * @return An instance of an anonymous player
+	 */
+	public static Player getAnonymousPlayer() {
+		return new Player("Anonymous", "anonymous", 0, 0, "retired");
 	}
 	
 	//

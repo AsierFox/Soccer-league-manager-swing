@@ -2,7 +2,6 @@ package com.devdream.ui;
 
 import java.awt.Color;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -16,15 +15,24 @@ import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.SeasonGameController;
 import com.devdream.exception.InvalidInputException;
+import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Performance;
+import com.devdream.model.Sanctioned;
 import com.devdream.model.Scorer;
 import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.DateObserverTextField;
 import com.devdream.ui.custom.MyList;
+import com.devdream.ui.custom.SanctionsTable;
 import com.qt.datapicker.DatePicker;
 
+/**
+ * The view that shows the performances, such as the information of
+ * a game of the season.
+ * 
+ * @author Asier Gonzalez
+ */
 public class SeasonGameView extends View {
 	private static final long serialVersionUID = 4061083358990967716L;
 	
@@ -52,9 +60,18 @@ public class SeasonGameView extends View {
 	private JTextField awayTeamOffsidesTextField;
 	private JTextField awayTeamCornersTextField;
 
+	private SanctionsTable sanctionsTable;
+	private MyList<Scorer> scorersList;
+
 	private JButton gameDateButton;
+	private JButton addSactionButton;
+	private JButton addScorerButton;
 	private JButton returnButton;
 	private JButton saveButton;
+	private JButton removeSanctionButton;
+	private JButton removeScorerButton;
+	private JLabel forHomeTeamName;
+	private JLabel forAwayTeamName;
 	
 	//
 	// Constructors
@@ -76,21 +93,21 @@ public class SeasonGameView extends View {
 	protected void loadUI() {
 		gamePanel = new JPanel();
 		gamePanel.setBorder(new TitledBorder(null, "Game", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		gamePanel.setBounds(28, 48, 759, 427);
+		gamePanel.setBounds(28, 48, 759, 444);
 		getContentPane().add(gamePanel);
 		gamePanel.setLayout(null);
 		
-		JLabel forSeasonTitleLabel = new JLabel("Season");
-		forSeasonTitleLabel.setBounds(301, 23, 46, 14);
+		JLabel forSeasonTitleLabel = new JLabel("Season game");
+		forSeasonTitleLabel.setBounds(301, 23, 115, 14);
 		getContentPane().add(forSeasonTitleLabel);
 
 		JPanel gameDatePanel = new JPanel();
 		gameDatePanel.setLayout(null);
-		gameDatePanel.setBounds(225, 23, 236, 39);
+		gameDatePanel.setBounds(265, 21, 236, 39);
 		gamePanel.add(gameDatePanel);
 		
 		JLabel forGameDateLabel = new JLabel("Game date");
-		forGameDateLabel.setBounds(157, 36, 69, 14);
+		forGameDateLabel.setBounds(186, 36, 69, 14);
 		gamePanel.add(forGameDateLabel);
 		
 		gameDateObserverTextField = new DateObserverTextField();
@@ -106,36 +123,34 @@ public class SeasonGameView extends View {
 		loadHomeTeam(seasonGameController.getHomeTeam());
 		loadAwayTeam(seasonGameController.getAwayTeam());
 		
-		// TODO Scorers!!
-//		loadScorers(seasonGameController.isUserHomeTeam() ? homeTeamPanel : awayTeamPanel);
+		// TODO DESIGN
+//		loadUserTeamPlayers(homeTeamPanel);
+//		loadUserTeamPlayers(awayTeamPanel);
 		
-		//TODO DESIGN
-		/*** */
-//		loadScorers(awayTeamPanel);
-		/*** */
+		loadUserTeamPlayers(seasonGameController.isUserHomeTeam() ? homeTeamPanel : awayTeamPanel);
 		
 		JLabel forGoalLabel = new JLabel("Goals");
-		forGoalLabel.setBounds(358, 372, 46, 14);
+		forGoalLabel.setBounds(347, 382, 57, 14);
 		gamePanel.add(forGoalLabel);
 		
 		JLabel forShotsLabel = new JLabel("Shots");
-		forShotsLabel.setBounds(358, 172, 46, 14);
+		forShotsLabel.setBounds(347, 128, 57, 14);
 		gamePanel.add(forShotsLabel);
 		
 		JLabel forPassesLabel = new JLabel("Passes");
-		forPassesLabel.setBounds(358, 206, 46, 14);
+		forPassesLabel.setBounds(347, 163, 70, 14);
 		gamePanel.add(forPassesLabel);
 		
 		JLabel forFoulsLabel = new JLabel("Fouls");
-		forFoulsLabel.setBounds(358, 237, 46, 14);
+		forFoulsLabel.setBounds(347, 210, 70, 14);
 		gamePanel.add(forFoulsLabel);
 		
 		JLabel forOffsidesLabel = new JLabel("Offsides");
-		forOffsidesLabel.setBounds(358, 272, 46, 14);
+		forOffsidesLabel.setBounds(347, 251, 70, 14);
 		gamePanel.add(forOffsidesLabel);
 		
 		JLabel forCornersLabel = new JLabel("Corners");
-		forCornersLabel.setBounds(358, 298, 46, 14);
+		forCornersLabel.setBounds(347, 293, 57, 14);
 		gamePanel.add(forCornersLabel);
 		
 		returnButton = new JButton("Return");
@@ -152,97 +167,134 @@ public class SeasonGameView extends View {
 	}
 	
 	private void loadHomeTeam(Team homeTeam) {
+		JLabel lblNewLabel = new JLabel(renderImage(ImagePath.LOGOS + homeTeam.getLogo()));
+		lblNewLabel.setBounds(50, -20, 114, 80);
+		gamePanel.add(lblNewLabel);
+		
 		homeTeamPanel = new JPanel();
 		homeTeamPanel.setBorder(new TitledBorder(null, "Home team", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		homeTeamPanel.setBounds(29, 120, 309, 285);
+		homeTeamPanel.setBounds(28, 73, 309, 360);
 		gamePanel.add(homeTeamPanel);
 		homeTeamPanel.setLayout(null);
-		
-		JLabel homeTeamLabel = new JLabel(homeTeam.getName());
-		homeTeamLabel.setBounds(21, 26, 104, 14);
-		homeTeamPanel.add(homeTeamLabel);
 
 		homeTeamGoalsTextField = new JTextField(Integer.toString(homeTeam.getScore()));
-		homeTeamGoalsTextField.setEditable(false);
-		homeTeamGoalsTextField.setBounds(175, 254, 44, 20);
+		homeTeamGoalsTextField.setEditable(!seasonGameController.isUserHomeTeam());
+		homeTeamGoalsTextField.setBounds(240, 291, 44, 44);
 		homeTeamPanel.add(homeTeamGoalsTextField);
 		
 		homeTeamShotsTextField = new JTextField(Integer.toString(homeTeam.getShots()));
-		homeTeamShotsTextField.setBounds(175, 52, 44, 20);
+		homeTeamShotsTextField.setBounds(240, 41, 44, 31);
 		homeTeamPanel.add(homeTeamShotsTextField);
 		
 		homeTeamPassesTextField = new JTextField(Integer.toString(homeTeam.getPasses()));
-		homeTeamPassesTextField.setBounds(175, 83, 44, 20);
+		homeTeamPassesTextField.setBounds(240, 83, 44, 31);
 		homeTeamPanel.add(homeTeamPassesTextField);
 		
 		homeTeamFoulsTextField = new JTextField(Integer.toString(homeTeam.getFouls()));
-		homeTeamFoulsTextField.setBounds(175, 114, 44, 20);
+		homeTeamFoulsTextField.setBounds(240, 125, 44, 31);
 		homeTeamPanel.add(homeTeamFoulsTextField);
 		
 		homeTeamOffsidesTextField = new JTextField(Integer.toString(homeTeam.getOffsides()));
-		homeTeamOffsidesTextField.setBounds(175, 145, 44, 20);
+		homeTeamOffsidesTextField.setBounds(240, 167, 44, 31);
 		homeTeamPanel.add(homeTeamOffsidesTextField);
 		
 		homeTeamCornersTextField = new JTextField(Integer.toString(homeTeam.getCorners()));
-		homeTeamCornersTextField.setBounds(175, 176, 44, 20);
+		homeTeamCornersTextField.setBounds(240, 211, 44, 31);
 		homeTeamPanel.add(homeTeamCornersTextField);
+		
+		forHomeTeamName = new JLabel(homeTeam.getName());
+		forHomeTeamName.setBounds(84, 21, 92, 14);
+		homeTeamPanel.add(forHomeTeamName);
 	}
 	
 	private void loadAwayTeam(Team awayTeam) {
+		JLabel lblOgo = new JLabel(renderImage(ImagePath.LOGOS + awayTeam.getLogo()));
+		lblOgo.setBounds(547, -18, 114, 80);
+		gamePanel.add(lblOgo);
+		
 		awayTeamPanel = new JPanel();
 		awayTeamPanel.setLayout(null);
 		awayTeamPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Away team", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		awayTeamPanel.setBounds(427, 120, 309, 285);
+		awayTeamPanel.setBounds(427, 73, 309, 360);
 		gamePanel.add(awayTeamPanel);
 		
-		JLabel awayTeamLabel = new JLabel(awayTeam.getName());
-		awayTeamLabel.setBounds(144, 45, 104, 14);
-		awayTeamPanel.add(awayTeamLabel);
-		
 		awayTeamGoalsTextField = new JTextField(Integer.toString(awayTeam.getScore()));
-		awayTeamGoalsTextField.setEditable(false);
 		awayTeamGoalsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamGoalsTextField.setBounds(10, 254, 44, 20);
+		awayTeamGoalsTextField.setEditable(seasonGameController.isUserHomeTeam());
+		awayTeamGoalsTextField.setBounds(10, 292, 44, 45);
 		awayTeamPanel.add(awayTeamGoalsTextField);
 		
 		awayTeamShotsTextField = new JTextField(Integer.toString(awayTeam.getShots()));
 		awayTeamShotsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamShotsTextField.setBounds(10, 55, 44, 20);
+		awayTeamShotsTextField.setBounds(10, 38, 44, 31);
 		awayTeamPanel.add(awayTeamShotsTextField);
 		
 		awayTeamPassesTextField = new JTextField(Integer.toString(awayTeam.getPasses()));
 		awayTeamPassesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamPassesTextField.setBounds(10, 86, 44, 20);
+		awayTeamPassesTextField.setBounds(10, 80, 44, 31);
 		awayTeamPanel.add(awayTeamPassesTextField);
 		
 		awayTeamFoulsTextField = new JTextField(Integer.toString(awayTeam.getFouls()));
 		awayTeamFoulsTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamFoulsTextField.setBounds(10, 117, 44, 20);
+		awayTeamFoulsTextField.setBounds(10, 128, 44, 31);
 		awayTeamPanel.add(awayTeamFoulsTextField);
 		
 		awayTeamOffsidesTextField = new JTextField(Integer.toString(awayTeam.getOffsides()));
 		awayTeamOffsidesTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamOffsidesTextField.setBounds(10, 148, 44, 20);
+		awayTeamOffsidesTextField.setBounds(10, 170, 44, 31);
 		awayTeamPanel.add(awayTeamOffsidesTextField);
 		
 		awayTeamCornersTextField = new JTextField(Integer.toString(awayTeam.getCorners()));
 		awayTeamCornersTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		awayTeamCornersTextField.setBounds(10, 179, 44, 20);
+		awayTeamCornersTextField.setBounds(10, 212, 44, 31);
 		awayTeamPanel.add(awayTeamCornersTextField);
+		
+		forAwayTeamName = new JLabel(awayTeam.getName());
+		forAwayTeamName.setBounds(130, 25, 96, 14);
+		awayTeamPanel.add(forAwayTeamName);
 	}
 	
-	private void loadScorers(JPanel teamPanel) {
+	private void loadUserTeamPlayers(JPanel teamPanel) {
+		JLabel forSanctionsLabel = new JLabel("Sanctions");
+		forSanctionsLabel.setBounds(75, 48, 61, 14);
+		teamPanel.add(forSanctionsLabel);
+		
+		JScrollPane sanctionsScrollPane = new JScrollPane();
+		sanctionsScrollPane.setBounds(75, 98, 155, 95);
+		teamPanel.add(sanctionsScrollPane);
+		
+		sanctionsTable = new SanctionsTable(seasonGameController.isUserHomeTeam()
+				? seasonGameController.getHomeTeam().getSanctions()
+				: seasonGameController.getAwayTeam().getSanctions());
+		sanctionsScrollPane.setViewportView(sanctionsTable);
+		teamPanel.add(sanctionsScrollPane);
+		
+		addSactionButton = new JButton("Add");
+		addSactionButton.setBounds(75, 73, 69, 21);
+		teamPanel.add(addSactionButton);
+
+		removeSanctionButton = new JButton("Remove");
+		removeSanctionButton.setBounds(154, 73, 76, 21);
+		teamPanel.add(removeSanctionButton);
+		
+		removeScorerButton = new JButton("Remove");
+		removeScorerButton.setBounds(154, 228, 76, 21);
+		teamPanel.add(removeScorerButton);
+		
+		JLabel forScorersLabel = new JLabel("Scorers");
+		forScorersLabel.setBounds(75, 204, 61, 14);
+		teamPanel.add(forScorersLabel);
+
+		addScorerButton = new JButton("Add");
+		addScorerButton.setBounds(75, 228, 69, 21);
+		teamPanel.add(addScorerButton);
+		
 		JScrollPane scorersScrollPane = new JScrollPane();
-		scorersScrollPane.setBounds(132, 179, 116, 95);
-		
-		JLabel scorersLabel = new JLabel("Scorers");
-		scorersLabel.setBounds(130, 151, 61, 14);
-		teamPanel.add(scorersLabel);
-		
-		ArrayList<Scorer> scorers = seasonGameController.isUserHomeTeam()
+		scorersScrollPane.setBounds(75, 254, 155, 95);
+
+		scorersList = new MyList<>(seasonGameController.isUserHomeTeam()
 				? seasonGameController.getHomeTeam().getScorers()
-				: seasonGameController.getAwayTeam().getScorers();
-		MyList<Scorer> scorersList = new MyList<>(scorers);
+				: seasonGameController.getAwayTeam().getScorers());
 		scorersScrollPane.setViewportView(scorersList);
 		teamPanel.add(scorersScrollPane);
 	}
@@ -253,6 +305,43 @@ public class SeasonGameView extends View {
 	        DatePicker dp = new DatePicker(gameDateObserverTextField);
 	        dp.parseDate(gameDateObserverTextField.getText());
 	        dp.start(gameDateObserverTextField);
+		});
+		
+		addSactionButton.addActionListener((e) -> new SanctionsView(seasonGameController, sanctionsTable));
+		removeSanctionButton.addActionListener((e) -> {
+			try {
+				Sanctioned selSanctioned = sanctionsTable.getSelectedSanctioned();
+				if (Alert.showConfirm(this, "Delete sanction",
+						"Are you sure you want to remove the " + selSanctioned.getSanction().getType() +
+						" for " + selSanctioned.getPlayer().getFirstName() + "?"))
+				{
+					seasonGameController.deleteSanctionedSanction(selSanctioned);
+					sanctionsTable.remove(sanctionsTable.getSelectedRow());
+					Alert.showInfo(this, "Sanctioned sanction deleted!");
+				}
+			} catch(NotTableItemSelectedException err) {
+				Alert.showError(this, err.getMessage());
+			} catch(SQLException err) {
+				Alert.showError(this, "Error connecting to the database");
+			}
+		});
+		
+		addScorerButton.addActionListener((e) -> new AddUpdateScorerView(seasonGameController, scorersList));
+		removeScorerButton.addActionListener((e) -> {
+			try {
+				Scorer selScorer = scorersList.getSelectedItem(Scorer.class.getSimpleName());
+				if (Alert.showConfirm(this, "Delete scorer",
+						"Are you sure you want to remove to " + selScorer.getPlayer().getFirstName() + "?"))
+				{
+					seasonGameController.deleteScorer(selScorer);
+					scorersList.remove(scorersList.getSelectedIndex());
+					Alert.showInfo(this, "Scorer deleted!");
+				}
+			} catch(NotTableItemSelectedException err) {
+				Alert.showError(this, err.getMessage());
+			} catch(SQLException err) {
+				Alert.showError(this, "Error connecting to the database");
+			}
 		});
 		
 		saveButton.addActionListener((e) -> {
@@ -270,7 +359,7 @@ public class SeasonGameView extends View {
 						Integer.parseInt(awayTeamFoulsTextField.getText()),
 						Integer.parseInt(awayTeamOffsidesTextField.getText()),
 						Integer.parseInt(awayTeamCornersTextField.getText()));
-				
+
 				seasonGameController.updateStats(gameDate, homeTeamPerformance, awayTeamPerformance);
 				
 				Alert.showInfo(this, "Statistics updated!");
@@ -286,5 +375,10 @@ public class SeasonGameView extends View {
 		
 		returnButton.addActionListener((e) -> changeView(this));
 	}
-
+	
+	@Override
+	public boolean isFocused() {
+		
+		return super.isFocused();
+	}
 }

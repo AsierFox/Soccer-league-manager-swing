@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import com.devdream.util.DateHelper;
 
+/**
+ * The league of the application, apart from the league information
+ * itself contains multiple seasons that have games.
+ * 
+ * @author Asier Gonzalez
+ */
 public class League {
 
 	//

@@ -80,7 +80,8 @@ public class SeasonGameController extends Controller {
 	 * @throws SQLException
 	 * @throws InvalidInputException
 	 */
-	public void updateStats(String gameDate, Performance homeTeamPerformance, Performance awayTeamPerformance)
+	public void updateStats(String gameDate, Performance homeTeamPerformance, Performance awayTeamPerformance,
+			ArrayList<Scorer> scorers)
 			throws SQLException, InvalidInputException
 	{	// Validate
 		PerformanceValidator performanceValidator = new PerformanceValidator(gameDate);
@@ -102,8 +103,24 @@ public class SeasonGameController extends Controller {
 		
 		// Update the score
 		GoalDAO goalDAO = new GoalDAO();
-		goalDAO.updateTeamGameScore(idGame, homeTeam.getId(), homeTeam.getScore());
-		goalDAO.updateTeamGameScore(idGame, awayTeam.getId(), awayTeam.getScore());
+		if (isUserHomeTeam()) {
+			homeTeam.setScorers(scorers);
+			updateEachScorer(goalDAO, homeTeam);
+			goalDAO.updateTeamGameScore(idGame, awayTeam.getId(), awayTeam.getScore());
+		} else {
+			awayTeam.setScorers(scorers);
+			updateEachScorer(goalDAO, awayTeam);
+			goalDAO.updateTeamGameScore(idGame, homeTeam.getId(), homeTeam.getScore());
+		}
+	}
+	
+	/** Updates the score of each team player. */
+	private void updateEachScorer(GoalDAO goalDAO, Team team) throws SQLException {
+		PlayerDAO playerDAO = new PlayerDAO();
+		for (Scorer s : team.getScorers()) {
+			goalDAO.updateScorer(idGame, team.getId(),
+					playerDAO.getIdByDorsal(s.getPlayer().getDorsal()), s.getScore());
+		}
 	}
 	
 	/**
@@ -175,7 +192,7 @@ public class SeasonGameController extends Controller {
 	
 	/**
 	 * Deletes the selected sanctioned sanction.
-	 * @param selSanctioned
+	 * @param selSanctioned The sanctioned player with the sanction
 	 * @throws SQLException
 	 */
 	public void deleteSanctionedSanction(Sanctioned selSanctioned) throws SQLException {

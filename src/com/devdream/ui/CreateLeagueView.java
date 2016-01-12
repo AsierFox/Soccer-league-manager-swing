@@ -105,6 +105,7 @@ public class CreateLeagueView extends View {
 		createLeaguePanel.add(forStartDateLabel);
 		
 		JPanel startDatePanel = new JPanel();
+		startDatePanel.setFont(FontStyle.BOLD_FONT);
 		startDatePanel.setBounds(509, 54, 236, 39);
 		createLeaguePanel.add(startDatePanel);
 		startDatePanel.setLayout(null);
@@ -115,7 +116,6 @@ public class CreateLeagueView extends View {
 		startDatePanel.add(startDateTextField);
 		
 		startDateButton = new JButton("Start date");
-		startDateButton.setFont(FontStyle.BOLD_FONT);
 		startDateButton.setBounds(118, 10, 108, 23);
 		startDatePanel.add(startDateButton);
 

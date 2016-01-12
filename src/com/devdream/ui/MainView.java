@@ -379,7 +379,7 @@ public class MainView extends View {
 		
 		JLabel forLeaguePeriodLabel = new JLabel("League period (in days)");
 		forLeaguePeriodLabel.setFont(FontStyle.BOLD_FONT);
-		forLeaguePeriodLabel.setBounds(175, 163, 147, 14);
+		forLeaguePeriodLabel.setBounds(175, 163, 199, 14);
 		leaguePanel.add(forLeaguePeriodLabel);
 		
 		JLabel leaguePeriodLabel = new JLabel(Integer.toString(currentLeague.getPeriod()));

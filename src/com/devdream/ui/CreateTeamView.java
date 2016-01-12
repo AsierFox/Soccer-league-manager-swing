@@ -1,5 +1,7 @@
 package com.devdream.ui;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import javax.swing.AbstractButton;
@@ -11,10 +13,12 @@ import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.TeamController;
 import com.devdream.exception.InvalidInputException;
+import com.devdream.exception.OperationCancelledException;
 import com.devdream.exception.RecordAlreadyException;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.TeamsTable;
+import com.devdream.util.UploadImage;
 
 public class CreateTeamView extends View {
 	private static final long serialVersionUID = -4093989271963766524L;
@@ -23,6 +27,8 @@ public class CreateTeamView extends View {
 	// Attributes
 	private TeamController teamController;
 	
+	private String logoImagePath;
+	
 	private TeamsTable teamsTable;
 	
 	private JTextField nameTextField;
@@ -30,6 +36,7 @@ public class CreateTeamView extends View {
 	private JTextField foundedYearTextField;
 	private JTextField locationTextField;
 	
+	private JButton selectLogoButton;
 	private JButton newTeamButton;
 	private JButton cancelButton;
 	
@@ -108,7 +115,7 @@ public class CreateTeamView extends View {
 		lblLogo.setBounds(42, 150, 86, 14);
 		panel.add(lblLogo);
 		
-		JButton selectLogoButton = new JButton("Choose your logo");
+		selectLogoButton = new JButton("Choose your logo");
 		selectLogoButton.setBounds(42, 176, 137, 23);
 		panel.add(selectLogoButton);
 		
@@ -127,13 +134,30 @@ public class CreateTeamView extends View {
 
 	@Override
 	protected void loadListeners() {
+		selectLogoButton.addActionListener((e) -> {
+			try {
+				Alert.showInfo(this, "Select the new image for the team.");
+
+				String imgPath = Alert.showFileChooser("");
+				UploadImage uploadImage = new UploadImage(imgPath);
+				String fileName = uploadImage.uploadImage();
+				logoImagePath = fileName;
+				
+				Alert.showInfo(this, fileName + " Image selected.");
+			} catch (OperationCancelledException err) {
+				Alert.showError(this, err.getMessage());
+			} catch (IOException | URISyntaxException err) {
+				Alert.showError(this, "Error selecting that image!");
+			}
+		});
+		
 		newTeamButton.addActionListener((e) -> {
 			try {
 				String name = nameTextField.getText();
 				String shortName = shortNameTextField.getText();
 				String foundedYear = foundedYearTextField.getText();
 				String location = locationTextField.getText();
-				String logo = ""; // TODO GET PATH OF LOGO
+				String logo = logoImagePath;
 				
 				teamController.submitTeam(name, shortName, foundedYear, location, logo);
 				teamsTable.addTeam(new Team(name, shortName, Integer.parseInt(foundedYear), location, logo));
@@ -159,7 +183,7 @@ public class CreateTeamView extends View {
 		shortNameTextField.setText("");
 		foundedYearTextField.setText("");
 		locationTextField.setText("");
-		// TODO LOGO PATH
+		logoImagePath = "";
 	}
 
 }

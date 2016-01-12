@@ -60,7 +60,7 @@ public class LoginView extends View {
 				TitledBorder.TOP, null, new Color(204, 204, 255)));
 		getContentPane().add(loginPanel);
 		loginPanel.setLayout(null);
-
+		
 		JLabel forUsernameHintLabel = new JLabel("mikel");
 		forUsernameHintLabel.setFont(new Font("Tahoma", Font.ITALIC, 10));
 		forUsernameHintLabel.setBounds(362, 53, 46, 14);
@@ -70,6 +70,11 @@ public class LoginView extends View {
 		forPasswordHintLabel.setFont(new Font("Tahoma", Font.ITALIC, 10));
 		forPasswordHintLabel.setBounds(362, 96, 46, 14);
 		loginPanel.add(forPasswordHintLabel);
+
+		JLabel appTitleLabel = new JLabel("Soccer Manager");
+		appTitleLabel.setFont(FontStyle.TITLE_FONT);
+		appTitleLabel.setBounds(413, 109, 230, 23);
+		getContentPane().add(appTitleLabel);
 		
 		JLabel logoImageLabel = new JLabel(renderImage(ImagePath.LOGO));
 		logoImageLabel.setBounds(10, 133, 256, 265);

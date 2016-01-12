@@ -95,6 +95,8 @@ public class PerformanceDAO extends DAO {
 		String performancesTableName = QueryBuilder.getTableNameFromDAO(getClass());
 		String teamsTableName = QueryBuilder.getTableNameFromDAO(TeamDAO.class);
 		String goalsTableName = QueryBuilder.getTableNameFromDAO(GoalDAO.class);
+		String seasonsTableName = QueryBuilder.getTableNameFromDAO(SeasonDAO.class);
+		String gamesTableName = QueryBuilder.getTableNameFromDAO(GameDAO.class);
 		try {
 			String sql = "SELECT t.*, " +
 					"(SELECT Shots FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Shots', " +
@@ -104,8 +106,10 @@ public class PerformanceDAO extends DAO {
 					"(SELECT Corners FROM " + performancesTableName + " WHERE IdTeam = g.IdTeam) 'Corners', " +
 					" SUM(g.Score) 'TotalGoals' FROM " + goalsTableName + " g " +
 					"JOIN (SELECT * FROM " + teamsTableName + ") t ON t.Id = g.IdTeam " +
+					"WHERE IdGame = (SELECT IdGame FROM " + gamesTableName + " WHERE IdSeason = (SELECT Id FROM " + seasonsTableName + " WHERE IdLeague = ?)) " +
 					"GROUP BY g.IdTeam ORDER BY TotalGoals " + selOrder + ";";
 			preparedStmt = super.getConnection().prepareStatement(sql);
+			preparedStmt.setInt(1, idLeague);
 			rs = preparedStmt.executeQuery();
 			while (rs.next()) {
 				Team team = new Team(rs.getString("Name"), rs.getString("ShortName"),

@@ -23,7 +23,7 @@ import com.devdream.model.SeasonGame;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.DateObserverTextField;
-import com.devdream.ui.custom.MyList;
+import com.devdream.ui.custom.ScorersList;
 import com.devdream.ui.custom.SanctionsTable;
 import com.qt.datapicker.DatePicker;
 
@@ -61,7 +61,7 @@ public class SeasonGameView extends View {
 	private JTextField awayTeamCornersTextField;
 
 	private SanctionsTable sanctionsTable;
-	private MyList<Scorer> scorersList;
+	private ScorersList scorersList;
 
 	private JButton gameDateButton;
 	private JButton addSactionButton;
@@ -98,6 +98,7 @@ public class SeasonGameView extends View {
 		gamePanel.setLayout(null);
 		
 		JLabel forSeasonTitleLabel = new JLabel("Season game");
+		forSeasonTitleLabel.setFont(FontStyle.TITLE_FONT);
 		forSeasonTitleLabel.setBounds(301, 23, 115, 14);
 		getContentPane().add(forSeasonTitleLabel);
 
@@ -107,7 +108,8 @@ public class SeasonGameView extends View {
 		gamePanel.add(gameDatePanel);
 		
 		JLabel forGameDateLabel = new JLabel("Game date");
-		forGameDateLabel.setBounds(186, 36, 69, 14);
+		forGameDateLabel.setFont(FontStyle.BOLD_FONT);
+		forGameDateLabel.setBounds(163, 34, 92, 14);
 		gamePanel.add(forGameDateLabel);
 		
 		gameDateObserverTextField = new DateObserverTextField();
@@ -130,26 +132,32 @@ public class SeasonGameView extends View {
 		loadUserTeamPlayers(seasonGameController.isUserHomeTeam() ? homeTeamPanel : awayTeamPanel);
 		
 		JLabel forGoalLabel = new JLabel("Goals");
+		forGoalLabel.setFont(FontStyle.BOLD_FONT);
 		forGoalLabel.setBounds(347, 382, 57, 14);
 		gamePanel.add(forGoalLabel);
 		
 		JLabel forShotsLabel = new JLabel("Shots");
+		forShotsLabel.setFont(FontStyle.BOLD_FONT);
 		forShotsLabel.setBounds(347, 128, 57, 14);
 		gamePanel.add(forShotsLabel);
 		
 		JLabel forPassesLabel = new JLabel("Passes");
+		forPassesLabel.setFont(FontStyle.BOLD_FONT);
 		forPassesLabel.setBounds(347, 163, 70, 14);
 		gamePanel.add(forPassesLabel);
 		
 		JLabel forFoulsLabel = new JLabel("Fouls");
+		forFoulsLabel.setFont(FontStyle.BOLD_FONT);
 		forFoulsLabel.setBounds(347, 210, 70, 14);
 		gamePanel.add(forFoulsLabel);
 		
 		JLabel forOffsidesLabel = new JLabel("Offsides");
+		forOffsidesLabel.setFont(FontStyle.BOLD_FONT);
 		forOffsidesLabel.setBounds(347, 251, 70, 14);
 		gamePanel.add(forOffsidesLabel);
 		
 		JLabel forCornersLabel = new JLabel("Corners");
+		forCornersLabel.setFont(FontStyle.BOLD_FONT);
 		forCornersLabel.setBounds(347, 293, 57, 14);
 		gamePanel.add(forCornersLabel);
 		
@@ -168,7 +176,7 @@ public class SeasonGameView extends View {
 	
 	private void loadHomeTeam(Team homeTeam) {
 		JLabel lblNewLabel = new JLabel(renderImage(ImagePath.LOGOS + homeTeam.getLogo()));
-		lblNewLabel.setBounds(50, -20, 114, 80);
+		lblNewLabel.setBounds(50, -35, 137, 109);
 		gamePanel.add(lblNewLabel);
 		
 		homeTeamPanel = new JPanel();
@@ -203,13 +211,14 @@ public class SeasonGameView extends View {
 		homeTeamPanel.add(homeTeamCornersTextField);
 		
 		forHomeTeamName = new JLabel(homeTeam.getName());
-		forHomeTeamName.setBounds(84, 21, 92, 14);
+		forHomeTeamName.setFont(FontStyle.BOLD_FONT);
+		forHomeTeamName.setBounds(84, 21, 138, 14);
 		homeTeamPanel.add(forHomeTeamName);
 	}
 	
 	private void loadAwayTeam(Team awayTeam) {
 		JLabel lblOgo = new JLabel(renderImage(ImagePath.LOGOS + awayTeam.getLogo()));
-		lblOgo.setBounds(547, -18, 114, 80);
+		lblOgo.setBounds(547, -33, 131, 107);
 		gamePanel.add(lblOgo);
 		
 		awayTeamPanel = new JPanel();
@@ -250,7 +259,8 @@ public class SeasonGameView extends View {
 		awayTeamPanel.add(awayTeamCornersTextField);
 		
 		forAwayTeamName = new JLabel(awayTeam.getName());
-		forAwayTeamName.setBounds(130, 25, 96, 14);
+		forAwayTeamName.setFont(FontStyle.BOLD_FONT);
+		forAwayTeamName.setBounds(130, 25, 144, 14);
 		awayTeamPanel.add(forAwayTeamName);
 	}
 	
@@ -292,7 +302,7 @@ public class SeasonGameView extends View {
 		JScrollPane scorersScrollPane = new JScrollPane();
 		scorersScrollPane.setBounds(75, 254, 155, 95);
 
-		scorersList = new MyList<>(seasonGameController.isUserHomeTeam()
+		scorersList = new ScorersList(seasonGameController.isUserHomeTeam()
 				? seasonGameController.getHomeTeam().getScorers()
 				: seasonGameController.getAwayTeam().getScorers());
 		scorersScrollPane.setViewportView(scorersList);
@@ -334,7 +344,8 @@ public class SeasonGameView extends View {
 						"Are you sure you want to remove to " + selScorer.getPlayer().getFirstName() + "?"))
 				{
 					seasonGameController.deleteScorer(selScorer);
-					scorersList.remove(scorersList.getSelectedIndex());
+					scorersList.removeSelectedRow(scorersList.getSelectedIndex());
+					scorersList.update();
 					Alert.showInfo(this, "Scorer deleted!");
 				}
 			} catch(NotTableItemSelectedException err) {
@@ -359,8 +370,8 @@ public class SeasonGameView extends View {
 						Integer.parseInt(awayTeamFoulsTextField.getText()),
 						Integer.parseInt(awayTeamOffsidesTextField.getText()),
 						Integer.parseInt(awayTeamCornersTextField.getText()));
-
-				seasonGameController.updateStats(gameDate, homeTeamPerformance, awayTeamPerformance);
+				
+				seasonGameController.updateStats(gameDate, homeTeamPerformance, awayTeamPerformance, scorersList.getScorers());
 				
 				Alert.showInfo(this, "Statistics updated!");
 			} catch(InvalidInputException err){
@@ -378,7 +389,12 @@ public class SeasonGameView extends View {
 	
 	@Override
 	public boolean isFocused() {
-		
+		String totalScore = Integer.toString(scorersList.getTotalScore());
+		if (seasonGameController.isUserHomeTeam()) {
+			homeTeamGoalsTextField.setText(totalScore);
+		} else {
+			awayTeamGoalsTextField.setText(totalScore);
+		}
 		return super.isFocused();
 	}
 }

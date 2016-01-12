@@ -87,7 +87,7 @@ public class GoalDAO extends DAO {
 				if (playerVO != null){
 					scorers.add(new Scorer(rs.getInt(1), new Player(playerVO.getFirstName(), playerVO.getSurname(),
 							playerVO.getAge(), playerVO.getDorsal(), playerVO.getPosition())));
-				} else {
+				} else if (rs.getInt(1) != 0) {
 					scorers.add(new Scorer(rs.getInt(1), Player.getAnonymousPlayer()));
 				}
 			}

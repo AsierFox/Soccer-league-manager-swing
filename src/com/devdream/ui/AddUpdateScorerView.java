@@ -17,7 +17,7 @@ import com.devdream.model.Player;
 import com.devdream.model.Scorer;
 import com.devdream.ui.custom.Alert;
 import com.devdream.ui.custom.MyComboBox;
-import com.devdream.ui.custom.MyList;
+import com.devdream.ui.custom.ScorersList;
 
 public class AddUpdateScorerView extends View {
 	private static final long serialVersionUID = 1664079085664852146L;
@@ -25,7 +25,7 @@ public class AddUpdateScorerView extends View {
 	//
 	// Attributes
 	private SeasonGameController seasonGameController;
-	private MyList<Scorer> scorersList;
+	private ScorersList scorersList;
 	
 	private MyComboBox<Integer, Player> teamPlayersComboBox;
 	
@@ -36,7 +36,7 @@ public class AddUpdateScorerView extends View {
 
 	//
 	// Constructors
-	public AddUpdateScorerView(SeasonGameController seasonGameController, MyList<Scorer> scorersList) {
+	public AddUpdateScorerView(SeasonGameController seasonGameController, ScorersList scorersList) {
 		super(false);
 		getContentPane().setLayout(null);
 		
@@ -101,9 +101,12 @@ public class AddUpdateScorerView extends View {
 			try {
 				Player selPlayer = (Player) teamPlayersComboBox.getSelectedItem();
 				int goals = (Integer) goalsSpinner.getValue();
+				
 				seasonGameController.updateScorer(selPlayer, goals);
 				scorersList.addItem(new Scorer(goals, selPlayer));
+				
 				Alert.showInfo(this, "Player goals added!");
+				askReturn();
 			} catch (InvalidInputException err) {
 				Alert.showError(this, err.getMessage());
 			} catch (NullPointerException err) {
@@ -114,6 +117,18 @@ public class AddUpdateScorerView extends View {
 		});
 		
 		cancelButton.addActionListener((e) -> dispose());
+	}
+
+	private void clearData() {
+		goalsSpinner.setValue(0);
+	}
+	
+	private void askReturn() {
+		if (Alert.showConfirm(this, "Return to the season view", "Do you wish to return to the season game view?")) {
+			dispose();
+		} else {
+			clearData();
+		}
 	}
 
 }

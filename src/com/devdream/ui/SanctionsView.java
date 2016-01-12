@@ -97,7 +97,12 @@ public class SanctionsView extends View {
 			try {
 				seasonGameController.createSanction(selPlayer, sanction);
 				sanctionsTable.addSanctioned(new Sanctioned(selPlayer, sanction));
+				
 				Alert.showInfo(this, "Sanction created!");
+				if (Alert.showConfirm(this, "Return to the season view",
+						"Do you wish to return to the season game view?")) {
+					dispose();
+				}
 			} catch (SQLException err) {
 				Alert.showError(this, "Error connecting to the database");
 			}

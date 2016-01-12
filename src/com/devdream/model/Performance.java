@@ -12,7 +12,7 @@ public class Performance {
 
 	//
 	// Globals
-	public static TreeMap<String, String> sPerformances;
+	public static TreeMap<String, String> sPerformances = getPerformancesMap();
 	
 	//
 	// Attributes
@@ -37,7 +37,6 @@ public class Performance {
 		this.offsides = offsides;
 		this.corners = corners;
 		scorers = new ArrayList<>();
-		setPerformancesMap();
 	}
 	
 	public Performance(int score, int shots, int passes, int fouls, int offsides, int corners, ArrayList<Scorer> scorers) {
@@ -47,21 +46,22 @@ public class Performance {
 	
 	//
 	// Methods
-	/** Sets the performances types. */
-	public void setPerformancesMap() {
-		sPerformances = new TreeMap<>();
-		sPerformances.put("Total goals", "Total goals");
-		sPerformances.put("Shots", "Shots");
-		sPerformances.put("Passes", "Passes");
-		sPerformances.put("Fouls", "Fouls");
-		sPerformances.put("Offsides", "Offsides");
-		sPerformances.put("Corners", "Corners");
-	}
-	
 	@Override
 	public String toString() {
 		return "Performance [shots=" + shots + ", passes=" + passes + ", fouls=" + fouls + ", score=" + score
 				+ ", offsides=" + offsides + ", corners=" + corners + ", scorers=" + scorers + "]";
+	}
+	
+	/** Sets the performances types. */
+	private static TreeMap<String, String> getPerformancesMap() {
+		TreeMap<String, String > performances = new TreeMap<>();
+		performances.put("Total goals", "Total goals");
+		performances.put("Shots", "Shots");
+		performances.put("Passes", "Passes");
+		performances.put("Fouls", "Fouls");
+		performances.put("Offsides", "Offsides");
+		performances.put("Corners", "Corners");
+		return performances;
 	}
 	
 	//

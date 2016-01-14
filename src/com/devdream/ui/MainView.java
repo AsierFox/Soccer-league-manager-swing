@@ -91,7 +91,7 @@ public class MainView extends View {
 			leagueController = new LeagueController();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Alert.showError(this, "Error connecting to the database!");
+			Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 		}
 		
 		hasUserTeam = teamController.hasUserTeam();
@@ -501,7 +501,7 @@ public class MainView extends View {
 				} catch (OperationCancelledException err) {
 					Alert.showError(this, err.getMessage());
 				} catch (IOException | URISyntaxException | SQLException err) {
-					Alert.showError(this, "Error uploading the image!");
+					Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 				}
 			});
 			

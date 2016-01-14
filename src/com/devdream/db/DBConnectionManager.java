@@ -19,6 +19,8 @@ public abstract class DBConnectionManager {
 
 	//
 	// Global
+	public static final String CONNECT_ERROR_MSG = "Error connection to the database!";
+	
 	public static final String DB_PATH = "db" + File.separator;
 	public static final String DB_FILE_EXT = ".db3";
 	public static final String DB_FILENAME = "soccermanager" + DB_FILE_EXT;

@@ -13,6 +13,7 @@ import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.LeagueController;
 import com.devdream.controller.TeamController;
+import com.devdream.db.DBConnectionManager;
 import com.devdream.exception.InvalidInputException;
 import com.devdream.exception.LeagueUnderwayException;
 import com.devdream.exception.NotTableItemSelectedException;
@@ -62,7 +63,7 @@ public class CreateLeagueView extends View {
 			leagueController = new LeagueController();
 			teamController = new TeamController();
 		} catch (SQLException e) {
-			Alert.showError(this, "Error connecting to the database");
+			Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 		}
 		
 		loadUI();

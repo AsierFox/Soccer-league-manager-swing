@@ -206,7 +206,7 @@ public class TeamDAO extends DAO {
 							newTeam.getShortName(),
 							Integer.toString(newTeam.getFoundedYear()),
 							newTeam.getLocation(),
-							newTeam.getLogo().isEmpty() ? View.ImagePath.DEFAULT_TEAM_LOGO : newTeam.getLogo()
+							newTeam.getLogo() == null ? View.ImagePath.DEFAULT_TEAM_LOGO : newTeam.getLogo()
 						});
 			preparedStmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.executeUpdate();

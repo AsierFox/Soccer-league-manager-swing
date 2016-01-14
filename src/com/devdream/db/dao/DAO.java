@@ -13,6 +13,11 @@ import com.devdream.util.QueryBuilder;
  * creates the table for all DAO objects and checks if they
  * are created on the database.
  * 
+ * To delete database:
+ * PRAGMA writable_schema = 1;
+ * delete from sqlite_master where type = 'table';
+ * PRAGMA writable_schema = 0;
+ * 
  * @author Asier Gonzalez
  */
 public abstract class DAO extends DBConnectionManager {

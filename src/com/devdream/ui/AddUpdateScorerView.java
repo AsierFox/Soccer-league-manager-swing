@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.Controller;
 import com.devdream.controller.SeasonGameController;
+import com.devdream.db.DBConnectionManager;
 import com.devdream.exception.InvalidInputException;
 import com.devdream.model.Player;
 import com.devdream.model.Scorer;
@@ -112,7 +113,7 @@ public class AddUpdateScorerView extends View {
 			} catch (NullPointerException err) {
 				Alert.showError(this, "You need to select a player!");
 			} catch (SQLException err) {
-				Alert.showError(this, "Error connecting to the database!");
+				Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 			}
 		});
 		

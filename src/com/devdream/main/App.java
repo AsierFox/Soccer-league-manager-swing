@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.swing.SwingUtilities;
 
+import com.devdream.db.DBConnectionManager;
 import com.devdream.db.dao.DAO;
 import com.devdream.ui.LoginView;
 import com.devdream.ui.custom.Alert;
@@ -21,7 +22,7 @@ public class App {
 		try {
 			DAO.checkTables();
 		} catch (SQLException e) {
-			Alert.showError(null, "Error connecting to the database.");
+			Alert.showError(null, DBConnectionManager.CONNECT_ERROR_MSG);
 		}
 		SwingUtilities.invokeLater(() -> new LoginView());
 	}

@@ -11,6 +11,7 @@ import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.Controller;
 import com.devdream.controller.SeasonGameController;
+import com.devdream.db.DBConnectionManager;
 import com.devdream.model.Player;
 import com.devdream.model.Sanction;
 import com.devdream.model.Sanctioned;
@@ -104,7 +105,7 @@ public class SanctionsView extends View {
 					dispose();
 				}
 			} catch (SQLException err) {
-				Alert.showError(this, "Error connecting to the database");
+				Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 			}
 		});
 		

@@ -14,6 +14,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.SeasonGameController;
+import com.devdream.db.DBConnectionManager;
 import com.devdream.exception.InvalidInputException;
 import com.devdream.exception.NotTableItemSelectedException;
 import com.devdream.model.Performance;
@@ -332,7 +333,7 @@ public class SeasonGameView extends View {
 			} catch(NotTableItemSelectedException err) {
 				Alert.showError(this, err.getMessage());
 			} catch(SQLException err) {
-				Alert.showError(this, "Error connecting to the database");
+				Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 			}
 		});
 		
@@ -351,7 +352,7 @@ public class SeasonGameView extends View {
 			} catch(NotTableItemSelectedException err) {
 				Alert.showError(this, err.getMessage());
 			} catch(SQLException err) {
-				Alert.showError(this, "Error connecting to the database");
+				Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 			}
 		});
 		

@@ -11,6 +11,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.devdream.controller.SeasonGameController;
+import com.devdream.db.DBConnectionManager;
 import com.devdream.model.Performance;
 import com.devdream.model.Team;
 import com.devdream.ui.custom.Alert;
@@ -116,7 +117,7 @@ public class PerformanceSearchView extends View {
 				
 				if (teams.isEmpty()) Alert.showInfo(this, "There are no teams with performances!");
 			} catch (SQLException err) {
-				Alert.showError(this, "Error connecting to the database");
+				Alert.showError(this, DBConnectionManager.CONNECT_ERROR_MSG);
 			}
 		});
 		
